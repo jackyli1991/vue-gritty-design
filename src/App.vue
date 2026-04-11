@@ -1,6 +1,6 @@
 <script setup lang="ts">
 import { GIcon, createIcon } from '@/components'
-
+import { Button } from 'ant-design-vue'
 const stopwatch = createIcon('streamline-sharp:stopwatch-solid')
 </script>
 
@@ -13,6 +13,7 @@ const stopwatch = createIcon('streamline-sharp:stopwatch-solid')
     <GIcon name="svg-spinners:90-ring-with-bg" color="red" />
     <stopwatch color="green" />
   </p>
+  <Button type="primary">Primary Button</Button>
 </template>
 
 <style scoped></style>
