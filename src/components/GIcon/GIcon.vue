@@ -13,7 +13,7 @@ interface GIconProps {
 
 const props = withDefaults(defineProps<GIconProps>(), {
   name: '',
-  size: 24,
+  size: 16,
 })
 
 const Icon = computed(() => createIcon(props.name))
