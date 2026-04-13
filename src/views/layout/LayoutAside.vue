@@ -33,17 +33,17 @@ const menuItems: ItemType[] = [
   {
     key: '1',
     label: '首页',
-    icon: () => h(GIcon, { name: 'solar:home-2-broken' }),
+    icon: () => h(GIcon, { name: 'solar:home-2-broken', size: 14 }),
   },
   {
     key: '2',
     label: '列表',
-    icon: () => h(GIcon, { name: 'solar:airbuds-case-minimalistic-broken' }),
+    icon: () => h(GIcon, { name: 'solar:airbuds-case-minimalistic-broken', size: 14 }),
   },
   {
     key: '3',
     label: '详情',
-    icon: () => h(GIcon, { name: 'solar:clipboard-list-broken' }),
+    icon: () => h(GIcon, { name: 'solar:clipboard-list-broken', size: 14 }),
     children: [
       {
         key: '3-1',
@@ -72,7 +72,7 @@ const menuItems: ItemType[] = [
         ],
       },
     ],
-  }
+  },
 ]
 </script>
 

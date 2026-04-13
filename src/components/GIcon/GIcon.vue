@@ -13,18 +13,16 @@ interface GIconProps {
 
 const props = withDefaults(defineProps<GIconProps>(), {
   name: '',
-  size: 16,
+  size: 18,
 })
 
 const Icon = computed(() => createIcon(props.name))
 </script>
 
 <template>
-  <Icon
-    :style="{
-      display: 'inline-block',
-      width: `${size}px`,
-      height: `${size}px`,
-    }"
-  />
+  <span
+    class="inline-block cursor-pointer p-1.5 rounded-full hover:bg-gray-100 transition-colors duration-300"
+  >
+    <Icon :style="{ width: `${size}px`, height: `${size}px` }" />
+  </span>
 </template>
