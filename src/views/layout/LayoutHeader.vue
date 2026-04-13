@@ -22,10 +22,17 @@
     <!-- 右侧用户信息、常用设置栏 -->
     <div class="flex items-center">
       <div class="layout-header-setting flex items-start justify-center">
-        <span class="flex flex-col relative mr-2.5 overflow-hidden">
+        <span class="relative mr-2.5 overflow-hidden" @click="toggleDark">
+          <!-- 占位图标，空白 -->
           <GIcon :name="ICONIFY_ICONS.placeholder" />
-          <GIcon class="absolute top-0 left-0" :name="ICONIFY_ICONS.sun" />
-          <GIcon class="absolute left-0 top-full" :name="ICONIFY_ICONS.moon" />
+          <span
+            class="flex flex-col absolute top-0 transition-all duration-300"
+            :class="{
+              '-translate-y-1/2': isDarkMode,
+            }">
+            <GIcon :name="ICONIFY_ICONS.sun" />
+            <GIcon :name="ICONIFY_ICONS.moon" />
+          </span>
         </span>
         <GIcon class="mr-2.5" :name="ICONIFY_ICONS.language" />
         <GIcon class="mr-2.5" :name="ICONIFY_ICONS.setting" />
@@ -56,10 +63,12 @@ defineOptions({
   name: 'LayoutHeader',
 })
 
+//// 布局状态管理
 const layoutStore = useLayoutStore()
-const { collapsed, headerHeight } = storeToRefs(layoutStore)
-const { toggleCollapsed } = layoutStore // 切换折叠状态
+const { collapsed, headerHeight, isDarkMode } = storeToRefs(layoutStore)
+const { toggleCollapsed, toggleDark } = layoutStore // 切换折叠状态、暗黑模式状态
 
+// 用户信息
 const userStore = useUserStore()
 const { userName, avatar } = storeToRefs(userStore)
 </script>
