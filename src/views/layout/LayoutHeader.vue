@@ -1,6 +1,6 @@
 <template>
   <div
-    class="layout-header flex items-center justify-between bg-white pl-5 pr-5"
+    class="layout-header flex items-center justify-between bg-white pl-5 pr-5 dark:bg-black-500"
     :style="{ height: `${headerHeight}px` }"
   >
     <!-- 左侧折叠按钮、面包屑导航 -->
@@ -22,14 +22,15 @@
     <!-- 右侧用户信息、常用设置栏 -->
     <div class="flex items-center">
       <div class="layout-header-setting flex items-start justify-center">
-        <span class="relative mr-2.5 overflow-hidden" @click="toggleDark">
+        <span class="relative mr-2.5 overflow-hidden" v-dark-mode="isDarkMode" @click="toggleDark">
           <!-- 占位图标，空白 -->
           <GIcon :name="ICONIFY_ICONS.placeholder" />
           <span
             class="flex flex-col absolute top-0 transition-all duration-300"
             :class="{
               '-translate-y-1/2': isDarkMode,
-            }">
+            }"
+          >
             <GIcon :name="ICONIFY_ICONS.sun" />
             <GIcon :name="ICONIFY_ICONS.moon" />
           </span>
@@ -58,6 +59,15 @@ import { useUserStore } from '@/stores/user'
 import { useLayoutStore } from '@/stores/layout'
 
 import { GIcon } from '@/components'
+import { useDark } from '@vueuse/core'
+
+const isDarkMode = useDark({
+  storageKey: 'GRITTY_DESIGN_DARK_MODE', // 持久化存储键
+  selector: 'body',
+  // attribute: 'color-scheme',
+  valueDark: 'dark',
+  valueLight: 'light',
+})
 
 defineOptions({
   name: 'LayoutHeader',
@@ -65,12 +75,16 @@ defineOptions({
 
 //// 布局状态管理
 const layoutStore = useLayoutStore()
-const { collapsed, headerHeight, isDarkMode } = storeToRefs(layoutStore)
-const { toggleCollapsed, toggleDark } = layoutStore // 切换折叠状态、暗黑模式状态
+const { collapsed, headerHeight } = storeToRefs(layoutStore)
+const { toggleCollapsed } = layoutStore // 切换折叠状态、暗黑模式状态
 
 // 用户信息
 const userStore = useUserStore()
 const { userName, avatar } = storeToRefs(userStore)
+
+function toggleDark() {
+  isDarkMode.value = !isDarkMode.value
+}
 </script>
 
 <style lang="scss" scoped></style>

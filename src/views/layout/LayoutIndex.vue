@@ -1,34 +1,27 @@
-/**
- * 基于 a-design-vue Layout的布局组件
- * 包含 header、sider、content、footer 四个区域
- * content 区域用于渲染路由组件
- */
+/** * 基于 a-design-vue Layout的布局组件 * 包含 header、sider、content、footer 四个区域 * content
+区域用于渲染路由组件 */
 <template>
-    <aLayout :style="layoutStyle">
-      <!-- 侧边栏 -->
-      <aLayoutSider
-        v-model:collapsed="collapsed"
-        class="h-full"
-        collapsible
-        theme="light">
-        <LayoutAside />
-      </aLayoutSider>
+  <aLayout :style="layoutStyle">
+    <!-- 侧边栏 -->
+    <aLayoutSider v-model:collapsed="collapsed" class="h-full" collapsible theme="light">
+      <LayoutAside />
+    </aLayoutSider>
+    <aLayout>
+      <!-- 头部 -->
+      <aLayoutHeader :style="headerStyle">
+        <LayoutHeader />
+      </aLayoutHeader>
+      <!-- 内容区域 -->
       <aLayout>
-        <!-- 头部 -->
-        <aLayoutHeader :style="headerStyle">
-          <LayoutHeader />
-        </aLayoutHeader>
-        <!-- 内容区域 -->
-        <aLayout>
-          <aLayoutContent class="overflow-scroll">
-            <LayoutContent>
-              <RouterView />
-            </LayoutContent>
-          </aLayoutContent>
-          <!-- <aLayoutFooter>footer</aLayoutFooter> -->
-        </aLayout>
+        <aLayoutContent class="overflow-scroll">
+          <LayoutContent>
+            <RouterView />
+          </LayoutContent>
+        </aLayoutContent>
+        <!-- <aLayoutFooter>footer</aLayoutFooter> -->
       </aLayout>
     </aLayout>
+  </aLayout>
 </template>
 
 <script setup lang="ts">
