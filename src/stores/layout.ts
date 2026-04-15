@@ -1,5 +1,6 @@
-import { ref } from 'vue'
+import { ref, computed } from 'vue'
 import { defineStore } from 'pinia'
+import { useDebounceFn } from '@vueuse/core'
 
 /**
  * 布局状态管理
@@ -9,6 +10,14 @@ export const useLayoutStore = defineStore('layout', () => {
   // 是否折叠
   const collapsed = ref(false)
 
+  // ant-design-vue 主题
+  const antDesignTheme = ref({
+    token: {
+      colorPrimary: '#1890ff',
+    },
+    borderRadius: '4px',
+  })
+
   // header栏高度
   const headerHeight = ref(60)
 
@@ -17,5 +26,20 @@ export const useLayoutStore = defineStore('layout', () => {
     collapsed.value = !collapsed.value
   }
 
-  return { collapsed, headerHeight, toggleCollapsed }
+  // 主题颜色
+  const themeColor = computed(() => antDesignTheme.value.token.colorPrimary)
+
+  // 设置主颜色
+  const setThemeColor = useDebounceFn((color: string) => {
+    antDesignTheme.value.token.colorPrimary = color
+  }, 300)
+
+  return {
+    collapsed,
+    headerHeight,
+    themeColor,
+    antDesignTheme,
+    toggleCollapsed,
+    setThemeColor,
+  }
 })
