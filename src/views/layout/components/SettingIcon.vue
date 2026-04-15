@@ -1,7 +1,7 @@
 <template>
   <GIcon class="mr-2.5" :name="ICONIFY_ICONS.setting" @click="toggleSettingDrawer" />
   <aDrawer title="设置" v-model:open="visible" width="400px" :headerStyle="headerStyle">
-    <IconsLibrary />
+    Setting
   </aDrawer>
 </template>
 
@@ -12,7 +12,6 @@ import { Drawer as aDrawer } from 'ant-design-vue'
 import { GIcon } from '@/components'
 import { ICONIFY_ICONS } from '@/icons'
 import { useLayoutStore } from '@/stores/layout'
-import IconsLibrary from '@/views/introduce/icons.vue' // 项目图标库实例
 
 defineOptions({
   name: 'SettingIcon',
