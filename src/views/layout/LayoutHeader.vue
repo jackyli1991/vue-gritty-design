@@ -17,10 +17,10 @@
       <div class="layout-header-setting flex items-start justify-center">
         <DarkModeIcon />
         <GIcon class="mr-2.5" :name="ICONIFY_ICONS.language" />
-        <SettingIcon />
         <GIcon class="mr-2.5" :name="ICONIFY_ICONS.fullScreen" />
         <ThemeIcon />
         <GIcon class="mr-2.5" :name="ICONIFY_ICONS.notice" />
+        <SettingIcon />
       </div>
       <UserInfo />
     </div>
