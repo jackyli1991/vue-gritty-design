@@ -35,4 +35,13 @@ export default defineConfigWithVueTs(
   ...pluginOxlint.buildFromOxlintConfigFile('.oxlintrc.json'),
 
   skipFormatting,
+  // 自定义eslint检测规则
+  {
+    name: 'app/self-check',
+    files: ['**/*.{vue,ts,mts,tsx}'],
+    rules: {
+      'no-console': 'warn',
+      'vue/multi-word-component-names': 'warn',
+    },
+  },
 )
