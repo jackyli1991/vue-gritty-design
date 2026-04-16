@@ -1,0 +1,16 @@
+[
+  {
+    "name": "dashboard",
+    "title": "工作台",
+    "icon": "dashboard",
+    "requiresAuth": true,
+    "type": "page"
+  },
+  {
+    "name": "table",
+    "title": "表格列表页",
+    "icon": "table",
+    "requiresAuth": true,
+    "type": "group"
+  }
+]
