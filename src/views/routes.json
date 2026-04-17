@@ -9,7 +9,7 @@
   {
     "type": "group",
     "name": "page",
-    "title": "表格列表页",
+    "title": "一级分组",
     "icon": "theme",
     "requiresAuth": true
   }

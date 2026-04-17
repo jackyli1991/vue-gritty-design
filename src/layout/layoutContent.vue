@@ -1,6 +1,8 @@
 <template>
-  <div class="layout-content">
-    <router-view />
+  <div class="h-full p-4">
+    <div class="h-full rounded-lg bg-white">
+      <router-view />
+    </div>
   </div>
 </template>
 
@@ -10,11 +12,4 @@ defineOptions({
 })
 </script>
 
-<style scoped lang="scss">
-.layout-content {
-  height: 2000px;
-  margin: 12px;
-  background-color: #fff;
-  border-radius: 8px;
-}
-</style>
+<style scoped lang="scss"></style>

@@ -2,21 +2,21 @@
   {
     "type": "page",
     "name": "list",
-    "title": "列表页",
+    "title": "二级页面",
     "icon": "theme",
     "requiresAuth": true
   },
   {
     "type": "page",
     "name": "detail",
-    "title": "详情页",
+    "title": "二级页面2",
     "icon": "theme",
     "requiresAuth": true
   },
   {
     "type": "group",
     "name": "subPage",
-    "title": "二级group",
+    "title": "二级分组",
     "icon": "theme",
     "requiresAuth": true
   }

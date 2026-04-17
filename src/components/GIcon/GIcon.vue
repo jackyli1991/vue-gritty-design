@@ -7,7 +7,7 @@ defineOptions({
 })
 
 interface GIconProps {
-  name: string // 图标名称
+  name?: string // 图标名称
   size?: number // 图标大小
 }
 

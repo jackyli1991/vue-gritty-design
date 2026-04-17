@@ -16,15 +16,15 @@
 </template>
 
 <script setup lang="ts">
-import { h, computed } from 'vue'
+import { h } from 'vue'
+import { storeToRefs } from 'pinia'
 import router from '@/router'
 import type { RouteRecordRaw, RouteRecordNameGeneric } from 'vue-router'
-import { storeToRefs } from 'pinia'
 import type { ItemType, MenuProps } from 'ant-design-vue'
 import { Menu as aMenu } from 'ant-design-vue'
 import { GIcon } from '@/components'
-import { useLayoutStore } from '@/stores/layout'
 import logo from '@/assets/logo.png'
+import { useLayoutStore } from '@/stores/layout'
 import { useRouteStore } from '@/stores/route'
 import { ICONIFY_ICONS } from '@/icons'
 
@@ -32,16 +32,11 @@ defineOptions({
   name: 'LayoutAside',
 })
 
-const activeRoute = computed(() => [router.currentRoute.value.name as string])
-const activeRouteParent = computed(
-  () => (router.currentRoute.value.meta?.parentRoute as string[]) || [],
-)
-
 const layoutStore = useLayoutStore()
 const { headerHeight } = storeToRefs(layoutStore)
 
 const routeStore = useRouteStore()
-const { allRoutes } = storeToRefs(routeStore)
+const { allRoutes, activeRoute, activeRouteParent } = storeToRefs(routeStore)
 
 // 菜单项数组
 const menuItems: ItemType[] = []

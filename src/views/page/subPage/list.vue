@@ -1,6 +1,6 @@
 <template>
   <div>
-    <h1>list11</h1>
+    <h1>list1中转站1</h1>
   </div>
 </template>
 

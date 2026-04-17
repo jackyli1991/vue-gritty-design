@@ -7,3 +7,10 @@ export interface RouteJsonConfig {
   transition?: string // 过渡动画
   type?: 'group' | 'page' // 路由类型
 }
+
+// 面包屑路由
+export interface BreadcrumbRoute {
+  title: string;
+  name: string;
+  path: string;
+}

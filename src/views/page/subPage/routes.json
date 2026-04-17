@@ -1,14 +1,14 @@
 [
   {
     "type": "page",
-    "name": "list1",
-    "title": "列表页1",
+    "name": "list",
+    "title": "三级页面",
     "icon": "theme",
     "requiresAuth": true
   },
   {
     "type": "page",
-    "name": "list1_id_type",
+    "name": "list_id_type",
     "title": "路由参数",
     "icon": "theme",
     "hidden": true,

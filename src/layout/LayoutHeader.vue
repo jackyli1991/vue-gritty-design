@@ -7,9 +7,12 @@
     <div class="flex items-center">
       <ExpandBtn class="mr-2.5" />
       <aBreadcrumb>
-        <aBreadcrumbItem>首页</aBreadcrumbItem>
-        <aBreadcrumbItem>列表</aBreadcrumbItem>
-        <aBreadcrumbItem>详情</aBreadcrumbItem>
+        <aBreadcrumbItem
+          v-for="item in breadcrumbRoutes"
+          :key="item.path"
+          :title="item.title"
+          @click="handleClick(item)"
+        >{{ item.title }}</aBreadcrumbItem>
       </aBreadcrumb>
     </div>
     <!-- 右侧用户信息、常用设置栏 -->
@@ -28,6 +31,7 @@
 </template>
 
 <script setup lang="ts">
+import type { BreadcrumbRoute } from '@/types/routeJson'
 import { storeToRefs } from 'pinia'
 import { Breadcrumb as aBreadcrumb, BreadcrumbItem as aBreadcrumbItem } from 'ant-design-vue'
 import ExpandBtn from './components/ExpandBtn.vue' // 折叠按钮
@@ -37,6 +41,8 @@ import SettingIcon from './components/SettingIcon.vue' // 常用设置图标
 import UserInfo from './components/UserInfo.vue' // 用户信息
 import { ICONIFY_ICONS } from '@/icons'
 import { useLayoutStore } from '@/stores/layout'
+import { useRouteStore } from '@/stores/route'
+import router from '@/router'
 
 import { GIcon } from '@/components'
 
@@ -46,6 +52,17 @@ defineOptions({
 
 const layoutStore = useLayoutStore()
 const { headerHeight } = storeToRefs(layoutStore)
+
+const routeStore = useRouteStore()
+const { breadcrumbRoutes } = storeToRefs(routeStore)
+
+/**
+ * 点击面包屑导航项
+ * @param {BreadcrumbRoute} item 面包屑导航项
+ */
+function handleClick(item: BreadcrumbRoute) {
+  router.push(item.path)
+}
 </script>
 
 <style lang="scss" scoped></style>
