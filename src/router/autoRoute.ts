@@ -47,9 +47,17 @@ function createRoutes(
 
     const { default: component, btnPermission = {} } = pages[importPath] || {}
     // 路由配置
+    const pathParams = name.split('_') // 文件名可能为：detail_id_type.vue形式，_后的部分作为路由参数
+    let path: string = pathParams[0] || ''
+    if (pathParams.length > 1) {
+      path += `/${pathParams
+        .slice(1)
+        .map((item) => `:${item}`)
+        .join('/')}`
+    }
     const routeItem: RouteRecordRaw = {
-      path: name,
-      name,
+      path, // 路径
+      name, // 名称
       component: isGroup ? null : component, // 组件，目录没有，菜单才有
       meta: {
         ...rest,
@@ -61,7 +69,8 @@ function createRoutes(
           .split('/')
           .filter((item) => !!item), // 父路由路径
       },
-      children: [],
+      children: [], // 子路由
+      // props: {}, // 路由参数
     }
 
     // 递归处理子路由
@@ -90,6 +99,6 @@ autoRoutes.push({
   },
 })
 
-// console.log(autoRoutes)
+console.log(autoRoutes)
 
 export { autoRoutes }

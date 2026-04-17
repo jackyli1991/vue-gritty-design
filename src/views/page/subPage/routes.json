@@ -5,5 +5,13 @@
     "title": "列表页1",
     "icon": "theme",
     "requiresAuth": true
+  },
+  {
+    "type": "page",
+    "name": "list1_id_type",
+    "title": "路由参数",
+    "icon": "theme",
+    "hidden": true,
+    "requiresAuth": true
   }
 ]
