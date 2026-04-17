@@ -1,6 +1,6 @@
 <template>
   <div>
-    <h1>表格列表页</h1>
+    <h1>detail</h1>
   </div>
 </template>
 
@@ -8,6 +8,6 @@
 
 <script lang="ts">
 export const btnPermission = {
-  add: 101
+  add: 101,
 }
 </script>

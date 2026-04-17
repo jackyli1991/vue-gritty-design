@@ -7,73 +7,81 @@
       class="flex-1 overflow-auto"
       theme="light"
       mode="inline"
-      default-selected-keys="['1']"
+      :selected-keys="activeRoute"
+      :open-keys="activeRouteParent"
       :items="menuItems"
+      @select="handleSelect"
     />
   </div>
 </template>
 
 <script setup lang="ts">
-import { h } from 'vue'
+import { h, computed } from 'vue'
+import router from '@/router'
+import type { RouteRecordRaw, RouteRecordNameGeneric } from 'vue-router'
 import { storeToRefs } from 'pinia'
-import type { ItemType } from 'ant-design-vue/es/menu'
+import type { ItemType, MenuProps } from 'ant-design-vue'
 import { Menu as aMenu } from 'ant-design-vue'
 import { GIcon } from '@/components'
 import { useLayoutStore } from '@/stores/layout'
 import logo from '@/assets/logo.png'
+import { useRouteStore } from '@/stores/route'
+import { ICONIFY_ICONS } from '@/icons'
 
 defineOptions({
   name: 'LayoutAside',
 })
 
+const activeRoute = computed(() => [router.currentRoute.value.name as string])
+const activeRouteParent = computed(
+  () => (router.currentRoute.value.meta?.parentRoute as string[]) || [],
+)
+
 const layoutStore = useLayoutStore()
 const { headerHeight } = storeToRefs(layoutStore)
 
-const menuItems: ItemType[] = [
-  {
-    key: '1',
-    label: '首页',
-    icon: () => h(GIcon, { name: 'solar:home-2-broken', size: 14 }),
-  },
-  {
-    key: '2',
-    label: '列表',
-    icon: () => h(GIcon, { name: 'solar:airbuds-case-minimalistic-broken', size: 14 }),
-  },
-  {
-    key: '3',
-    label: '详情',
-    icon: () => h(GIcon, { name: 'solar:clipboard-list-broken', size: 14 }),
-    children: [
-      {
-        key: '3-1',
-        label: '详情1',
-        icon: () => h(GIcon, { name: 'solar:clipboard-list-broken' }),
-      },
-      {
-        key: '3-2',
-        label: '详情2',
-        children: [
-          {
-            key: '3-2-1',
-            label: '详情2-1详情2-1详情2-1详情2-1',
-          },
-          {
-            key: '3-2-2',
-            label: '详情2-2',
-            icon: () => h(GIcon, { name: 'solar:clipboard-list-broken' }),
-            children: [
-              {
-                key: '3-2-2-1',
-                label: '详情2-2-1',
-              },
-            ],
-          },
-        ],
-      },
-    ],
-  },
-]
+const routeStore = useRouteStore()
+const { allRoutes } = storeToRefs(routeStore)
+
+// 菜单项数组
+const menuItems: ItemType[] = []
+
+/**
+ * 路由配置转换为菜单项
+ * @param {RouteRecordRaw[]} routes 路由配置数组
+ * @param {ItemType[]} target 菜单项数组
+ */
+function transformRoutesToMenuItems(routes: RouteRecordRaw[], target: ItemType[]) {
+  routes.forEach((route) => {
+    // 隐藏路由不添加到菜单中
+    if (route.meta?.hidden) {
+      return
+    }
+    const menuItem: ItemType = {
+      key: route.name as string,
+      label: route.meta?.title || route.name || '',
+      icon: () => h(GIcon, { name: ICONIFY_ICONS[route.meta?.icon as string] || '', size: 16 }),
+    }
+    if (route.children?.length) {
+      menuItem.children = []
+      transformRoutesToMenuItems(route.children, menuItem.children)
+    }
+    target.push(menuItem)
+  })
+}
+
+transformRoutesToMenuItems(allRoutes.value, menuItems)
+
+/**
+ * 处理菜单项点击事件
+ * @param {string} key 菜单项的key值
+ */
+const handleSelect: MenuProps['onSelect'] = (params) => {
+  const { key } = params
+  router.push({
+    name: key as RouteRecordNameGeneric,
+  })
+}
 </script>
 
 <style lang="scss" scoped>

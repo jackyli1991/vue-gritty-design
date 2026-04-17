@@ -1,12 +1,10 @@
 <template>
   <div class="layout-content">
-    <Button type="primary">按钮</Button>
+    <router-view />
   </div>
 </template>
 
 <script setup lang="ts">
-import { Button } from 'ant-design-vue'
-
 defineOptions({
   name: 'LayoutContent',
 })

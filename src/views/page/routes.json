@@ -1,0 +1,23 @@
+[
+  {
+    "type": "page",
+    "name": "list",
+    "title": "列表页",
+    "icon": "theme",
+    "requiresAuth": true
+  },
+  {
+    "type": "page",
+    "name": "detail",
+    "title": "详情页",
+    "icon": "theme",
+    "requiresAuth": true
+  },
+  {
+    "type": "group",
+    "name": "subPage",
+    "title": "二级group",
+    "icon": "theme",
+    "requiresAuth": true
+  }
+]

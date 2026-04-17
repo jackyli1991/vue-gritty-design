@@ -1,16 +1,16 @@
 [
   {
+    "type": "page",
     "name": "dashboard",
     "title": "工作台",
-    "icon": "dashboard",
-    "requiresAuth": true,
-    "type": "page"
+    "icon": "theme",
+    "requiresAuth": true
   },
   {
-    "name": "table",
+    "type": "group",
+    "name": "page",
     "title": "表格列表页",
-    "icon": "table",
-    "requiresAuth": true,
-    "type": "group"
+    "icon": "theme",
+    "requiresAuth": true
   }
 ]

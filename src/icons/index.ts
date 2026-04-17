@@ -1,5 +1,5 @@
 // 使用到的iconify图标列表
-export const ICONIFY_ICONS = {
+export const ICONIFY_ICONS: Record<string, string> = {
   notice: 'solar:bell-linear',
   theme: 'solar:pallete-2-broken',
   fullScreen: 'solar:full-screen-bold',
@@ -28,5 +28,5 @@ export const ICONIFY_ICONS = {
   delete: 'solar:trash-bin-trash-broken',
   close: 'solar:close-square-broken',
   refresh: 'solar:refresh-square-broken',
-  search: 'solar:magnifer-broken'
+  search: 'solar:magnifer-broken',
 }

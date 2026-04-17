@@ -1,0 +1,9 @@
+[
+  {
+    "type": "page",
+    "name": "list1",
+    "title": "列表页1",
+    "icon": "theme",
+    "requiresAuth": true
+  }
+]
