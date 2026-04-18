@@ -100,19 +100,6 @@ function createRoutes(
 
 createRoutes(levelOneJson?.default || [], autoRoutes, '')
 
-// 404
-autoRoutes.push({
-  path: '/:pathMatch(.*)*',
-  name: 'notFound',
-  component: () => import('@/views/404.vue'),
-  meta: {
-    title: '404',
-    hidden: true,
-    requiresAuth: false,
-    parentRoute: [],
-  },
-})
-
 console.log(autoRoutes)
 
 export { autoRoutes }

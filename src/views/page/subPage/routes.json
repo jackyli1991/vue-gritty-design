@@ -1,5 +1,6 @@
 [
   {
+    "id": 20301,
     "type": "page",
     "name": "list",
     "title": "三级页面",
@@ -7,6 +8,7 @@
     "requiresAuth": true
   },
   {
+    "id": 20302,
     "type": "page",
     "name": "list_id_type",
     "title": "路由参数",

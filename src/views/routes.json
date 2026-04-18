@@ -1,5 +1,6 @@
 [
   {
+    "id": 1,
     "type": "page",
     "name": "dashboard",
     "title": "工作台",
@@ -7,6 +8,7 @@
     "requiresAuth": true
   },
   {
+    "id": 2,
     "type": "dir",
     "name": "page",
     "title": "一级分组",

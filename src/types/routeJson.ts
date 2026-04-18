@@ -1,4 +1,5 @@
 export interface RouteJsonConfig {
+  id?: string | number // 路由ID，全局唯一
   name: string // 路由名称
   icon?: string // 图标
   title: string // 标题
