@@ -27,11 +27,12 @@ function handleRoutesPermission(routes: RouteRecordRaw[], target: ItemType[]) {
     if (route.meta?.hidden) {
       return
     }
+    const { type = 'page', title, icon } = route.meta || {}
     const menuItem: ItemType = {
       key: route.name as string,
-      label: route.meta?.title || route.name || '',
-      icon: () => h(GIcon, { name: ICONIFY_ICONS[route.meta?.icon as string] || '', size: 16 }),
-      // type: 'group',
+      label: title || route.name || '',
+      icon: () => h(GIcon, { name: ICONIFY_ICONS[icon as string] || '', size: 16 }),
+      type: type,
     }
     // 子路由
     if (route.children?.length) {

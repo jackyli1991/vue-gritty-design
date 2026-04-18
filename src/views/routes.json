@@ -7,7 +7,7 @@
     "requiresAuth": true
   },
   {
-    "type": "group",
+    "type": "dir",
     "name": "page",
     "title": "一级分组",
     "icon": "theme",

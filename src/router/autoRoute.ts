@@ -19,7 +19,7 @@ interface JsonPages {
 const pagesDir: string = '/src/views/' // 页面所在目录
 const routeConfFile: string = 'routes.json' // 路由配置文件名
 const autoRoutes: RouteRecordRaw[] = [] // 自动路由配置
-const separator = '-'// 连接符
+const separator = '-' // 连接符
 
 // 导入所有 vue 组件
 const pages: VuePages = import.meta.glob('@/views/**/*.vue', { eager: true })
@@ -43,8 +43,9 @@ function createRoutes(
 ) {
   routes.forEach((route) => {
     const { name, title, icon, type, ...rest } = route
-    const isGroup = type === 'group'
-    const importPath = `/src/views/${parentPath}${name}${isGroup ? '' : '.vue'}`
+    const hasChildren = ['dir', 'group'].includes(type || '') // 是否有子路由
+
+    const importPath = `/src/views/${parentPath}${name}${hasChildren ? '' : '.vue'}`
 
     const { default: component, btnPermission = {} } = pages[importPath] || {}
     // 1、路由路径
@@ -69,13 +70,14 @@ function createRoutes(
     })
     // 3、如果直接使用name，会由于不用目录下的同名文件，导致路由名称冲突
     // 拼接父路由作为路由名称，保证全局唯一
-    const _name = `${parentRoute.length ? (parentRoute.join(separator) + separator) : ''}${name}`
+    const _name = `${parentRoute.length ? parentRoute.join(separator) + separator : ''}${name}`
     const routeItem: RouteRecordRaw = {
       path, // 路径
       name: _name, // 名称
-      component: isGroup ? null : component, // 组件，目录没有，菜单才有
+      component: hasChildren ? null : component, // 组件，目录没有，菜单才有
       meta: {
         ...rest,
+        type, // 路由类型
         icon: icon || '', // 图标
         title: title || '', // 标题
         btnPermission, // 按钮权限
@@ -86,7 +88,7 @@ function createRoutes(
     }
 
     // 4、递归处理子路由
-    if (isGroup) {
+    if (hasChildren) {
       const groupConfigPath = `${pagesDir}${parentPath}${name}/routes.json` // 子路由配置文件路径
       const groupJson = routesJson[groupConfigPath]
       createRoutes(groupJson?.default || [], routeItem.children, `${parentPath}${name}/`)

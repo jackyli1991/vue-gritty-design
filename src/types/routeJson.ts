@@ -5,12 +5,12 @@ export interface RouteJsonConfig {
   requiresAuth?: boolean // 是否需要登录
   hidden?: boolean // 是否隐藏
   transition?: string // 过渡动画
-  type?: 'group' | 'page' // 路由类型
+  type?: 'group' | 'page' | 'dir' // 路由类型 group 分组 page 页面 dir 目录
 }
 
 // 面包屑路由
 export interface BreadcrumbRoute {
-  title: string;
-  name: string;
-  path: string;
+  title: string
+  name: string
+  path: string
 }
