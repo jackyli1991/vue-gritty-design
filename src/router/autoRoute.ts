@@ -1,3 +1,4 @@
+import { markRaw } from 'vue'
 import type { RouteRecordRaw } from 'vue-router'
 import type { Component } from 'vue'
 import type { RouteJsonConfig } from '@/types/routeJson'
@@ -74,7 +75,7 @@ function createRoutes(
     const routeItem: RouteRecordRaw = {
       path, // 路径
       name: _name, // 名称
-      component: hasChildren ? null : component, // 组件，目录没有，菜单才有
+      component: hasChildren ? null : markRaw(component as Component), // 组件，目录没有，菜单才有
       meta: {
         ...rest,
         type, // 路由类型
@@ -102,4 +103,11 @@ createRoutes(levelOneJson?.default || [], autoRoutes, '')
 
 console.log(autoRoutes)
 
-export { autoRoutes }
+// 404路由
+const notFoundRoute: RouteRecordRaw = {
+  path: '/:pathMatch(.*)*',
+  name: 'notFound',
+  component: () => import('@/views/404.vue'),
+}
+
+export { autoRoutes, notFoundRoute }

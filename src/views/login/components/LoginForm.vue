@@ -26,7 +26,7 @@
       </a-form-item>
       <div class="form-footer">
         <a-checkbox>记住我</a-checkbox>
-        <a-link>忘记密码？</a-link>
+        <span>忘记密码？</span>
       </div>
       <a-form-item>
         <a-button
@@ -40,10 +40,11 @@
           登录
         </a-button>
         <a-button
-          type="default"
+          type="primary"
           class="register-button"
           size="large"
           block
+          ghost
           @click="handleSwitchToRegister"
         >
           注册
@@ -58,6 +59,7 @@ import { ref, reactive } from 'vue'
 import type { FormInstance } from 'ant-design-vue'
 import { GIcon } from '@/components'
 import { ICONIFY_ICONS } from '@/icons'
+import { useRouteStore } from '@/stores/route'
 
 // 定义表单布局
 const labelCol = { style: { width: '80px' } }
@@ -72,8 +74,8 @@ const loginFormRef = ref<FormInstance>()
 
 // 登录表单
 const loginForm = reactive({
-  username: '',
-  password: '',
+  username: 'admin',
+  password: 'admin123',
 })
 const isLoading = ref(false)
 
@@ -90,10 +92,7 @@ const handleLogin = async () => {
   try {
     await loginFormRef.value.validate()
     isLoading.value = true
-    // 模拟登录请求
-    await new Promise((resolve) => setTimeout(resolve, 1000))
-    // 实际项目中这里会跳转到主页
-    alert('登录成功！')
+    await useRouteStore().loginIn(loginForm)
   } catch (error) {
     console.error('登录表单验证失败', error)
   } finally {
@@ -109,10 +108,9 @@ const handleSwitchToRegister = () => {
 
 <style scoped>
 .form-title {
-  text-align: center;
-  margin-bottom: 1.5rem;
+  margin-bottom: 20px;
   color: #333;
-  font-size: 1.5rem;
+  font-size: 24px;
   font-weight: 500;
 }
 

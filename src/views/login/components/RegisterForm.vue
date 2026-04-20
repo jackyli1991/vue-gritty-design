@@ -47,8 +47,8 @@
         </a-input-password>
       </a-form-item>
       <a-form-item>
-        <a-button type="primary" html-type="submit" class="register-button" block> 注册 </a-button>
-        <a-button type="default" class="register-button" block @click="handleSwitchToLogin">
+        <a-button type="primary" html-type="submit" size="large" class="register-button" block> 注册 </a-button>
+        <a-button type="primary" ghost class="register-button" size="large" block @click="handleSwitchToLogin">
           已有账号，去登录
         </a-button>
       </a-form-item>
@@ -136,10 +136,9 @@ const handleSwitchToLogin = () => {
 
 <style scoped>
 .form-title {
-  text-align: center;
-  margin-bottom: 1.5rem;
+  margin-bottom: 20px;
   color: #333;
-  font-size: 1.5rem;
+  font-size: 24px;
   font-weight: 500;
 }
 

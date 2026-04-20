@@ -3,8 +3,9 @@ import { defineStore } from 'pinia'
 import type { RouteRecordRaw } from 'vue-router'
 import type { BreadcrumbRoute } from '@/types/routeJson'
 import type { ItemType } from 'ant-design-vue'
+import { message } from 'ant-design-vue'
 import { GIcon } from '@/components'
-import { autoRoutes } from '@/router/autoRoute'
+import { autoRoutes, notFoundRoute } from '@/router/autoRoute'
 import router from '@/router'
 import { ICONIFY_ICONS } from '@/icons'
 
@@ -34,7 +35,7 @@ function convertPermissionRoutesToMenuItems(routes: RouteRecordRaw[], target: It
       key: route.name as string,
       label: title || route.name || '',
       icon: () => h(GIcon, { name: ICONIFY_ICONS[icon as string] || '', size: 16 }),
-      type: type,
+      type: type as "group" | "divider" | undefined,
     }
     // 子路由
     if (route.children?.length) {
@@ -57,14 +58,28 @@ function dealPermissionRoutes(
   target: RouteRecordRaw[],
 ) {
   originalRoutes.forEach((route: RouteRecordRaw) => {
-    if (ids.includes(route.meta?.id as string | number)) {
-      target.push({
+    if (ids.includes(route.meta?.id as never)) {
+      const newRoute = {
         ...route,
         children: [],
-      })
+      }
+      if (route.children?.length) {
+        dealPermissionRoutes(ids, route.children, newRoute.children)
+      }
+      target.push(newRoute)
     }
+  })
+}
+
+/**
+ * 递归处理路由重定向
+ * @param routes 路由数组
+ */
+function dealRoutesRedirect(routes: RouteRecordRaw[]) {
+  routes.forEach((route) => {
     if (route.children?.length) {
-      dealPermissionRoutes(ids, route.children, target)
+      route.redirect = { name: route.children[0]?.name }
+      dealRoutesRedirect(route.children)
     }
   })
 }
@@ -109,6 +124,32 @@ export const useRouteStore = defineStore('route', {
     },
   },
   actions: {
+    // 模拟登录登录成功后跳转到主页
+    async loginIn(loginForm: {
+      username: string
+      password: string
+    }) {
+      console.log('登录信息：', loginForm)
+      message.success('登录中')
+      // 1、模拟登录请求
+      await new Promise((resolve) => setTimeout(resolve, 1000))
+      // 2、登录成功后设置为已登录
+      this.isAuthenticated = true
+      // 3、请求权限路由
+      message.success('菜单请求中')
+      await new Promise((resolve) => setTimeout(resolve, 1000))
+      await this.createPermissionRoutes([1, 2, 201, 203, 20301])
+      console.log('有权限访问的路由：', this.permissionRoutes)
+      // 4、动态添加路由
+      this.addRoutes()
+      // 5、跳转到主页
+      router.push({ name: 'home' })
+    },
+    // 设置是否已登录
+    setIsAuthenticated(isAuthenticated: boolean) {
+      this.isAuthenticated = isAuthenticated
+    },
+
     // 创建有权限访问的路由
     createPermissionRoutes(permissionRouteIds: string | number[]) {
       const permissionRoutes: RouteRecordRaw[] = []
@@ -117,17 +158,24 @@ export const useRouteStore = defineStore('route', {
       } else {
         permissionRoutes.push(...this.allRoutes)
       }
+      // 处理路由重定向
+      dealRoutesRedirect(permissionRoutes)
+      // 处理根路由重定向
+      const rootRoute: RouteRecordRaw | undefined = router.getRoutes().find(item => item.name === 'home')
+      if (rootRoute) {
+        rootRoute.redirect = {
+          name: permissionRoutes[0]?.name,
+        }
+      }
       this.permissionRoutes = permissionRoutes
     },
     // 动态添加路由
     addRoutes() {
-      // const rootRoute = {
-      //   path: '/',
-      //   name: 'home',
-      //   component: () => import('@/layout/LayoutIndex.vue'),
-      //   children: this.permissionRoutes, // 由路由权限管理动态添加
-      // }
-      // router.addRoute(rootRoute)
+      this.permissionRoutes.forEach((route) => {
+        router.addRoute('home', route)
+      })
+      // 添加404路由
+      router.addRoute('home', notFoundRoute)
     },
   },
 })
