@@ -10,25 +10,27 @@ const router = createRouter({
       component: () => import('@/layout/LayoutIndex.vue'),
       children: [], // 由路由权限管理动态添加
     },
+    {
+      path: '/login',
+      name: 'login',
+      component: () => import('@/views/login/index.vue'),
+    },
+    {
+      path: '/404',
+      name: 'noFound',
+      component: () => import('@/views/404.vue'),
+    },
   ],
 })
 
-router.beforeEach((to, from, next) => {
-  console.log('to', to)
-  console.log('from', from)
+router.beforeEach((to) => {
+  // console.log('to', to)
   const routerStore = useRouteStore()
-  if (routerStore.permissionRoutes.length > 0) {
-    next()
-  } else {
-    console.log('没有权限路由')
-    routerStore.createPermissionRoutes([1, 2, 201]) // 生成有权限的路由
-    routerStore.addRoutes() // 动态添加路由
-    router.addRoute('home', {
-      path: '/404',
-      name: 'notFound',
-      component: () => import('@/views/404.vue'),
-    }) // 404路由
-    next()
+  const isAuthenticated = routerStore.isAuthenticated
+  // isAuthenticated：检查用户是否已登录
+  // to.name !== 'login'：避免无限重定向
+  if (!isAuthenticated && to.name !== 'login') {
+    return { name: 'login' } // 重定向到登录页
   }
 })
 

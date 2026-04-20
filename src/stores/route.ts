@@ -9,6 +9,7 @@ import router from '@/router'
 import { ICONIFY_ICONS } from '@/icons'
 
 interface State {
+  isAuthenticated: boolean // 是否已登录
   enableRoutePermission: boolean // 是否开启路由权限管理
   allRoutes: RouteRecordRaw[] // 所有路由配置
   permissionRoutes: RouteRecordRaw[] // 有权限访问的路由
@@ -70,6 +71,7 @@ function dealPermissionRoutes(
 
 export const useRouteStore = defineStore('route', {
   state: (): State => ({
+    isAuthenticated: false,
     enableRoutePermission: import.meta.env.VITE_ENABLE_ROUTE_PERMISSION === 'true',
     allRoutes: autoRoutes,
     permissionRoutes: [],
@@ -119,9 +121,13 @@ export const useRouteStore = defineStore('route', {
     },
     // 动态添加路由
     addRoutes() {
-      this.permissionRoutes.forEach((route) => {
-        router.addRoute('home', route)
-      })
+      // const rootRoute = {
+      //   path: '/',
+      //   name: 'home',
+      //   component: () => import('@/layout/LayoutIndex.vue'),
+      //   children: this.permissionRoutes, // 由路由权限管理动态添加
+      // }
+      // router.addRoute(rootRoute)
     },
   },
 })

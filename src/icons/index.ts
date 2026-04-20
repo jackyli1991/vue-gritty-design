@@ -29,4 +29,7 @@ export const ICONIFY_ICONS: Record<string, string> = {
   close: 'solar:close-square-broken',
   refresh: 'solar:refresh-square-broken',
   search: 'solar:magnifer-broken',
+  user: 'solar:user-broken',
+  password: 'solar:lock-keyhole-minimalistic-unlocked-linear',
+  email: 'solar:letter-unread-broken',
 }
