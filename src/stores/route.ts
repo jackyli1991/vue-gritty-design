@@ -8,13 +8,16 @@ import GIcon from '@/components/GIcon/GIcon.vue'
 import { autoRoutes, notFoundRoute } from '@/router/autoRoute'
 import router from '@/router'
 import { ICONIFY_ICONS } from '@/icons'
+import { useStorage } from '@vueuse/core'
 
 interface State {
-  isAuthenticated: boolean // 是否已登录
+  TOKEN: string // 登录凭证token
   enableRoutePermission: boolean // 是否开启路由权限管理
   allRoutes: RouteRecordRaw[] // 所有路由配置
   permissionRoutes: RouteRecordRaw[] // 有权限访问的路由
 }
+
+const TOKEN_KEY = 'GRITTY_DESIGN_TOKEN'
 
 /**
  * 将可访问的路由转换为菜单项数组
@@ -86,12 +89,14 @@ function dealRoutesRedirect(routes: RouteRecordRaw[]) {
 
 export const useRouteStore = defineStore('route', {
   state: (): State => ({
-    isAuthenticated: false,
+    TOKEN: useStorage(TOKEN_KEY).value,
     enableRoutePermission: import.meta.env.VITE_ENABLE_ROUTE_PERMISSION === 'true',
     allRoutes: autoRoutes,
     permissionRoutes: [],
   }),
   getters: {
+    // 是否已登录
+    isAuthenticated: (state) => !!state.TOKEN,
     // 当前激活的路由名称
     activeRoute: () => [router.currentRoute.value.name as string],
     // 当前激活的路由父路由名称
@@ -124,29 +129,25 @@ export const useRouteStore = defineStore('route', {
     },
   },
   actions: {
-    // 模拟登录登录成功后跳转到主页
+    // 模拟登录
     async loginIn(loginForm: { username: string; password: string }) {
       console.log('登录信息：', loginForm)
       message.success('登录中')
       // 1、模拟登录请求
       await new Promise((resolve) => setTimeout(resolve, 1000))
-      // 2、登录成功后设置为已登录
-      this.isAuthenticated = true
-      // 3、请求权限路由
+      // 2、设置登录凭证token
+      const token = useStorage(TOKEN_KEY, '123456')
+      this.TOKEN = token.value
+      // 3、跳转到主页
+      router.replace({ name: 'home' })
+    },
+    // 模拟请求权限路由
+    async getPermissionRoutes() {
       message.success('菜单请求中')
       await new Promise((resolve) => setTimeout(resolve, 1000))
       await this.createPermissionRoutes([1, 2, 201, 202, 203, 20301, 20302])
       console.log('有权限访问的路由：', this.permissionRoutes)
-      // 4、动态添加路由
-      this.addRoutes()
-      // 5、跳转到主页
-      router.push({ name: 'home' })
     },
-    // 设置是否已登录
-    setIsAuthenticated(isAuthenticated: boolean) {
-      this.isAuthenticated = isAuthenticated
-    },
-
     // 创建有权限访问的路由
     createPermissionRoutes(permissionRouteIds: string | number[]) {
       const permissionRoutes: RouteRecordRaw[] = []

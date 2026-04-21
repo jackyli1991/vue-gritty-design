@@ -32,4 +32,7 @@ export const ICONIFY_ICONS: Record<string, string> = {
   user: 'solar:user-broken',
   password: 'solar:lock-keyhole-minimalistic-unlocked-linear',
   email: 'solar:letter-unread-broken',
+  dashboard: 'solar:spedometer-low-broken',
+  route: 'solar:folder-with-files-broken',
+  page: 'solar:code-file-broken'
 }

@@ -4,7 +4,7 @@
     "type": "page",
     "name": "list",
     "title": "三级路由",
-    "icon": "theme",
+    "icon": "page",
     "requiresAuth": true
   },
   {
@@ -12,7 +12,7 @@
     "type": "page",
     "name": "list_id_type",
     "title": "三级路由_带参数_隐藏",
-    "icon": "theme",
+    "icon": "page",
     "hidden": true,
     "requiresAuth": true
   }

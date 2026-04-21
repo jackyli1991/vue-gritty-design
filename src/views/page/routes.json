@@ -4,7 +4,7 @@
     "type": "page",
     "name": "list",
     "title": "二级路由",
-    "icon": "theme",
+    "icon": "page",
     "requiresAuth": true
   },
   {
@@ -12,7 +12,7 @@
     "type": "page",
     "name": "detail",
     "title": "按钮权限",
-    "icon": "theme",
+    "icon": "page",
     "requiresAuth": true
   },
   {
@@ -20,7 +20,7 @@
     "type": "group",
     "name": "subPage",
     "title": "二级路由分组",
-    "icon": "theme",
+    "icon": "page",
     "requiresAuth": true
   }
 ]

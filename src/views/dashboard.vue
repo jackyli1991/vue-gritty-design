@@ -1,7 +1,7 @@
 <template>
-  <div>
+  <GPage>
     <h1>工作台</h1>
-  </div>
+  </GPage>
 </template>
 
 <script setup lang="ts"></script>
