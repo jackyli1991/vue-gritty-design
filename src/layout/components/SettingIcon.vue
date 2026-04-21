@@ -9,7 +9,6 @@
 import { ref, computed } from 'vue'
 import { storeToRefs } from 'pinia'
 import { Drawer as aDrawer } from 'ant-design-vue'
-import { GIcon } from '@/components'
 import { ICONIFY_ICONS } from '@/icons'
 import { useLayoutStore } from '@/stores/layout'
 

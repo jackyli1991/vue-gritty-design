@@ -3,7 +3,7 @@
     "id": 201,
     "type": "page",
     "name": "list",
-    "title": "二级页面",
+    "title": "二级路由",
     "icon": "theme",
     "requiresAuth": true
   },
@@ -11,7 +11,7 @@
     "id": 202,
     "type": "page",
     "name": "detail",
-    "title": "二级页面2",
+    "title": "按钮权限",
     "icon": "theme",
     "requiresAuth": true
   },
@@ -19,7 +19,7 @@
     "id": 203,
     "type": "group",
     "name": "subPage",
-    "title": "二级分组",
+    "title": "二级路由分组",
     "icon": "theme",
     "requiresAuth": true
   }

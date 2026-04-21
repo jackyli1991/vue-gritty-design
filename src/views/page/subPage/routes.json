@@ -3,7 +3,7 @@
     "id": 20301,
     "type": "page",
     "name": "list",
-    "title": "三级页面",
+    "title": "三级路由",
     "icon": "theme",
     "requiresAuth": true
   },
@@ -11,7 +11,7 @@
     "id": 20302,
     "type": "page",
     "name": "list_id_type",
-    "title": "路由参数",
+    "title": "三级路由_带参数_隐藏",
     "icon": "theme",
     "hidden": true,
     "requiresAuth": true

@@ -47,8 +47,17 @@
         </a-input-password>
       </a-form-item>
       <a-form-item>
-        <a-button type="primary" html-type="submit" size="large" class="register-button" block> 注册 </a-button>
-        <a-button type="primary" ghost class="register-button" size="large" block @click="handleSwitchToLogin">
+        <a-button type="primary" html-type="submit" size="large" class="register-button" block>
+          注册
+        </a-button>
+        <a-button
+          type="primary"
+          ghost
+          class="register-button"
+          size="large"
+          block
+          @click="handleSwitchToLogin"
+        >
           已有账号，去登录
         </a-button>
       </a-form-item>
@@ -59,7 +68,6 @@
 <script setup lang="ts">
 import { ref, reactive } from 'vue'
 import type { FormInstance } from 'ant-design-vue'
-import { GIcon } from '@/components'
 import { ICONIFY_ICONS } from '@/icons'
 
 // 定义表单布局

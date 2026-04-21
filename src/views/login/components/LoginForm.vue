@@ -57,7 +57,6 @@
 <script setup lang="ts">
 import { ref, reactive } from 'vue'
 import type { FormInstance } from 'ant-design-vue'
-import { GIcon } from '@/components'
 import { ICONIFY_ICONS } from '@/icons'
 import { useRouteStore } from '@/stores/route'
 

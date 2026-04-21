@@ -16,7 +16,6 @@ import { storeToRefs } from 'pinia'
 import { Popover as aPopover } from 'ant-design-vue'
 import { ChromePicker } from 'vue-color'
 import 'vue-color/style.css'
-import { GIcon } from '@/components'
 import { ICONIFY_ICONS } from '@/icons'
 import { useLayoutStore } from '@/stores/layout'
 

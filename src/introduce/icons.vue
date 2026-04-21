@@ -27,7 +27,6 @@
 <script setup lang="ts">
 import { ref, watch } from 'vue'
 import { ICONIFY_ICONS } from '@/icons'
-import { GIcon } from '@/components'
 import { Modal as aModal, FloatButton as aFloatButton, message } from 'ant-design-vue'
 import { useClipboard } from '@vueuse/core'
 

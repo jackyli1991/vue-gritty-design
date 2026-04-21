@@ -11,7 +11,7 @@
     "id": 2,
     "type": "dir",
     "name": "page",
-    "title": "一级分组",
+    "title": "Vue-router",
     "icon": "theme",
     "requiresAuth": true
   }

@@ -14,8 +14,6 @@ import { storeToRefs } from 'pinia'
 import { ICONIFY_ICONS } from '@/icons'
 import { useLayoutStore } from '@/stores/layout'
 
-import { GIcon } from '@/components'
-
 const layoutStore = useLayoutStore()
 const { collapsed } = storeToRefs(layoutStore)
 const { toggleCollapsed } = layoutStore // 切换折叠状态

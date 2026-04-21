@@ -4,7 +4,7 @@ import type { RouteRecordRaw } from 'vue-router'
 import type { BreadcrumbRoute } from '@/types/routeJson'
 import type { ItemType } from 'ant-design-vue'
 import { message } from 'ant-design-vue'
-import { GIcon } from '@/components'
+import GIcon from '@/components/GIcon/GIcon.vue'
 import { autoRoutes, notFoundRoute } from '@/router/autoRoute'
 import router from '@/router'
 import { ICONIFY_ICONS } from '@/icons'
@@ -35,7 +35,7 @@ function convertPermissionRoutesToMenuItems(routes: RouteRecordRaw[], target: It
       key: route.name as string,
       label: title || route.name || '',
       icon: () => h(GIcon, { name: ICONIFY_ICONS[icon as string] || '', size: 16 }),
-      type: type as "group" | "divider" | undefined,
+      type: type as 'group' | 'divider' | undefined,
     }
     // 子路由
     if (route.children?.length) {
@@ -125,10 +125,7 @@ export const useRouteStore = defineStore('route', {
   },
   actions: {
     // 模拟登录登录成功后跳转到主页
-    async loginIn(loginForm: {
-      username: string
-      password: string
-    }) {
+    async loginIn(loginForm: { username: string; password: string }) {
       console.log('登录信息：', loginForm)
       message.success('登录中')
       // 1、模拟登录请求
@@ -138,7 +135,7 @@ export const useRouteStore = defineStore('route', {
       // 3、请求权限路由
       message.success('菜单请求中')
       await new Promise((resolve) => setTimeout(resolve, 1000))
-      await this.createPermissionRoutes([1, 2, 201, 203, 20301])
+      await this.createPermissionRoutes([1, 2, 201, 202, 203, 20301, 20302])
       console.log('有权限访问的路由：', this.permissionRoutes)
       // 4、动态添加路由
       this.addRoutes()
@@ -161,8 +158,10 @@ export const useRouteStore = defineStore('route', {
       // 处理路由重定向
       dealRoutesRedirect(permissionRoutes)
       // 处理根路由重定向
-      const rootRoute: RouteRecordRaw | undefined = router.getRoutes().find(item => item.name === 'home')
-      if (rootRoute) {
+      const rootRoute: RouteRecordRaw | undefined = router
+        .getRoutes()
+        .find((item) => item.name === 'home')
+      if (rootRoute && permissionRoutes.length) {
         rootRoute.redirect = {
           name: permissionRoutes[0]?.name,
         }

@@ -12,7 +12,8 @@
           :key="item.path"
           :title="item.title"
           @click="handleClick(item)"
-        >{{ item.title }}</aBreadcrumbItem>
+          >{{ item.title }}</aBreadcrumbItem
+        >
       </aBreadcrumb>
     </div>
     <!-- 右侧用户信息、常用设置栏 -->
@@ -43,8 +44,6 @@ import { ICONIFY_ICONS } from '@/icons'
 import { useLayoutStore } from '@/stores/layout'
 import { useRouteStore } from '@/stores/route'
 import router from '@/router'
-
-import { GIcon } from '@/components'
 
 defineOptions({
   name: 'LayoutHeader',

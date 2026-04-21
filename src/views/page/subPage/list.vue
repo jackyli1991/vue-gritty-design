@@ -1,20 +1,10 @@
 <template>
   <div>
-    <h1>list1中转站1</h1>
-    <Button @click="handleClick">跳转</Button>
+    <h1>这里是三级路由页面</h1>
   </div>
 </template>
 
-<script setup lang="ts">
-  import router from '@/router'
-  import { Button } from 'ant-design-vue'
-
-  const handleClick = () => {
-    router.push({
-      path: '/page/subPage/list/23/detail',
-    })
-  }
-</script>
+<script setup lang="ts"></script>
 
 <script lang="ts">
 export const btnPermission = {

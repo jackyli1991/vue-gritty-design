@@ -24,6 +24,7 @@ declare module 'vue' {
     ATabPane: typeof import('ant-design-vue/es')['TabPane']
     ATabs: typeof import('ant-design-vue/es')['Tabs']
     GIcon: typeof import('./src/components/GIcon/GIcon.vue')['default']
+    GPage: typeof import('./src/components/GPage/GPage.vue')['default']
     RouterLink: typeof import('vue-router')['RouterLink']
     RouterView: typeof import('vue-router')['RouterView']
   }
@@ -43,6 +44,7 @@ declare global {
   const ATabPane: typeof import('ant-design-vue/es')['TabPane']
   const ATabs: typeof import('ant-design-vue/es')['Tabs']
   const GIcon: typeof import('./src/components/GIcon/GIcon.vue')['default']
+  const GPage: typeof import('./src/components/GPage/GPage.vue')['default']
   const RouterLink: typeof import('vue-router')['RouterLink']
   const RouterView: typeof import('vue-router')['RouterView']
 }
