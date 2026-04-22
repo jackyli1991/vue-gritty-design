@@ -92,8 +92,6 @@ const handleLogin = async () => {
     await loginFormRef.value.validate()
     isLoading.value = true
     await useRouteStore().loginIn(loginForm)
-  } catch (error) {
-    console.error('登录表单验证失败', error)
   } finally {
     isLoading.value = false
   }

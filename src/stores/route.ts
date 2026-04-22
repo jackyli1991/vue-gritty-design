@@ -10,6 +10,7 @@ import { autoRoutes, notFoundRoute } from '@/router/autoRoute'
 import router from '@/router'
 import { ICONIFY_ICONS } from '@/icons'
 import { useStorage } from '@vueuse/core'
+import http from '@/http'
 
 interface State {
   TOKEN: string | undefined // 登录凭证token
@@ -24,6 +25,16 @@ interface MenuItem {
   icon: () => VNode
   type?: 'group' | 'divider' | undefined
   children?: MenuItem[]
+}
+
+interface UserInfo {
+  username: string
+  avatar: string
+  [key: string]: string | number | undefined
+}
+interface LoginResponse {
+  token: string
+  userInfo: UserInfo
 }
 
 const TOKEN_KEY = 'GRITTY_DESIGN_TOKEN'
@@ -140,12 +151,10 @@ export const useRouteStore = defineStore('route', {
   actions: {
     // 模拟登录
     async loginIn(loginForm: { username: string; password: string }) {
-      console.log('登录信息：', loginForm)
-      message.success('登录中')
-      // 1、模拟登录请求
-      await new Promise((resolve) => setTimeout(resolve, 1000))
+      // 1、登录请求
+      const response: LoginResponse = await http.post<LoginResponse>('/login', loginForm)
       // 2、设置登录凭证token
-      const token = useStorage(TOKEN_KEY, '123456')
+      const token = useStorage(TOKEN_KEY, response.token)
       this.TOKEN = token.value
       // 3、跳转到主页
       router.replace({ name: 'home' })
