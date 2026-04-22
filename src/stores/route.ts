@@ -1,5 +1,6 @@
 import { h } from 'vue'
 import { defineStore } from 'pinia'
+import type { VNode } from 'vue'
 import type { RouteRecordRaw } from 'vue-router'
 import type { BreadcrumbRoute } from '@/types/routeJson'
 import type { ItemType } from 'ant-design-vue'
@@ -11,10 +12,18 @@ import { ICONIFY_ICONS } from '@/icons'
 import { useStorage } from '@vueuse/core'
 
 interface State {
-  TOKEN: string // 登录凭证token
+  TOKEN: string | undefined // 登录凭证token
   enableRoutePermission: boolean // 是否开启路由权限管理
   allRoutes: RouteRecordRaw[] // 所有路由配置
   permissionRoutes: RouteRecordRaw[] // 有权限访问的路由
+}
+
+interface MenuItem {
+  key: string
+  label: string
+  icon: () => VNode
+  type?: 'group' | 'divider' | undefined
+  children?: MenuItem[]
 }
 
 const TOKEN_KEY = 'GRITTY_DESIGN_TOKEN'
@@ -34,9 +43,9 @@ function convertPermissionRoutesToMenuItems(routes: RouteRecordRaw[], target: It
       return
     }
     const { type = 'page', title, icon } = route.meta || {}
-    const menuItem: ItemType = {
+    const menuItem: MenuItem = {
       key: route.name as string,
-      label: title || route.name || '',
+      label: (title || route.name || '') as string,
       icon: () => h(GIcon, { name: ICONIFY_ICONS[icon as string] || '', size: 16 }),
       type: type as 'group' | 'divider' | undefined,
     }
@@ -89,7 +98,7 @@ function dealRoutesRedirect(routes: RouteRecordRaw[]) {
 
 export const useRouteStore = defineStore('route', {
   state: (): State => ({
-    TOKEN: useStorage(TOKEN_KEY).value,
+    TOKEN: useStorage(TOKEN_KEY, undefined).value,
     enableRoutePermission: import.meta.env.VITE_ENABLE_ROUTE_PERMISSION === 'true',
     allRoutes: autoRoutes,
     permissionRoutes: [],
@@ -143,7 +152,7 @@ export const useRouteStore = defineStore('route', {
     },
     // 模拟请求权限路由
     async getPermissionRoutes() {
-      message.success('菜单请求中')
+      message.success('菜单加载中')
       await new Promise((resolve) => setTimeout(resolve, 1000))
       await this.createPermissionRoutes([1, 2, 201, 202, 203, 20301, 20302])
       console.log('有权限访问的路由：', this.permissionRoutes)
