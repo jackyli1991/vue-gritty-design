@@ -1,7 +1,7 @@
 import { defineHandler } from 'nitro'
 import type { H3Event } from 'nitro'
 import { successResponse, errorResponse } from '../../utils'
-import { mockUsers } from '../../dataBase/users' // 模拟用户数据
+import { mockUsers } from '../../database/users'
 
 interface LoginRequest {
   username: string
@@ -12,6 +12,7 @@ interface LoginRequest {
 const generateToken = (userId: number) => {
   return `mock-token-${userId}-${Date.now()}`
 }
+
 /**
  * 登录接口
  * @url /api/login

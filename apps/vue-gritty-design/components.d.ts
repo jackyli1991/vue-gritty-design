@@ -12,7 +12,6 @@ export {}
 /* prettier-ignore */
 declare module 'vue' {
   export interface GlobalComponents {
-    AAvatar: typeof import('ant-design-vue/es')['Avatar']
     AButton: typeof import('ant-design-vue/es')['Button']
     ACard: typeof import('ant-design-vue/es')['Card']
     ACheckbox: typeof import('ant-design-vue/es')['Checkbox']
@@ -20,9 +19,6 @@ declare module 'vue' {
     AFormItem: typeof import('ant-design-vue/es')['FormItem']
     AInput: typeof import('ant-design-vue/es')['Input']
     AInputPassword: typeof import('ant-design-vue/es')['InputPassword']
-    AModal: typeof import('ant-design-vue/es')['Modal']
-    ATabPane: typeof import('ant-design-vue/es')['TabPane']
-    ATabs: typeof import('ant-design-vue/es')['Tabs']
     GIcon: typeof import('./src/components/GIcon/GIcon.vue')['default']
     GPage: typeof import('./src/components/GPage/GPage.vue')['default']
     RouterLink: typeof import('vue-router')['RouterLink']
@@ -32,7 +28,6 @@ declare module 'vue' {
 
 // For TSX support
 declare global {
-  const AAvatar: typeof import('ant-design-vue/es')['Avatar']
   const AButton: typeof import('ant-design-vue/es')['Button']
   const ACard: typeof import('ant-design-vue/es')['Card']
   const ACheckbox: typeof import('ant-design-vue/es')['Checkbox']
@@ -40,9 +35,6 @@ declare global {
   const AFormItem: typeof import('ant-design-vue/es')['FormItem']
   const AInput: typeof import('ant-design-vue/es')['Input']
   const AInputPassword: typeof import('ant-design-vue/es')['InputPassword']
-  const AModal: typeof import('ant-design-vue/es')['Modal']
-  const ATabPane: typeof import('ant-design-vue/es')['TabPane']
-  const ATabs: typeof import('ant-design-vue/es')['Tabs']
   const GIcon: typeof import('./src/components/GIcon/GIcon.vue')['default']
   const GPage: typeof import('./src/components/GPage/GPage.vue')['default']
   const RouterLink: typeof import('vue-router')['RouterLink']
