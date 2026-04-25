@@ -1,5 +1,7 @@
 import { defineConfig } from 'nitro'
 
 export default defineConfig({
-  serverDir: './server',
+  logLevel: 2,
+  apiBaseURL: '/api', // 默认值
+  errorHandler: './server/error.ts',
 })

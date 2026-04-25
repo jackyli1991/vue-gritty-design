@@ -1,0 +1,10 @@
+import { defineErrorHandler } from 'nitro'
+// import { errorResponse } from './utils'
+
+export default defineErrorHandler((error, _event) => {
+  console.error('Custom Error Handler:', error)
+  return new Response(`Custom Error Handler: ${error.message}`, {
+    status: 500,
+    headers: { 'Content-Type': 'text/plain' },
+  })
+})

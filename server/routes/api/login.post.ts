@@ -1,7 +1,7 @@
 import { defineHandler } from 'nitro'
 import type { H3Event } from 'nitro'
-import { successResponse, errorResponse } from '../utils'
-import { mockUsers } from '../dataBase/users' // 模拟用户数据
+import { successResponse, errorResponse } from '../../utils'
+import { mockUsers } from '../../dataBase/users' // 模拟用户数据
 
 interface LoginRequest {
   username: string
@@ -33,6 +33,7 @@ export default defineHandler(async (event: H3Event) => {
   // 获取请求体
   const body: LoginRequest = (await event.req.json()) as LoginRequest
   const { username, password } = body
+  console.log('登录请求----->', body)
   const userInfo = mockUsers.find((u) => u.username === username && u.password === password)
   if (!userInfo) {
     return errorResponse('loginError')

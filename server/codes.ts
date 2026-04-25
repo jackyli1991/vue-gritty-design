@@ -13,4 +13,8 @@ export const CODES: Record<string, Code> = {
     code: '000001',
     msg: '用户名或密码错误',
   },
+  notFound: {
+    code: '000404',
+    msg: '资源不存在',
+  },
 }
