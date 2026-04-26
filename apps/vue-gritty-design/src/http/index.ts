@@ -30,7 +30,7 @@ const http: AxiosInstance = axios.create({
 http.interceptors.request.use(
   (config: InternalAxiosRequestConfig) => {
     // 添加token到请求头
-    const token = localStorage.getItem('token')
+    const token = localStorage.getItem(import.meta.env.VITE_TOKEN_KEY || 'token')
     if (token) {
       config.headers = config.headers || {}
       config.headers.Authorization = `Bearer ${token}`

@@ -11,9 +11,11 @@ import router from '@/router'
 import { ICONIFY_ICONS } from '@/icons'
 import { useStorage } from '@vueuse/core'
 import http from '@/http'
+import { loginApi, permissionApi } from '@/apis'
 
 interface State {
   TOKEN: string | undefined // 登录凭证token
+  isPermissionRequest: boolean // 是否已请求权限路由
   enableRoutePermission: boolean // 是否开启路由权限管理
   allRoutes: RouteRecordRaw[] // 所有路由配置
   permissionRoutes: RouteRecordRaw[] // 有权限访问的路由
@@ -37,7 +39,7 @@ interface LoginResponse {
   userInfo: UserInfo
 }
 
-const TOKEN_KEY = 'GRITTY_DESIGN_TOKEN'
+const TOKEN_KEY = import.meta.env.VITE_TOKEN_KEY || 'token'
 
 /**
  * 将可访问的路由转换为菜单项数组
@@ -110,6 +112,7 @@ function dealRoutesRedirect(routes: RouteRecordRaw[]) {
 export const useRouteStore = defineStore('route', {
   state: (): State => ({
     TOKEN: useStorage(TOKEN_KEY, undefined).value,
+    isPermissionRequest: false,
     enableRoutePermission: import.meta.env.VITE_ENABLE_ROUTE_PERMISSION === 'true',
     allRoutes: autoRoutes,
     permissionRoutes: [],
@@ -152,18 +155,20 @@ export const useRouteStore = defineStore('route', {
     // 模拟登录
     async loginIn(loginForm: { username: string; password: string }) {
       // 1、登录请求
-      const response: LoginResponse = await http.post<LoginResponse>('/login', loginForm)
+      const response: LoginResponse = await http.post<LoginResponse>(loginApi, loginForm)
       // 2、设置登录凭证token
       const token = useStorage(TOKEN_KEY, response.token)
       this.TOKEN = token.value
       // 3、跳转到主页
       router.replace({ name: 'home' })
     },
-    // 模拟请求权限路由
+    // 请求权限路由
     async getPermissionRoutes() {
       message.success('菜单加载中')
-      await new Promise((resolve) => setTimeout(resolve, 1000))
-      await this.createPermissionRoutes([1, 2, 201, 202, 203, 20301, 20302])
+      const permissionResponse = await http.get<{ permission: string[] }>(permissionApi)
+      // 标记为已请求权限路由，防止权限为空时重复请求
+      this.isPermissionRequest = true
+      await this.createPermissionRoutes(permissionResponse.permission)
       console.log('有权限访问的路由：', this.permissionRoutes)
     },
     // 创建有权限访问的路由

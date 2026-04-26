@@ -22,6 +22,7 @@ router.beforeEach(async (to) => {
   console.log('to', to)
   const routerStore = useRouteStore()
   const isAuthenticated = routerStore.isAuthenticated
+  const isPermissionRequest = routerStore.isPermissionRequest
 
   // isAuthenticated：检查用户是否已登录
   // to.name !== 'login'：避免无限重定向
@@ -33,7 +34,7 @@ router.beforeEach(async (to) => {
   if (isAuthenticated) {
     console.log('已登录')
     const hasRoutes = routerStore.accessibleRoutes.length > 0
-    if (!hasRoutes) {
+    if (!hasRoutes && !isPermissionRequest) {
       console.log('初始化路由权限')
       await routerStore.getPermissionRoutes() // 获取权限路由
       await routerStore.addRoutes() // 动态添加路由
