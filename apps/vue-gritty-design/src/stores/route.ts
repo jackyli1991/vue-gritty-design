@@ -78,7 +78,7 @@ function convertPermissionRoutesToMenuItems(routes: RouteRecordRaw[], target: It
  * @param {RouteRecordRaw[]} target 目标路由数组
  */
 function dealPermissionRoutes(
-  ids: string | number[],
+  ids: (string | number)[],
   originalRoutes: RouteRecordRaw[],
   target: RouteRecordRaw[],
 ) {
@@ -165,14 +165,14 @@ export const useRouteStore = defineStore('route', {
     // 请求权限路由
     async getPermissionRoutes() {
       message.success('菜单加载中')
-      const permissionResponse = await http.get<{ permission: string[] }>(permissionApi)
+      const permissionResponse = await http.get<{ permission: (string | number)[] }>(permissionApi)
       // 标记为已请求权限路由，防止权限为空时重复请求
       this.isPermissionRequest = true
       await this.createPermissionRoutes(permissionResponse.permission)
       console.log('有权限访问的路由：', this.permissionRoutes)
     },
     // 创建有权限访问的路由
-    createPermissionRoutes(permissionRouteIds: string | number[]) {
+    createPermissionRoutes(permissionRouteIds: (string | number)[]) {
       const permissionRoutes: RouteRecordRaw[] = []
       if (this.enableRoutePermission) {
         dealPermissionRoutes(permissionRouteIds, this.allRoutes, permissionRoutes)
