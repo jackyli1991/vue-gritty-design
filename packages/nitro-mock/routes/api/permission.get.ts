@@ -1,5 +1,5 @@
 import { defineHandler } from 'nitro'
-// import type { H3Event } from 'nitro'
+import type { H3Event } from 'nitro'
 import { successResponse } from '../../utils'
 
 /**
@@ -11,8 +11,10 @@ import { successResponse } from '../../utils'
  *   "permission": [1, 2, 201]
  * }
  */
-export default defineHandler(async () => {
+export default defineHandler(async (event: H3Event) => {
+  console.log(event.context)
+
   return successResponse({
-    permission: [2, 201],
+    permission: [1],
   })
 })

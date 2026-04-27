@@ -1,6 +1,6 @@
 import { defineHandler } from 'nitro'
 import type { H3Event } from 'nitro'
-import { successResponse, errorResponse } from '../../utils'
+import { successResponse, errorResponse, delayResponse } from '../../utils'
 import { mockUsers } from '../../database/users'
 
 interface LoginRequest {
@@ -39,6 +39,7 @@ export default defineHandler(async (event: H3Event) => {
     return errorResponse('loginError')
   }
   const token = generateToken(userInfo.id)
+  await delayResponse()
   return successResponse({
     token,
     userInfo,

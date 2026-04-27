@@ -6,30 +6,29 @@ import axios, {
 } from 'axios'
 import { message } from 'ant-design-vue'
 
-// 定义响应数据接口
 interface ResponseData<T> {
   success: boolean
   data: T
-  message: string
-  code?: number
+  message?: string
+  msg?: string
+  code?: string | number
 }
 
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
 type Params = Record<string, any>
 
-// 创建axios实例
 const http: AxiosInstance = axios.create({
   baseURL: import.meta.env.VITE_API_BASE_URL || '/api',
   timeout: 10000,
   headers: {
     'Content-Type': 'application/json;charset=UTF-8',
   },
+  // 关键修改：允许所有状态码，让拦截器自己处理
+  validateStatus: (status) => status >= 200 && status < 300,
 })
 
-// 请求拦截器
 http.interceptors.request.use(
   (config: InternalAxiosRequestConfig) => {
-    // 添加token到请求头
     const token = localStorage.getItem(import.meta.env.VITE_TOKEN_KEY || 'token')
     if (token) {
       config.headers = config.headers || {}
@@ -42,58 +41,58 @@ http.interceptors.request.use(
   },
 )
 
-// 响应拦截器
 http.interceptors.response.use(
   (response: AxiosResponse) => {
     const { data } = response
 
-    // 统一处理响应
+    // 处理成功响应
     if (data.code === '000000') {
       return data.data
     } else {
-      // 处理业务错误
-      message.error(data.msg || '响应错误')
-      return Promise.reject(new Error(data.msg || '响应错误'))
+      message.error(data.message || data.msg || '响应错误')
+      return Promise.reject(new Error(data.message || data.msg || '响应错误'))
     }
   },
-  (error: AxiosError) => {
-    console.error('http 请求错误', error)
-    // 处理HTTP错误
-    if (error.response) {
-      const { status, data } = error.response
 
-      // 处理不同的HTTP状态码
+  (error: AxiosError) => {
+    console.error('http 请求错误')
+    console.dir(error)
+
+    // 统一处理响应错误
+    if (error.response) {
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
+      const { status, data } = error.response as AxiosResponse<ResponseData<any>>
+
       switch (status) {
         case 401:
-          // 未授权，跳转到登录页
-          message.error('未授权，请重新登录')
-          localStorage.removeItem('token')
-          window.location.href = '/login'
+          message.error(data?.message || data?.msg || '未授权，请重新登录')
           break
         case 403:
-          message.error('拒绝访问')
+          message.error(data?.message || data?.msg || '拒绝访问')
           break
         case 404:
-          message.error('请求资源不存在')
+          message.error(data?.message || data?.msg || '请求资源不存在')
           break
         case 500:
-          message.error('服务器内部错误')
+          message.error(data?.message || data?.msg || '服务器内部错误')
           break
         default:
           message.error(`请求失败，状态码: ${status}`)
       }
 
-      return Promise.reject(data || error.message)
-    } else if (error.code === 'ERR_NETWORK') {
-      message.error('网络错误')
-      return Promise.reject(new Error('网络错误'))
-    } else if (error.code === 'ECONNABORTED') {
-      message.error('请求超时')
-      return Promise.reject(new Error('请求超时'))
+      return Promise.reject(data || error)
     } else {
-      message.error('请求失败')
-      return Promise.reject(error)
+      if (error.code === 'ERR_NETWORK') {
+        message.error('网络错误')
+        return Promise.reject(new Error('网络错误'))
+      } else if (error.code === 'ECONNABORTED') {
+        message.error('请求超时')
+        return Promise.reject(new Error('请求超时'))
+      }
     }
+
+    message.error('请求失败')
+    return Promise.reject(error)
   },
 )
 

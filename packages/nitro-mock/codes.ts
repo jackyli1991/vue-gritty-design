@@ -17,4 +17,8 @@ export const CODES: Record<string, Code> = {
     code: '000404',
     msg: '资源不存在',
   },
+  authorizationError: {
+    code: '000401',
+    msg: '未授权，请重新登录',
+  },
 }

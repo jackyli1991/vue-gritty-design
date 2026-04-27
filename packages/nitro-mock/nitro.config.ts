@@ -6,5 +6,9 @@ export default defineConfig({
   devServer: {
     port: 3001,
   },
-  scanDirs: ['.']
+  scanDirs: ['.'],
+  // alias: {
+  //   '#utils': './utils',
+  //   '#database': './database',
+  // },
 })
