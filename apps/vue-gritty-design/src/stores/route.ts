@@ -4,7 +4,6 @@ import type { VNode } from 'vue'
 import type { RouteRecordRaw } from 'vue-router'
 import type { BreadcrumbRoute } from '@/types/routeJson'
 import type { ItemType } from 'ant-design-vue'
-import { message } from 'ant-design-vue'
 import GIcon from '@/components/GIcon/GIcon.vue'
 import { autoRoutes, notFoundRoute } from '@/router/autoRoute'
 import router from '@/router'
@@ -137,7 +136,6 @@ export const useRouteStore = defineStore('route', {
   actions: {
     // 请求权限路由
     async getPermissionRoutes() {
-      message.success('菜单加载中')
       const permissionResponse = await http.get<{ permission: (string | number)[] }>(permissionApi)
       // 标记为已请求权限路由，防止权限为空时重复请求
       this.isPermissionRequest = true

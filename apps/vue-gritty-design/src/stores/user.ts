@@ -56,7 +56,7 @@ export const useUserStore = defineStore('user', {
       logoutToken.value = undefined
       this.TOKEN = logoutToken.value
       this.userInfo = {}
-      router.replace({ name: 'login' })
+      location.reload() // 网页刷新
     },
   },
 })
