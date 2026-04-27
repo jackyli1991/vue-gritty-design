@@ -9,12 +9,10 @@ import GIcon from '@/components/GIcon/GIcon.vue'
 import { autoRoutes, notFoundRoute } from '@/router/autoRoute'
 import router from '@/router'
 import { ICONIFY_ICONS } from '@/icons'
-import { useStorage } from '@vueuse/core'
 import http from '@/http'
-import { loginApi, permissionApi } from '@/apis'
+import { permissionApi } from '@/apis'
 
 interface State {
-  TOKEN: string | undefined // 登录凭证token
   isPermissionRequest: boolean // 是否已请求权限路由
   enableRoutePermission: boolean // 是否开启路由权限管理
   allRoutes: RouteRecordRaw[] // 所有路由配置
@@ -28,18 +26,6 @@ interface MenuItem {
   type?: 'group' | 'divider' | undefined
   children?: MenuItem[]
 }
-
-interface UserInfo {
-  username: string
-  avatar: string
-  [key: string]: string | number | undefined
-}
-interface LoginResponse {
-  token: string
-  userInfo: UserInfo
-}
-
-const TOKEN_KEY = import.meta.env.VITE_TOKEN_KEY || 'token'
 
 /**
  * 将可访问的路由转换为菜单项数组
@@ -111,15 +97,12 @@ function dealRoutesRedirect(routes: RouteRecordRaw[]) {
 
 export const useRouteStore = defineStore('route', {
   state: (): State => ({
-    TOKEN: useStorage(TOKEN_KEY, undefined).value,
     isPermissionRequest: false,
     enableRoutePermission: import.meta.env.VITE_ENABLE_ROUTE_PERMISSION === 'true',
     allRoutes: autoRoutes,
     permissionRoutes: [],
   }),
   getters: {
-    // 是否已登录
-    isAuthenticated: (state) => !!state.TOKEN,
     // 当前激活的路由名称
     activeRoute: () => [router.currentRoute.value.name as string],
     // 当前激活的路由父路由名称
@@ -152,16 +135,6 @@ export const useRouteStore = defineStore('route', {
     },
   },
   actions: {
-    // 模拟登录
-    async loginIn(loginForm: { username: string; password: string }) {
-      // 1、登录请求
-      const response: LoginResponse = await http.post<LoginResponse>(loginApi, loginForm)
-      // 2、设置登录凭证token
-      const token = useStorage(TOKEN_KEY, response.token)
-      this.TOKEN = token.value
-      // 3、跳转到主页
-      router.replace({ name: 'home' })
-    },
     // 请求权限路由
     async getPermissionRoutes() {
       message.success('菜单加载中')

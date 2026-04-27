@@ -58,7 +58,7 @@
 import { ref, reactive } from 'vue'
 import type { FormInstance } from 'ant-design-vue'
 import { ICONIFY_ICONS } from '@/icons'
-import { useRouteStore } from '@/stores/route'
+import { useUserStore } from '@/stores/user'
 
 // 定义表单布局
 const labelCol = { style: { width: '80px' } }
@@ -91,7 +91,7 @@ const handleLogin = async () => {
   try {
     await loginFormRef.value.validate()
     isLoading.value = true
-    await useRouteStore().loginIn(loginForm)
+    await useUserStore().loginIn(loginForm)
   } finally {
     isLoading.value = false
   }

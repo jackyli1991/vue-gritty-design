@@ -1,5 +1,6 @@
 import { createRouter, createWebHistory } from 'vue-router'
 import { useRouteStore } from '@/stores/route'
+import { useUserStore } from '@/stores/user'
 
 const router = createRouter({
   history: createWebHistory(import.meta.env.BASE_URL),
@@ -21,8 +22,10 @@ const router = createRouter({
 router.beforeEach(async (to) => {
   console.log('to', to)
   const routerStore = useRouteStore()
-  const isAuthenticated = routerStore.isAuthenticated
-  const isPermissionRequest = routerStore.isPermissionRequest
+  const userStore = useUserStore()
+
+  const isAuthenticated = userStore.isAuthenticated // 是否已登录
+  const isPermissionRequest = routerStore.isPermissionRequest // 是否已请求权限路由
 
   // isAuthenticated：检查用户是否已登录
   // to.name !== 'login'：避免无限重定向

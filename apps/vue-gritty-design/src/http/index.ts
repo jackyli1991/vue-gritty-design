@@ -52,8 +52,8 @@ http.interceptors.response.use(
       return data.data
     } else {
       // 处理业务错误
-      message.error(data.msg)
-      return Promise.reject(new Error(data.msg))
+      message.error(data.msg || '响应错误')
+      return Promise.reject(new Error(data.msg || '响应错误'))
     }
   },
   (error: AxiosError) => {
@@ -84,10 +84,14 @@ http.interceptors.response.use(
       }
 
       return Promise.reject(data || error.message)
-    } else if (error.request) {
-      message.error('请求超时或网络错误')
-      return Promise.reject(new Error('请求超时或网络错误'))
+    } else if (error.code === 'ERR_NETWORK') {
+      message.error('网络错误')
+      return Promise.reject(new Error('网络错误'))
+    } else if (error.code === 'ECONNABORTED') {
+      message.error('请求超时')
+      return Promise.reject(new Error('请求超时'))
     } else {
+      message.error('请求失败')
       return Promise.reject(error)
     }
   },

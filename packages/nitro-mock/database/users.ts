@@ -5,6 +5,7 @@ export const mockUsers = [
     username: 'admin',
     email: 'admin@example.com',
     password: 'admin123', // 实际项目中应该加密
+    avatar: 'https://avatars.githubusercontent.com/u/34930213?v=4&size=64',
     role: 'admin',
   },
   {
@@ -12,6 +13,7 @@ export const mockUsers = [
     username: 'user',
     email: 'user@example.com',
     password: 'user123',
+    avatar: 'https://avatars.githubusercontent.com/u/34930213?v=4&size=64',
     role: 'user',
   },
 ]
