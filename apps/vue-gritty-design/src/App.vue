@@ -1,4 +1,5 @@
 <template>
+  <GProgressBar />
   <RouterView />
   <IconsLibrary />
 </template>

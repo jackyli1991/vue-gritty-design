@@ -3,13 +3,14 @@ import type { App, Component } from 'vue'
 // 组件
 import { default as GIcon } from './GIcon/GIcon.vue' // 图标
 import { default as GPage } from './GPage/GPage.vue' // 页面布局
-
+import { default as GProgressBar } from './GProgressBar/GProgressBar.vue' // 进度条
 // 方法
 import { createIcon } from './GIcon/create-icon' // 创建图标
 
 const components: Record<string, Component> = {
   GIcon,
   GPage,
+  GProgressBar,
 }
 
 export default {

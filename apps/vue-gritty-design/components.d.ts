@@ -21,6 +21,7 @@ declare module 'vue' {
     AInputPassword: typeof import('ant-design-vue/es')['InputPassword']
     GIcon: typeof import('./src/components/GIcon/GIcon.vue')['default']
     GPage: typeof import('./src/components/GPage/GPage.vue')['default']
+    GProgressBar: typeof import('./src/components/GProgressBar/GProgressBar.vue')['default']
     RouterLink: typeof import('vue-router')['RouterLink']
     RouterView: typeof import('vue-router')['RouterView']
   }
@@ -37,6 +38,7 @@ declare global {
   const AInputPassword: typeof import('ant-design-vue/es')['InputPassword']
   const GIcon: typeof import('./src/components/GIcon/GIcon.vue')['default']
   const GPage: typeof import('./src/components/GPage/GPage.vue')['default']
+  const GProgressBar: typeof import('./src/components/GProgressBar/GProgressBar.vue')['default']
   const RouterLink: typeof import('vue-router')['RouterLink']
   const RouterView: typeof import('vue-router')['RouterView']
 }
