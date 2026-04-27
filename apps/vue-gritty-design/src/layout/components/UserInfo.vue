@@ -11,4 +11,6 @@ import { useUserStore } from '@/stores/user'
 
 const userStore = useUserStore()
 const { userInfo } = storeToRefs(userStore)
+
+userStore.getUserInfo()
 </script>

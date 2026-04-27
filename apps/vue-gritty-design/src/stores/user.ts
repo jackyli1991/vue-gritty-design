@@ -2,7 +2,7 @@ import { defineStore } from 'pinia'
 import { useStorage } from '@vueuse/core'
 import http from '@/http'
 import router from '@/router'
-import { loginApi } from '@/apis'
+import { loginApi, userInfoApi } from '@/apis'
 
 interface UserInfo {
   username?: string // 用户名
@@ -12,7 +12,6 @@ interface UserInfo {
 
 interface LoginResponse {
   token: string
-  userInfo: UserInfo
 }
 
 interface State {
@@ -36,14 +35,28 @@ export const useUserStore = defineStore('user', {
     async loginIn(loginForm: { username: string; password: string }) {
       // 1、登录请求
       const response: LoginResponse = await http.post<LoginResponse>(loginApi, loginForm)
-      const { token, userInfo } = response
+      const { token } = response
       // 2、设置登录凭证token
       const loginToken = useStorage(TOKEN_KEY, token)
       this.TOKEN = loginToken.value
-      // 3、设置用户信息
-      this.userInfo = userInfo
       // 3、跳转到主页
       router.replace({ name: 'home' })
+    },
+    // 获取用户信息
+    async getUserInfo() {
+      if (!this.TOKEN) {
+        return
+      }
+      const response: UserInfo = await http.get<UserInfo>(userInfoApi)
+      this.userInfo = response
+    },
+    // 退出登录
+    logout() {
+      const logoutToken = useStorage(TOKEN_KEY, undefined)
+      logoutToken.value = undefined
+      this.TOKEN = logoutToken.value
+      this.userInfo = {}
+      router.replace({ name: 'login' })
     },
   },
 })

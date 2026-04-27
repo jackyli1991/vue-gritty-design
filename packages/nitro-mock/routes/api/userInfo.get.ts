@@ -4,21 +4,23 @@ import { successResponse, errorResponse } from '../../utils'
 import { mockUsers } from '../../database/users'
 
 /**
- * 获取权限路由接口
- * @url /api/permission
- * @description 获取权限路由接口
- * @example 获取权限路由成功
+ * 获取用户信息路由接口
+ * @url /api/userInfo
+ * @description 获取用户信息路由接口
+ * @example 获取用户信息路由成功
  * {
- *   "permission": [1, 2, 201]
+ *   "id": 1,
+ *   "username": "admin",
+ *   "email": "admin@example.com",
+ *   "role": "admin"
  * }
  */
 export default defineHandler(async (event: H3Event) => {
+  // 从上下文获取 userId
   const { userId } = event.context.params || {}
   const userInfo = mockUsers.find((u) => u.id === Number(userId))
   if (!userInfo) {
     return errorResponse('userError')
   }
-  return successResponse({
-    permission: userInfo.permission,
-  })
+  return successResponse(userInfo)
 })

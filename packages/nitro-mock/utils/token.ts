@@ -13,7 +13,7 @@ export const generateToken = (userId: number) => {
  * @returns 验证结果
  */
 export const verifyToken = (token: string) => {
-  return token.startsWith('mock-token-')
+  return token.startsWith('Bearer mock-token-')
 }
 
 /**

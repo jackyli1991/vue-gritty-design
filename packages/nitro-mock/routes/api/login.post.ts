@@ -1,16 +1,11 @@
 import { defineHandler } from 'nitro'
 import type { H3Event } from 'nitro'
-import { successResponse, errorResponse, delayResponse } from '../../utils'
+import { successResponse, errorResponse, delayResponse, generateToken } from '../../utils'
 import { mockUsers } from '../../database/users'
 
 interface LoginRequest {
   username: string
   password: string
-}
-
-// 模拟token
-const generateToken = (userId: number) => {
-  return `mock-token-${userId}-${Date.now()}`
 }
 
 /**
@@ -41,7 +36,6 @@ export default defineHandler(async (event: H3Event) => {
   const token = generateToken(userInfo.id)
   await delayResponse()
   return successResponse({
-    token,
-    userInfo,
+    token
   })
 })

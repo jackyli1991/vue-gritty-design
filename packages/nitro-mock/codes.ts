@@ -10,12 +10,16 @@ export const CODES: Record<string, Code> = {
     msg: 'success',
   },
   loginError: {
-    code: '000001',
+    code: '000101',
     msg: '用户名或密码错误',
+  },
+  userError: {
+    code: '000102',
+    msg: '用户不存在',
   },
   notFound: {
     code: '000404',
-    msg: '资源不存在',
+    msg: '请求资源不存在',
   },
   authorizationError: {
     code: '000401',
