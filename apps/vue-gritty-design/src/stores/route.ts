@@ -136,9 +136,9 @@ export const useRouteStore = defineStore('route', {
   actions: {
     // 请求权限路由
     async getPermissionRoutes() {
-      const permissionResponse = await http.get<{ permission: (string | number)[] }>(permissionApi)
-      // 标记为已请求权限路由，防止权限为空时重复请求
+      // 标记为已请求权限路由，防止权限为空或者接口异常时重复请求
       this.isPermissionRequest = true
+      const permissionResponse = await http.get<{ permission: (string | number)[] }>(permissionApi)
       await this.createPermissionRoutes(permissionResponse.permission)
       console.log('有权限访问的路由：', this.permissionRoutes)
     },

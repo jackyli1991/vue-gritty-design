@@ -50,12 +50,16 @@ export const useUserStore = defineStore('user', {
       const response: UserInfo = await http.get<UserInfo>(userInfoApi)
       this.userInfo = response
     },
-    // 退出登录
-    logout() {
+    // 清除登录凭证
+    clearLoginInfo() {
       const logoutToken = useStorage(TOKEN_KEY, undefined)
       logoutToken.value = undefined
       this.TOKEN = logoutToken.value
       this.userInfo = {}
+    },
+    // 退出登录
+    logout() {
+      this.clearLoginInfo() // 清除登录凭证
       location.reload() // 网页刷新
     },
   },

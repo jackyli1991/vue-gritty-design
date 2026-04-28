@@ -1,4 +1,5 @@
 import { CODES } from '../codes'
+import type { H3Event } from 'nitro'
 
 // 包裹成功响应数据
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
@@ -25,4 +26,14 @@ export const errorResponse = (code: string, data?: Record<string, any>) => {
  */
 export const delayResponse = (ms: number = 1000) => {
   return new Promise((resolve) => setTimeout(resolve, ms))
+}
+
+/**
+ * 从上下文中获取用户id
+ * @param event H3事件对象
+ * @returns 用户id
+ */
+export const getUserIdFromContext = (event: H3Event): number => {
+  const { userId } = event.context.params || {}
+  return Number(userId)
 }

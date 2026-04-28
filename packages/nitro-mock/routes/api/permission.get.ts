@@ -1,6 +1,6 @@
 import { defineHandler } from 'nitro'
 import type { H3Event } from 'nitro'
-import { successResponse, errorResponse } from '../../utils'
+import { successResponse, errorResponse, getUserIdFromContext } from '../../utils'
 import { mockUsers } from '../../database/users'
 
 /**
@@ -13,8 +13,8 @@ import { mockUsers } from '../../database/users'
  * }
  */
 export default defineHandler(async (event: H3Event) => {
-  const { userId } = event.context.params || {}
-  const userInfo = mockUsers.find((u) => u.id === Number(userId))
+  const userId = getUserIdFromContext(event)
+  const userInfo = mockUsers.find((u) => u.id === userId)
   if (!userInfo) {
     return errorResponse('userError')
   }

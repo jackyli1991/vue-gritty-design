@@ -55,8 +55,7 @@ http.interceptors.response.use(
   },
 
   (error: AxiosError) => {
-    console.error('http 请求错误')
-    console.dir(error)
+    // console.error('http 请求错误')
 
     // 统一处理响应错误
     if (error.response) {
