@@ -9,7 +9,7 @@ const router = createRouter({
     {
       path: '/',
       name: 'home',
-      component: () => import('@/layout/LayoutIndex.vue'),
+      component: () => import('@/views/layout/LayoutIndex.vue'),
       children: [], // 由路由权限管理动态添加
     },
     {
