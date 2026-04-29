@@ -5,9 +5,9 @@ import axios, {
   type AxiosError,
 } from 'axios'
 import { message } from 'ant-design-vue'
-import { useLoading } from '@/composables/useLoading'
+import { useRequestLoading } from '@/composables/useLoading'
 
-const { startLoading, endLoading } = useLoading()
+const { startLoading, endLoading } = useRequestLoading()
 
 interface ResponseData<T> {
   success: boolean
@@ -37,11 +37,11 @@ http.interceptors.request.use(
       config.headers = config.headers || {}
       config.headers.Authorization = `Bearer ${token}`
     }
-    startLoading(true, config.url || '') // 开启全局loading
+    startLoading(config) // 开启全局loading
     return config
   },
   (error: AxiosError) => {
-    endLoading(true, error.config?.url || '') // 关闭全局loading
+    endLoading(error.config) // 关闭全局loading
     return Promise.reject(error)
   },
 )
@@ -49,7 +49,7 @@ http.interceptors.request.use(
 http.interceptors.response.use(
   (response: AxiosResponse) => {
     const { data } = response
-    endLoading(true, response.config?.url || '') // 关闭全局loading
+    endLoading(response.config) // 关闭全局loading
 
     // 处理成功响应
     if (data.code === '000000') {
@@ -61,8 +61,7 @@ http.interceptors.response.use(
   },
 
   (error: AxiosError) => {
-    // console.error('http 请求错误')
-    endLoading(true, error.config?.url || '') // 关闭全局loading
+    endLoading(error.config) // 关闭全局loading
 
     // 统一处理响应错误
     if (error.response) {

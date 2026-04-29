@@ -34,7 +34,7 @@
           html-type="submit"
           class="login-button"
           size="large"
-          :loading="isLoading"
+          :loading="loading"
           block
         >
           登录
@@ -59,6 +59,7 @@ import { ref, reactive } from 'vue'
 import type { FormInstance } from 'ant-design-vue'
 import { ICONIFY_ICONS } from '@/icons'
 import { useUserStore } from '@/stores/user'
+import { useLoading } from '@/composables/useLoading'
 
 // 定义表单布局
 const labelCol = { style: { width: '80px' } }
@@ -76,7 +77,7 @@ const loginForm = reactive({
   username: 'admin',
   password: 'admin123',
 })
-const isLoading = ref(false)
+const { loading, startLoading, endLoading } = useLoading()
 
 // 登录表单规则
 const loginRules = {
@@ -90,10 +91,10 @@ const handleLogin = async () => {
 
   try {
     await loginFormRef.value.validate()
-    isLoading.value = true
+    startLoading()
     await useUserStore().loginIn(loginForm)
   } finally {
-    isLoading.value = false
+    endLoading()
   }
 }
 
