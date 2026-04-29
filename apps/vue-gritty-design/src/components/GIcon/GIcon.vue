@@ -1,3 +1,11 @@
+<template>
+  <span
+    class="inline-block cursor-pointer p-1.5 rounded-full hover:bg-gray-100 transition-colors duration-300"
+  >
+    <Icon :style="{ width: `${size}px`, height: `${size}px` }" />
+  </span>
+</template>
+
 <script lang="ts" setup>
 import { computed } from 'vue'
 import { createIcon } from './create-icon'
@@ -18,11 +26,3 @@ const props = withDefaults(defineProps<GIconProps>(), {
 
 const Icon = computed(() => createIcon(props.name))
 </script>
-
-<template>
-  <span
-    class="inline-block cursor-pointer p-1.5 rounded-full hover:bg-gray-100 transition-colors duration-300"
-  >
-    <Icon :style="{ width: `${size}px`, height: `${size}px` }" />
-  </span>
-</template>

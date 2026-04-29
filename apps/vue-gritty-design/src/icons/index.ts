@@ -34,5 +34,6 @@ export const ICONIFY_ICONS: Record<string, string> = {
   email: 'solar:letter-unread-broken',
   dashboard: 'solar:spedometer-low-broken',
   route: 'solar:folder-with-files-broken',
-  page: 'solar:code-file-broken'
+  page: 'solar:code-file-broken',
+  loading: 'svg-spinners:6-dots-rotate',
 }

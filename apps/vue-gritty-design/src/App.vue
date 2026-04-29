@@ -1,11 +1,12 @@
 <template>
   <GProgressBar />
+  <GGlobalLoading />
   <RouterView />
-  <IconsLibrary />
+  <Introduce />
 </template>
 
 <script setup lang="ts">
-import IconsLibrary from '@/views/introduce/icons.vue' // 项目图标库实例
+import Introduce from '@/views/introduce/index.vue'
 </script>
 
 <style lang="scss" scoped></style>
