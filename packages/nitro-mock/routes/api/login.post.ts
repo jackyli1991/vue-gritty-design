@@ -36,6 +36,6 @@ export default defineHandler(async (event: H3Event) => {
   const token = generateToken(userInfo.id)
   await delayResponse()
   return successResponse({
-    token
+    token,
   })
 })

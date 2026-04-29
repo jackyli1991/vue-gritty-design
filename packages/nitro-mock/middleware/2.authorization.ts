@@ -3,6 +3,7 @@ import type { H3Event } from 'nitro'
 import { errorResponse, verifyToken, parseToken } from '../utils'
 
 export default defineHandler(async (event: H3Event) => {
+  console.log('\n\ntoken认证---------------->\n\n')
   // 跳过 OPTIONS 预检请求（CORS middleware 已处理）
   if (event.req.method === 'OPTIONS') {
     return
@@ -18,6 +19,7 @@ export default defineHandler(async (event: H3Event) => {
 
   // token 验证
   if (!authorization || !verifyToken(authorization)) {
+    console.log('token认证失败')
     // 设置 401 状态码并返回 JSON 格式错误信息
     event.res.status = 401
     event.res.headers.set('Content-Type', 'application/json')
@@ -26,6 +28,7 @@ export default defineHandler(async (event: H3Event) => {
 
   // 解析 token, 获取 userId
   const userId = parseToken(authorization)
+  console.log('userId:', userId)
   // 添加 userId 到上下文
   event.context.params = { userId }
 })

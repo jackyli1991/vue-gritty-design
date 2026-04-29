@@ -21,11 +21,12 @@ export const errorResponse = (code: string, data?: Record<string, any>) => {
 
 /**
  * 模拟请求延迟
- * @param ms 延迟时间，单位毫秒，默认1秒
  * @returns 延迟结果
  */
-export const delayResponse = (ms: number = 1000) => {
-  return new Promise((resolve) => setTimeout(resolve, ms))
+export const delayResponse = () => {
+  // 生成随机延迟时间，范围在500ms 到 1000ms之间
+  const randomDelay = Math.floor(Math.random() * (1000 - 500 + 1)) + 500
+  return new Promise((resolve) => setTimeout(resolve, randomDelay))
 }
 
 /**

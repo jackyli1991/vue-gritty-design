@@ -1,6 +1,6 @@
 import { defineHandler } from 'nitro'
 import type { H3Event } from 'nitro'
-import { successResponse, errorResponse, getUserIdFromContext } from '../../utils'
+import { successResponse, errorResponse, getUserIdFromContext, delayResponse } from '../../utils'
 import { mockUsers } from '../../database/users'
 
 /**
@@ -18,6 +18,7 @@ export default defineHandler(async (event: H3Event) => {
   if (!userInfo) {
     return errorResponse('userError')
   }
+  await delayResponse()
   return successResponse({
     permission: userInfo.permission,
   })
