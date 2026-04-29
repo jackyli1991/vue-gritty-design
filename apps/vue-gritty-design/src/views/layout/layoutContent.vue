@@ -1,6 +1,6 @@
 <template>
   <div class="h-full p-4">
-    <div class="h-full rounded-lg bg-white">
+    <div class="h-full">
       <router-view />
     </div>
   </div>

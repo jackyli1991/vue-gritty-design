@@ -16,7 +16,7 @@ content区域用于渲染路由组件 -->
         </aLayoutHeader>
         <!-- 内容区域 -->
         <aLayout>
-          <aLayoutContent class="overflow-scroll">
+          <aLayoutContent>
             <LayoutContent>
               <RouterView />
             </LayoutContent>
