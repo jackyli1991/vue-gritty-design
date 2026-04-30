@@ -4,7 +4,7 @@
       <img class="h-full" :src="logo" alt="logo" />
     </div>
     <aMenu
-      class="flex-1 overflow-auto"
+      class="g-menus flex-1 overflow-auto"
       theme="light"
       mode="inline"
       :selected-keys="activeRoute"
@@ -16,6 +16,7 @@
 </template>
 
 <script setup lang="ts">
+import { onMounted } from 'vue'
 import { storeToRefs } from 'pinia'
 import router from '@/router'
 import type { RouteRecordNameGeneric } from 'vue-router'
@@ -24,6 +25,7 @@ import { Menu as aMenu } from 'ant-design-vue'
 import logo from '@/assets/logo.png'
 import { useLayoutStore } from '@/stores/layout'
 import { useRouteStore } from '@/stores/route'
+import { OverlayScrollbars } from 'overlayscrollbars'
 
 defineOptions({
   name: 'LayoutAside',
@@ -45,6 +47,14 @@ const handleSelect: MenuProps['onSelect'] = (params) => {
     name: key as RouteRecordNameGeneric,
   })
 }
+
+onMounted(() => {
+  OverlayScrollbars(document.querySelector('.g-menus') as HTMLElement, {
+    scrollbars: {
+      autoHide: 'leave',
+    },
+  })
+})
 </script>
 
 <style lang="scss" scoped>
