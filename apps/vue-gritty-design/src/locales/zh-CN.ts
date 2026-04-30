@@ -18,8 +18,7 @@ export default {
     passwordMismatch: '两次输入的密码不一致',
   },
   menu: {
-    dashboard: '仪表盘',
-    users: '用户管理',
+    dashboard: '工作台',
     settings: '系统设置',
   },
   login: {
@@ -29,6 +28,7 @@ export default {
     rememberMe: '记住我',
     forgotPassword: '忘记密码？',
     loginButton: '登录',
+    loginoutButton: '退出登录',
     registerButton: '注册',
     register: '没有账号？立即注册',
     backToLogin: '已有账号？去登录',
@@ -39,18 +39,5 @@ export default {
     registerTitle: '用户注册',
     email: '邮箱',
     confirmPassword: '确认密码',
-  },
-  dashboard: {
-    welcome: '欢迎使用',
-    systemName: 'Vue Gritty Design',
-    overview: '系统概览',
-    totalUsers: '用户总数',
-    totalOrders: '订单总数',
-    totalRevenue: '总收入',
-    todayVisits: '今日访问',
-  },
-  languages: {
-    'zh-CN': '简体中文',
-    'en-US': 'English',
   },
 }

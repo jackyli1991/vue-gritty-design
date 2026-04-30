@@ -19,8 +19,7 @@ export default {
   },
   menu: {
     dashboard: 'Dashboard',
-    users: 'User Management',
-    settings: 'System Settings',
+    settings: 'Settings',
   },
   login: {
     title: 'User Login',
@@ -29,6 +28,7 @@ export default {
     rememberMe: 'Remember me',
     forgotPassword: 'Forgot password?',
     loginButton: 'Login',
+    loginoutButton: 'Logout',
     registerButton: 'Register',
     register: "Don't have an account? Register now",
     backToLogin: 'Already have an account? Login',
@@ -39,18 +39,5 @@ export default {
     registerTitle: 'User Registration',
     email: 'Email',
     confirmPassword: 'Confirm Password',
-  },
-  dashboard: {
-    welcome: 'Welcome to',
-    systemName: 'Vue Gritty Design',
-    overview: 'System Overview',
-    totalUsers: 'Total Users',
-    totalOrders: 'Total Orders',
-    totalRevenue: 'Total Revenue',
-    todayVisits: 'Today Visits',
-  },
-  languages: {
-    'zh-CN': '简体中文',
-    'en-US': 'English',
   },
 }

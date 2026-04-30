@@ -1,10 +1,10 @@
 <template>
   <GIcon class="mr-2.5" :name="ICONIFY_ICONS.setting" @click="toggleSettingDrawer" />
-  <aDrawer title="设置" v-model:open="visible" width="400px" :headerStyle="headerStyle">
+  <aDrawer :title="t('menu.settings')" v-model:open="visible" width="400px" :headerStyle="headerStyle">
     Setting
     <template #footer>
       <div>
-        <Button block type="text" @click="logout">退出登录</Button>
+        <Button block type="text" @click="logout">{{ t('login.loginoutButton') }}</Button>
       </div>
     </template>
   </aDrawer>
@@ -17,10 +17,13 @@ import { Drawer as aDrawer, Button   } from 'ant-design-vue'
 import { ICONIFY_ICONS } from '@/icons'
 import { useLayoutStore } from '@/stores/layout'
 import { useUserStore } from '@/stores/user'
+import { useLocale } from '@/composables'
 
 defineOptions({
   name: 'SettingIcon',
 })
+
+const { t } = useLocale()
 
 const layoutStore = useLayoutStore()
 const { headerHeight } = storeToRefs(layoutStore)

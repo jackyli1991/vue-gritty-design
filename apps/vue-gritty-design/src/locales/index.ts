@@ -10,7 +10,7 @@ export const localeList = [
   { value: 'en-US', label: 'English' },
 ]
 
-const _locale = useStorage('locale', 'zh-CN')
+const _locale = useStorage('GRITTY_DESIGN_LOCALE', 'zh-CN')
 
 const i18n = createI18n({
   legacy: false,
