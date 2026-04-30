@@ -7,7 +7,7 @@
 
 <script setup lang="ts">
 import Introduce from '@/views/introduce/index.vue'
-import { useRequestLoading } from '@/composables/useLoading'
+import { useRequestLoading } from '@/composables'
 
 // 全局请求loading
 const { requestLoading, requestLoadingText } = useRequestLoading()

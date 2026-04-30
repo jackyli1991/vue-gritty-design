@@ -1,6 +1,6 @@
 <template>
   <div>
-    <h2 class="form-title">注册</h2>
+    <h2 class="form-title">{{ t('login.registerTitle') }}</h2>
     <a-form
       :model="registerForm"
       :rules="registerRules"
@@ -10,24 +10,32 @@
       ref="registerFormRef"
       @finish="handleRegister"
     >
-      <a-form-item name="username" label="用户名">
-        <a-input v-model:value="registerForm.username" placeholder="请输入用户名" allow-clear>
+      <a-form-item name="username" :label="t('login.username')">
+        <a-input
+          v-model:value="registerForm.username"
+          :placeholder="t('login.usernamePlaceholder')"
+          allow-clear
+        >
           <template #prefix>
             <g-icon :name="ICONIFY_ICONS.user" />
           </template>
         </a-input>
       </a-form-item>
-      <a-form-item name="email" label="邮箱">
-        <a-input v-model:value="registerForm.email" placeholder="请输入邮箱" allow-clear>
+      <a-form-item name="email" :label="t('login.email')">
+        <a-input
+          v-model:value="registerForm.email"
+          :placeholder="t('login.emailPlaceholder')"
+          allow-clear
+        >
           <template #prefix>
             <g-icon :name="ICONIFY_ICONS.email" />
           </template>
         </a-input>
       </a-form-item>
-      <a-form-item name="password" label="密码">
+      <a-form-item name="password" :label="t('login.password')">
         <a-input-password
           v-model:value="registerForm.password"
-          placeholder="请输入密码"
+          :placeholder="t('login.passwordPlaceholder')"
           allow-clear
         >
           <template #prefix>
@@ -35,10 +43,10 @@
           </template>
         </a-input-password>
       </a-form-item>
-      <a-form-item name="confirmPassword" label="确认密码">
+      <a-form-item name="confirmPassword" :label="t('login.confirmPassword')">
         <a-input-password
           v-model:value="registerForm.confirmPassword"
-          placeholder="请再次输入密码"
+          :placeholder="t('login.confirmPasswordPlaceholder')"
           allow-clear
         >
           <template #prefix>
@@ -47,8 +55,15 @@
         </a-input-password>
       </a-form-item>
       <a-form-item>
-        <a-button type="primary" html-type="submit" size="large" class="register-button" block>
-          注册
+        <a-button
+          type="primary"
+          html-type="submit"
+          size="large"
+          class="register-button"
+          block
+          :loading="isLoading"
+        >
+          {{ t('login.registerButton') }}
         </a-button>
         <a-button
           type="primary"
@@ -58,7 +73,7 @@
           block
           @click="handleSwitchToLogin"
         >
-          已有账号，去登录
+          {{ t('login.backToLogin') }}
         </a-button>
       </a-form-item>
     </a-form>
@@ -68,9 +83,11 @@
 <script setup lang="ts">
 import { ref, reactive } from 'vue'
 import type { FormInstance } from 'ant-design-vue'
+import { useLocale } from '@/composables'
 import { ICONIFY_ICONS } from '@/icons'
 
-// 定义表单布局
+const { t } = useLocale()
+
 const labelCol = { style: { width: '80px' } }
 // 定义model
 const activeForm = defineModel({
@@ -88,34 +105,34 @@ const registerForm = reactive({
   password: '',
   confirmPassword: '',
 })
+
 const isLoading = ref(false)
 
 // 注册表单规则
 const registerRules = {
-  username: [{ required: true, message: '请输入用户名', trigger: 'blur' }],
+  username: [{ required: true, message: () => t('login.usernamePlaceholder'), trigger: 'blur' }],
   email: [
-    { required: true, message: '请输入邮箱', trigger: 'blur' },
-    { type: 'email', message: '请输入正确的邮箱格式', trigger: 'blur' },
+    { required: true, message: () => t('login.emailPlaceholder'), trigger: 'blur' },
+    { type: 'email', message: () => t('common.invalidEmail'), trigger: 'blur' },
   ],
   password: [
-    { required: true, message: '请输入密码', trigger: 'blur' },
-    { min: 6, message: '密码长度至少为6位', trigger: 'blur' },
+    { required: true, message: () => t('login.passwordPlaceholder'), trigger: 'blur' },
+    { min: 6, message: () => t('common.passwordMinLength'), trigger: 'blur' },
   ],
   confirmPassword: [
-    { required: true, message: '请确认密码', trigger: 'blur' },
+    { required: true, message: () => t('login.confirmPasswordPlaceholder'), trigger: 'blur' },
     {
-      validator: (rule: Record<string, string>, value: string) => {
+      validator: (_rule: Record<string, string>, value: string) => {
         if (!value || registerForm.password === value) {
           return Promise.resolve()
         }
-        return Promise.reject(new Error('两次输入的密码不一致'))
+        return Promise.reject(new Error(t('common.passwordMismatch')))
       },
       trigger: 'blur',
     },
   ],
 }
 
-// 处理注册
 const handleRegister = async () => {
   if (!registerFormRef.value) return
 
@@ -123,14 +140,11 @@ const handleRegister = async () => {
     await registerFormRef.value.validate()
     isLoading.value = true
 
-    // 模拟注册请求
     await new Promise((resolve) => setTimeout(resolve, 1000))
 
-    alert('注册成功！')
-    // 注册成功后切换到登录
     handleSwitchToLogin()
   } catch (error) {
-    console.error('注册表单验证失败', error)
+    console.error(t('common.failed'), error)
   } finally {
     isLoading.value = false
   }

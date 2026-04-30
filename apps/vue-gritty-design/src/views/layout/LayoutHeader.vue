@@ -20,7 +20,7 @@
     <div class="flex items-center">
       <div class="layout-header-setting flex items-start justify-center">
         <DarkModeIcon />
-        <GIcon class="mr-2.5" :name="ICONIFY_ICONS.language" />
+        <LanguageIcon />
         <GIcon class="mr-2.5" :name="ICONIFY_ICONS.fullScreen" />
         <ThemeIcon />
         <GIcon class="mr-2.5" :name="ICONIFY_ICONS.notice" />
@@ -38,6 +38,7 @@ import { Breadcrumb as aBreadcrumb, BreadcrumbItem as aBreadcrumbItem } from 'an
 import ExpandBtn from './components/ExpandBtn.vue' // 折叠按钮
 import DarkModeIcon from './components/DarkModeIcon.vue' // 暗黑模式图标
 import ThemeIcon from './components/ThemeIcon.vue' // 主题切换图标
+import LanguageIcon from './components/LanguageIcon.vue' // 语言切换图标
 import SettingIcon from './components/SettingIcon.vue' // 常用设置图标
 import UserInfo from './components/UserInfo.vue' // 用户信息
 import { ICONIFY_ICONS } from '@/icons'

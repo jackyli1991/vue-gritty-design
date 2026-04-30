@@ -42,7 +42,7 @@ import {
   Card as aCard,
   CardGrid as aCardGrid,
 } from 'ant-design-vue'
-import { useLoading } from '@/composables/useLoading'
+import { useLoading } from '@/composables'
 import { ICONIFY_ICONS } from '@/icons'
 
 const { loading, startLoading, endLoading } = useLoading()

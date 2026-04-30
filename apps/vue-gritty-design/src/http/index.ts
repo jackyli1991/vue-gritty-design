@@ -6,7 +6,7 @@ import axios, {
   type AxiosRequestConfig,
 } from 'axios'
 import { message } from 'ant-design-vue'
-import { useRequestLoading } from '@/composables/useLoading'
+import { useRequestLoading } from '@/composables'
 import type { ApiConfig } from '@/types/api'
 
 const { startLoading, endLoading } = useRequestLoading()

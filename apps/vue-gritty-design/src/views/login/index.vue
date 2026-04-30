@@ -9,6 +9,9 @@
         <RegisterForm v-else v-model="activeForm" />
       </transition>
     </a-card>
+    <div class="language-icon-container">
+      <LanguageIcon />
+    </div>
   </div>
 </template>
 
@@ -16,12 +19,13 @@
 import { ref } from 'vue'
 import LoginForm from './components/LoginForm.vue'
 import RegisterForm from './components/RegisterForm.vue'
+import LanguageIcon from '@/views/layout/components/LanguageIcon.vue'
 
 // 状态管理
 const activeForm = ref('login')
 </script>
 
-<style scoped>
+<style lang="scss" scoped>
 .login-container {
   min-height: 100vh;
   display: flex;
@@ -29,13 +33,18 @@ const activeForm = ref('login')
   align-items: center;
   background-color: #f5f5f5;
   padding: 20px;
-}
-
-.login-card {
-  width: 100%;
-  max-width: 500px;
-  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
-  padding: 2rem;
+  position: relative;
+  .login-card {
+    width: 100%;
+    max-width: 500px;
+    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+    padding: 2rem;
+  }
+  .language-icon-container {
+    position: absolute;
+    top: 20px;
+    right: 20px;
+  }
 }
 
 /* 过渡动画 */

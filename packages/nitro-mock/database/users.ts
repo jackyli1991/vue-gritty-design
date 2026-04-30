@@ -7,7 +7,7 @@ export const mockUsers = [
     password: 'admin123', // 实际项目中应该加密
     avatar: 'https://avatars.githubusercontent.com/u/34930213?v=4&size=64',
     role: 'admin',
-    permission: [1, 2, 201],
+    permission: [1, 2, 201, 202, 203, 20301, 20302],
   },
   {
     id: 2,
