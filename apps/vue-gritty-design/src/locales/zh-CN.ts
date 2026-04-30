@@ -20,6 +20,7 @@ export default {
   menu: {
     dashboard: '工作台',
     settings: '系统设置',
+    internationalization: '国际化',
   },
   login: {
     title: '用户登录',

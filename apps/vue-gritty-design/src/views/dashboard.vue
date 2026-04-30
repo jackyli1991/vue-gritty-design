@@ -1,15 +1,16 @@
 <template>
   <GPage>
-    <aRow :gutter="8">
-      <aCol :span="12">
+    <aRow :gutter="12">
+      <aCol :span="12" class="mb-3">
         <aCard>
           <template #title>
-            <span>组件loading</span>
+            <span>技术栈</span>
           </template>
-          <GLoading :show="loading">
-            <aButton @click="endLoading">结束loading</aButton>
-          </GLoading>
-          <aButton type="primary" @click="startLoading">开始loading</aButton>
+          <aTag
+            v-for="(version, name) in dependencies"
+            :key="name"
+            class="mb-2!"
+            color="success">{{ name }}{{ version }}</aTag>
         </aCard>
       </aCol>
       <aCol :span="12">
@@ -28,6 +29,29 @@
           </aCardGrid>
         </aCard>
       </aCol>
+      <aCol :span="12">
+        <aCard>
+          <template #title>
+            <span>组件loading</span>
+          </template>
+          <GLoading :show="loading">
+            <aButton @click="endLoading">结束loading</aButton>
+          </GLoading>
+          <aButton type="primary" @click="startLoading">开始loading</aButton>
+        </aCard>
+      </aCol>
+      <aCol :span="12">
+        <aCard>
+          <template #title>
+            <span>{{ t('menu.internationalization') }}</span>
+          </template>
+          <aButton
+            v-for="item in localeList"
+            :key="item.value"
+            class="mr-2"
+            type="primary" @click="handleLocaleChange(item.value)">{{ item.label }}</aButton>
+        </aCard>
+      </aCol>
     </aRow>
   </GPage>
 </template>
@@ -41,9 +65,17 @@ import {
   Badge as aBadge,
   Card as aCard,
   CardGrid as aCardGrid,
+  Tag as aTag,
 } from 'ant-design-vue'
 import { useLoading } from '@/composables'
 import { ICONIFY_ICONS } from '@/icons'
+import { localeList, setLocale, type LocaleType } from '@/locales'
+import { useLocale } from '@/composables'
+import PackageJson from '../../package.json'
+
+const { dependencies } = PackageJson
+
+const { t } = useLocale()
 
 const { loading, startLoading, endLoading } = useLoading()
 
@@ -57,4 +89,9 @@ const icons = computed(() => {
 const totalIcons = computed(() => {
   return Object.keys(ICONIFY_ICONS).length
 })
+
+// 切换语言
+const handleLocaleChange = (locale: string) => {
+  setLocale(locale as LocaleType)
+}
 </script>

@@ -20,6 +20,7 @@ export default {
   menu: {
     dashboard: 'Dashboard',
     settings: 'Settings',
+    internationalization: 'Internationalization',
   },
   login: {
     title: 'User Login',
