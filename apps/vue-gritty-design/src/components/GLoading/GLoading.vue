@@ -7,8 +7,10 @@
       :class="{ 'opacity-0!': !show }"
     >
       <GIcon :name="ICONIFY_ICONS.loading" :size="26" />
-      <slot></slot>
-      </div>
+      <slot>
+        <span class="text-sm mt-4">{{ text }}</span>
+      </slot>
+    </div>
   </Transition>
 </template>
 
@@ -20,9 +22,19 @@ defineOptions({
 })
 
 defineProps({
+  /**
+   * 是否显示loading
+   */
   show: {
     type: Boolean,
     default: false,
+  },
+  /**
+   * loading 文本
+   */
+  text: {
+    type: String,
+    default: '',
   },
 })
 </script>

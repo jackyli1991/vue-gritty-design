@@ -22,7 +22,8 @@
           <aCardGrid
             v-for="icon in icons"
             :key="icon"
-            style="width: 10%; text-align: center; padding: 8px 0; font-size: 0;">
+            style="width: 10%; text-align: center; padding: 8px 0; font-size: 0"
+          >
             <GIcon :name="icon" :size="24" />
           </aCardGrid>
         </aCard>
@@ -39,7 +40,7 @@ import {
   Button as aButton,
   Badge as aBadge,
   Card as aCard,
-  CardGrid as aCardGrid
+  CardGrid as aCardGrid,
 } from 'ant-design-vue'
 import { useLoading } from '@/composables/useLoading'
 import { ICONIFY_ICONS } from '@/icons'

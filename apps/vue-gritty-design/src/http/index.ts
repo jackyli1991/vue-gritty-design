@@ -3,9 +3,11 @@ import axios, {
   type InternalAxiosRequestConfig,
   type AxiosResponse,
   type AxiosError,
+  type AxiosRequestConfig,
 } from 'axios'
 import { message } from 'ant-design-vue'
 import { useRequestLoading } from '@/composables/useLoading'
+import type { ApiConfig } from '@/types/api'
 
 const { startLoading, endLoading } = useRequestLoading()
 
@@ -37,6 +39,7 @@ http.interceptors.request.use(
       config.headers = config.headers || {}
       config.headers.Authorization = `Bearer ${token}`
     }
+    console.log('HTTP 请求配置:', config)
     startLoading(config) // 开启全局loading
     return config
   },
@@ -103,24 +106,28 @@ http.interceptors.response.use(
 
 // 封装请求方法
 const request = {
-  get<T>(url: string, params?: Params, config?: InternalAxiosRequestConfig): Promise<T> {
-    return http.get(url, { params, ...config })
+  get<T>(apiConfig: ApiConfig, params?: Params, config?: InternalAxiosRequestConfig): Promise<T> {
+    return http.get(apiConfig.api, { params, ...config, apiConfig } as AxiosRequestConfig)
   },
 
-  post<T>(url: string, data?: Params, config?: InternalAxiosRequestConfig): Promise<T> {
-    return http.post(url, data, config)
+  post<T>(apiConfig: ApiConfig, data?: Params, config?: InternalAxiosRequestConfig): Promise<T> {
+    return http.post(apiConfig.api, data, { ...config, apiConfig } as AxiosRequestConfig)
   },
 
-  put<T>(url: string, data?: Params, config?: InternalAxiosRequestConfig): Promise<T> {
-    return http.put(url, data, config)
+  put<T>(apiConfig: ApiConfig, data?: Params, config?: InternalAxiosRequestConfig): Promise<T> {
+    return http.put(apiConfig.api, data, { ...config, apiConfig } as AxiosRequestConfig)
   },
 
-  delete<T>(url: string, params?: Params, config?: InternalAxiosRequestConfig): Promise<T> {
-    return http.delete(url, { params, ...config })
+  delete<T>(
+    apiConfig: ApiConfig,
+    params?: Params,
+    config?: InternalAxiosRequestConfig,
+  ): Promise<T> {
+    return http.delete(apiConfig.api, { params, ...config, apiConfig } as AxiosRequestConfig)
   },
 
-  patch<T>(url: string, data?: Params, config?: InternalAxiosRequestConfig): Promise<T> {
-    return http.patch(url, data, config)
+  patch<T>(apiConfig: ApiConfig, data?: Params, config?: InternalAxiosRequestConfig): Promise<T> {
+    return http.patch(apiConfig.api, data, { ...config, apiConfig } as AxiosRequestConfig)
   },
 }
 

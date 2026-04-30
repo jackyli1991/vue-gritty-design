@@ -1,6 +1,6 @@
 <template>
   <GProgressBar />
-  <GLoading :show="requestLoading"/>
+  <GLoading :show="requestLoading" :text="requestLoadingText" />
   <RouterView />
   <Introduce />
 </template>
@@ -10,7 +10,7 @@ import Introduce from '@/views/introduce/index.vue'
 import { useRequestLoading } from '@/composables/useLoading'
 
 // 全局请求loading
-const { requestLoading } = useRequestLoading()
+const { requestLoading, requestLoadingText } = useRequestLoading()
 </script>
 
 <style lang="scss" scoped></style>
