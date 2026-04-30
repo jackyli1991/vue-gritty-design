@@ -8,7 +8,7 @@
     >
       <GIcon :name="ICONIFY_ICONS.loading" :size="26" />
       <slot>
-        <span class="text-sm mt-4">{{ text }}</span>
+        <span class="text-sm mt-4 text-gray-500">{{ text }}</span>
       </slot>
     </div>
   </Transition>
