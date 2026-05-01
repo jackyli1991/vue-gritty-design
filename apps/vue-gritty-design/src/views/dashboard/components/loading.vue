@@ -1,5 +1,5 @@
 <template>
-  <aCard>
+  <aCard hoverable>
     <template #title>
       <span>Loading</span>
     </template>

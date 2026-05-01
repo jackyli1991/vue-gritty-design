@@ -1,5 +1,5 @@
 <template>
-  <aCard>
+  <aCard hoverable>
     <template #title>
       <aBadge :count="totalIcons">
         <span>Iconfiny字体图标</span>

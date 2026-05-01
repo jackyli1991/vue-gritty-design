@@ -1,5 +1,5 @@
 <template>
-  <aCard>
+  <aCard hoverable>
     <template #title>
       <span>{{ t('menu.internationalization') }}</span>
     </template>

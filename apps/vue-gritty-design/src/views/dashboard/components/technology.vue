@@ -1,5 +1,5 @@
 <template>
-  <aCard>
+  <aCard hoverable>
     <template #title>
       <span>技术栈</span>
     </template>
