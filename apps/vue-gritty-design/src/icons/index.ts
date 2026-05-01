@@ -36,4 +36,5 @@ export const ICONIFY_ICONS: Record<string, string> = {
   route: 'solar:folder-with-files-broken',
   page: 'solar:code-file-broken',
   loading: 'svg-spinners:6-dots-rotate',
+  table: 'proicons:table',
 }

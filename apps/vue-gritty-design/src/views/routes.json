@@ -14,5 +14,13 @@
     "title": "Vue-router",
     "icon": "route",
     "requiresAuth": true
+  },
+  {
+    "id": 3,
+    "type": "page",
+    "name": "gtable",
+    "title": "表格设计",
+    "icon": "table",
+    "requiresAuth": true
   }
 ]
