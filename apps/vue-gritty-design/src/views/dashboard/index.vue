@@ -71,7 +71,7 @@ import { useLoading } from '@/composables'
 import { ICONIFY_ICONS } from '@/icons'
 import { localeList, setLocale, type LocaleType } from '@/locales'
 import { useLocale } from '@/composables'
-import PackageJson from '../../package.json'
+import PackageJson from '../../../package.json'
 
 const { dependencies } = PackageJson
 

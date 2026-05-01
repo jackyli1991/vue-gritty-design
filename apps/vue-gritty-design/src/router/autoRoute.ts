@@ -46,9 +46,18 @@ function createRoutes(
     const { name, title, icon, type, ...rest } = route
     const hasChildren = ['dir', 'group'].includes(type || '') // 是否有子路由
 
-    const importPath = `/src/views/${parentPath}${name}${hasChildren ? '' : '.vue'}`
+    const basePath = `/src/views/${parentPath}${name}`
+    // 对于导入的页面，支持两种方式：一种是直接导入[name].vue，一种是导入[name]/index.vue
+    const importPathMap = {
+      one: `${basePath}${hasChildren ? '' : '.vue'}`,
+      two: `${basePath}${hasChildren ? '' : '/index.vue'}`
+    }
+    const { default: component, btnPermission = {} } = pages[importPathMap.one] || pages[importPathMap.two] || {}
+    if (!hasChildren && !component) {
+      console.error(`未找到组件：${importPathMap.one} 或 ${importPathMap.two}`)
+      return
+    }
 
-    const { default: component, btnPermission = {} } = pages[importPath] || {}
     // 1、路由路径
     const pathParams = name.split('_') // 文件名可能为：detail_id_type.vue形式，_后的部分作为路由参数，转成：detail/:id/:type
     let path: string = pathParams[0] || ''
