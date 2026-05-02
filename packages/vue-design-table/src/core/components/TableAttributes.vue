@@ -1,7 +1,7 @@
 <template>
 <div class="table-design-attributes">
   <div class="attributes-content">
-    <div v-if="!activeCanvasElement" class="empty-attributes">
+    <div v-if="!activeCanvasElement" class="attributes-empty">
       请选择一个元素进行编辑
     </div>
     <div v-else class="attributes-form">
@@ -46,14 +46,14 @@ const activeCanvasElement = canvasContext?.activeCanvasElement
   flex-shrink: 0;
   .attributes-content {
     flex: 1;
-    padding: 16px;
+    padding: 8px;
     overflow-y: auto;
   }
-  .empty-properties {
+  .attributes-empty {
     text-align: center;
     color: #999;
-    padding: 40px 20px;
-    font-size: 14px;
+    padding: 40px 0;
+    font-size: 12px;
   }
 
   .attributes-form {

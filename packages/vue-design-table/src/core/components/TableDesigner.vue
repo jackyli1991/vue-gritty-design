@@ -111,16 +111,11 @@ function deleteElement(index: number) {
   border-radius: 8px;
   box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
   flex: 1;
-  display: flex;
-  flex-direction: column;
-  overflow: hidden;
-
   .canvas-area {
-    flex: 1;
-    padding: 24px;
-    overflow-y: auto;
+    box-sizing: border-box;
+    height: 100%;
     border: 1px dashed transparent;
-    border-radius: 4px;
+    border-radius: 8px;
     background: #fafafa;
     background-image: radial-gradient(#e0e0e0 1px, transparent 1px);
     background-size: 20px 20px;
@@ -134,7 +129,7 @@ function deleteElement(index: number) {
     .canvas-element {
       position: relative;
       margin-bottom: 16px;
-      border: 2px solid transparent;
+      border: 1px solid transparent;
       border-radius: 4px;
       transition: all 0.2s;
       cursor: pointer;
@@ -179,7 +174,6 @@ function deleteElement(index: number) {
         display: flex;
         align-items: center;
         justify-content: center;
-        border: none;
         background: #ff4d4f;
         color: #fff;
         border-radius: 4px;
@@ -191,20 +185,20 @@ function deleteElement(index: number) {
         }
       }
     }
-  }
 
-  .empty-tip {
-    position: absolute;
-    top: 50%;
-    left: 50%;
-    transform: translate(-50%, -50%);
-    color: #999;
-    font-size: 16px;
-    text-align: center;
-    padding: 40px;
-    border: 2px dashed #d9d9d9;
-    border-radius: 8px;
-    background: #fff;
+    .empty-tip {
+      position: absolute;
+      top: 50%;
+      left: 50%;
+      transform: translate(-50%, -50%);
+      color: #999;
+      font-size: 12px;
+      text-align: center;
+      padding: 40px;
+      border: 1px dashed #d9d9d9;
+      border-radius: 8px;
+      background: #fff;
+    }
   }
 }
 </style>
