@@ -19,6 +19,7 @@ export interface CanvasLayout {
   name: string // 布局名称
   parentId?: string // 父布局ID
   children?: string[] // 子布局ID列表
+  editable?: boolean // 是否可编辑
   props: {
     padding: number[] // 内边距
     widthType: string // 宽度类型
@@ -52,7 +53,15 @@ export interface CanvasData {
   elements: Record<string, CanvasElementGroup> // 画布元素
 }
 
-
+// 画布上下文类型定义
+export interface CanvasContext {
+  canvasData: CanvasData
+  activeCanvasElement: CanvasElement | null
+  addCanvasElement: (component: CanvasElement) => void
+  deleteCanvasElement: (index: number) => void
+  selectCanvasElement: (index: number) => void
+  getChildrenLayouts: (layoutId: string) => CanvasLayout[]
+}
 
 export interface DesignTableConfig {
   components?: ResourceItem[]

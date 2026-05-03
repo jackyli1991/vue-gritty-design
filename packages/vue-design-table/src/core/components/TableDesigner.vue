@@ -7,11 +7,11 @@
       @dragleave="handleDragLeave"
       @drop="handleDrop"
     >
-      <div v-if="canvasData.length === 0" class="empty-tip">
+      <!-- <div v-if="canvasData.length === 0" class="empty-tip">
         拖拽左侧组件到此处
-      </div>
-      <LayoutWrapper />
-      <div
+      </div> -->
+      <LayoutWrapper :data="canvasData?.layouts?.tableMain" />
+      <!-- <div
         v-for="(element, index) in canvasData"
         :key="element.id"
         class="canvas-element"
@@ -28,34 +28,29 @@
             <Icon icon="material-symbols:delete-outline" />
           </button>
         </div>
-      </div>
+      </div> -->
     </div>
   </div>
 </template>
 
 <script lang="ts" setup>
 import { ref, reactive, inject } from 'vue'
-import { Icon } from '@iconify/vue'
-import type { CanvasElement } from '@/types'
+// import { Icon } from '@iconify/vue'
+import type { CanvasElement, CanvasContext } from '@/types'
 import LayoutWrapper from '@/gTable/components/LayoutWrapper.vue'
-
-interface CanvasContext {
-  canvasData: CanvasElement[]
-  activeCanvasElement: CanvasElement | null
-  addCanvasElement: (component: CanvasElement) => void
-  deleteCanvasElement: (index: number) => void
-  selectCanvasElement: (index: number) => void
-}
 
 // 从父组件注入配置数据
 const canvasContext = inject<CanvasContext>('canvasContext')
 
 // 提供默认值
-const canvasData = canvasContext?.canvasData ?? []
-const activeCanvasElement = canvasContext?.activeCanvasElement ?? null
+const canvasData = canvasContext?.canvasData || {
+  layouts: {},
+  elements: {},
+}
+// const activeCanvasElement = canvasContext?.activeCanvasElement ?? null
 const addCanvasElement = canvasContext?.addCanvasElement ?? (() => {})
-const deleteCanvasElement = canvasContext?.deleteCanvasElement ?? (() => {})
-const selectCanvasElement = canvasContext?.selectCanvasElement ?? (() => {})
+// const deleteCanvasElement = canvasContext?.deleteCanvasElement ?? (() => {})
+// const selectCanvasElement = canvasContext?.selectCanvasElement ?? (() => {})
 
 const isDragOver = ref(false)
 
@@ -97,21 +92,22 @@ const handleDrop = (e: DragEvent) => {
 }
 
 // 选择元素
-function selectElement(index: number) {
-  console.log('选择元素', index)
-  selectCanvasElement(index)
-}
+// function selectElement(index: number) {
+//   console.log('选择元素', index)
+//   selectCanvasElement(index)
+// }
 
-// 删除元素
-function deleteElement(index: number) {
-  deleteCanvasElement(index)
-}
+// // 删除元素
+// function deleteElement(index: number) {
+//   deleteCanvasElement(index)
+// }
 </script>
 
 <style scoped lang="scss">
 .table-design-designer {
   background: #fff;
   border-radius: 8px;
+  overflow: hidden;
   box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
   flex: 1;
   .canvas-area {

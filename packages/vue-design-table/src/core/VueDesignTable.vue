@@ -13,7 +13,7 @@
 
 <script setup lang="ts">
 import { ref, provide } from 'vue'
-import type { CanvasElement, CanvasData } from '@/types'
+import type { CanvasElement, CanvasData, CanvasLayout } from '@/types'
 import TableResource from './components/TableResource.vue'
 import TableDesigner from './components/TableDesigner.vue'
 import TableAttributes from './components/TableAttributes.vue'
@@ -22,11 +22,29 @@ import TableAttributes from './components/TableAttributes.vue'
 const canvasData = ref<CanvasData>({
   layouts: {
     // 主布局
-    main: {
-      id: 'main',
-      name: '主布局',
+    tableMain: {
+      id: 'tableMain',
+      name: '表格主布局',
       parentId: '',
-      children: [], // 子布局ID列表
+      children: ['table'], // 子布局ID列表
+      editable: false,
+      props: {
+        isForm: false,
+        padding: [0, 0, 0, 0],
+        widthType: '%',
+        widthValue: 100,
+        heightType: '%',
+        heightValue: 100,
+        gap: 0,
+        backgroundColor: '#FFF',
+      },
+    },
+    // 表格
+    table: {
+      id: 'table',
+      name: '表格',
+      parentId: 'table-canvas',
+      children: [],
       props: {
         isForm: false,
         padding: [12, 12, 12, 12],
@@ -34,10 +52,10 @@ const canvasData = ref<CanvasData>({
         widthValue: 100,
         heightType: '%',
         heightValue: 100,
-        gap: 12,
+        gap: 0,
         backgroundColor: '#FFF',
-      },
-    }
+      }
+    },
   },
   elements: {},
 })
@@ -49,7 +67,8 @@ provide('canvasContext', {
   activeCanvasElement,
   addCanvasElement,
   deleteCanvasElement,
-  selectCanvasElement
+  selectCanvasElement,
+  getChildrenLayouts,
 })
 
 // 添加配置数据
@@ -72,6 +91,22 @@ function deleteCanvasElement(index: number) {
 function selectCanvasElement(index: number) {
   console.log('选择元素', index)
   // activeCanvasElement.value = canvasData.value[index]
+}
+
+// 获取指定布局的所有子布局
+function getChildrenLayouts(layoutId: string): CanvasLayout[] {
+  const layout = canvasData.value.layouts[layoutId]
+  const children = layout?.children || []
+  const res: CanvasLayout[] = []
+  children.forEach((key) => {
+    const child = canvasData.value.layouts[key]
+    if (child) {
+      res.push(child)
+    } else {
+      console.error(`子布局 ${key} 不存在`)
+    }
+  })
+  return res
 }
 
 // 暴露方法给父组件
