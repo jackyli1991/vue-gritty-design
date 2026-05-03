@@ -25,7 +25,7 @@
 <script lang="ts" setup>
 import { Icon } from '@iconify/vue'
 import type { ResourceItem, ResourceGroup } from '@/types'
-import { resourceGroupsList } from '../../datas'
+import { resourceGroupsList } from '@/datas'
 
 // 拖拽开始
 const handleDragStart = (e: DragEvent, group: ResourceGroup, resource: ResourceItem) => {

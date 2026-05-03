@@ -10,6 +10,7 @@
       <div v-if="canvasData.length === 0" class="empty-tip">
         拖拽左侧组件到此处
       </div>
+      <LayoutWrapper />
       <div
         v-for="(element, index) in canvasData"
         :key="element.id"
@@ -36,6 +37,7 @@
 import { ref, reactive, inject } from 'vue'
 import { Icon } from '@iconify/vue'
 import type { CanvasElement } from '@/types'
+import LayoutWrapper from '@/gTable/components/LayoutWrapper.vue'
 
 interface CanvasContext {
   canvasData: CanvasElement[]
@@ -85,6 +87,7 @@ const handleDrop = (e: DragEvent) => {
 
   const newElement: CanvasElement = {
     id: `element_${Date.now()}_${Math.random().toString(36)}`,
+    layoutId: group?.key ?? '',
     type: resource.type,
     name: resource.name,
     props: reactive({ ...resource.defaultProps }),
