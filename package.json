@@ -8,6 +8,7 @@
     "build": "pnpm --filter vue-gritty-design build",
     "dev:mock": "pnpm --filter nitro-mock dev",
     "build:mock": "pnpm --filter nitro-mock build",
+    "build:table": "pnpm --filter vue-design-table build",
     "lint": "run-s lint:*",
     "lint:oxlint": "oxlint . --fix",
     "lint:eslint": "eslint . --fix --cache",

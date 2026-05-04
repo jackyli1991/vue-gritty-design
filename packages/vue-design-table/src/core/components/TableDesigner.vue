@@ -10,7 +10,7 @@
       <!-- <div v-if="canvasData.length === 0" class="empty-tip">
         拖拽左侧组件到此处
       </div> -->
-      <LayoutWrapper :data="canvasData?.layouts?.tableMain" />
+      <TableLayout />
       <!-- <div
         v-for="(element, index) in canvasData"
         :key="element.id"
@@ -37,16 +37,16 @@
 import { ref, reactive, inject } from 'vue'
 // import { Icon } from '@iconify/vue'
 import type { CanvasElement, CanvasContext } from '@/types'
-import LayoutWrapper from '@/gTable/components/LayoutWrapper.vue'
+import TableLayout from './TableLayout.vue'
 
 // 从父组件注入配置数据
 const canvasContext = inject<CanvasContext>('canvasContext')
 
 // 提供默认值
-const canvasData = canvasContext?.canvasData || {
-  layouts: {},
-  elements: {},
-}
+// const canvasData = canvasContext?.canvasData || {
+//   layouts: {},
+//   elements: {},
+// }
 // const activeCanvasElement = canvasContext?.activeCanvasElement ?? null
 const addCanvasElement = canvasContext?.addCanvasElement ?? (() => {})
 // const deleteCanvasElement = canvasContext?.deleteCanvasElement ?? (() => {})

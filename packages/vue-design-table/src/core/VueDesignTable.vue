@@ -14,9 +14,11 @@
 <script setup lang="ts">
 import { ref, provide } from 'vue'
 import type { CanvasElement, CanvasData, CanvasLayout } from '@/types'
+import { Direction } from '@/types'
 import TableResource from './components/TableResource.vue'
 import TableDesigner from './components/TableDesigner.vue'
 import TableAttributes from './components/TableAttributes.vue'
+import { createLayout } from '@/core/design'
 
 // 页面配置总数据
 const canvasData = ref<CanvasData>({
@@ -24,9 +26,10 @@ const canvasData = ref<CanvasData>({
     // 主布局
     tableMain: {
       id: 'tableMain',
-      name: '表格主布局',
       parentId: '',
+      name: '表格主布局',
       children: ['table'], // 子布局ID列表
+      direction: Direction.Vertical,
       editable: false,
       props: {
         isForm: false,
@@ -42,9 +45,10 @@ const canvasData = ref<CanvasData>({
     // 表格
     table: {
       id: 'table',
+      parentId: 'tableMain',
       name: '表格',
-      parentId: 'table-canvas',
       children: [],
+      direction: Direction.Vertical,
       props: {
         isForm: false,
         padding: [12, 12, 12, 12],
@@ -68,7 +72,8 @@ provide('canvasContext', {
   addCanvasElement,
   deleteCanvasElement,
   selectCanvasElement,
-  getChildrenLayouts,
+  getLayoutById,
+  addLayout,
 })
 
 // 添加配置数据
@@ -93,20 +98,27 @@ function selectCanvasElement(index: number) {
   // activeCanvasElement.value = canvasData.value[index]
 }
 
-// 获取指定布局的所有子布局
-function getChildrenLayouts(layoutId: string): CanvasLayout[] {
-  const layout = canvasData.value.layouts[layoutId]
-  const children = layout?.children || []
-  const res: CanvasLayout[] = []
-  children.forEach((key) => {
-    const child = canvasData.value.layouts[key]
-    if (child) {
-      res.push(child)
-    } else {
-      console.error(`子布局 ${key} 不存在`)
-    }
-  })
-  return res
+
+// 获取指定布局的信息
+function getLayoutById(layoutId: string): CanvasLayout {
+  return canvasData.value.layouts[layoutId]
+}
+
+// 添加布局
+function addLayout(layoutId: string, direction: string) {
+  console.log('添加布局', layoutId, direction)
+  const newLayout = createLayout('newLayout', layoutId, '新布局')
+  canvasData.value.layouts[newLayout.id] = newLayout
+  if (['top', 'bottom'].includes(direction)) {
+    getLayoutById(layoutId).direction = Direction.Vertical
+  } else if (['left', 'right'].includes(direction)) {
+    getLayoutById(layoutId).direction = Direction.Horizontal
+  }
+  if (['top', 'left'].includes(direction)) {
+    getLayoutById(layoutId).children?.unshift(newLayout.id)
+  } else {
+    getLayoutById(layoutId).children?.push(newLayout.id)
+  }
 }
 
 // 暴露方法给父组件

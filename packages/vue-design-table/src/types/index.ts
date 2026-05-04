@@ -1,3 +1,8 @@
+export enum Direction {
+  Vertical = 'vertical',
+  Horizontal = 'horizontal',
+}
+
 // 组件类型定义
 export interface ResourceItem {
   type: string
@@ -16,8 +21,9 @@ export interface ResourceGroup {
 // 画布布局类型定义
 export interface CanvasLayout {
   id: string // 布局ID
-  name: string // 布局名称
   parentId?: string // 父布局ID
+  name: string // 布局名称
+  direction?: Direction | undefined // 布局方向
   children?: string[] // 子布局ID列表
   editable?: boolean // 是否可编辑
   props: {
@@ -60,7 +66,8 @@ export interface CanvasContext {
   addCanvasElement: (component: CanvasElement) => void
   deleteCanvasElement: (index: number) => void
   selectCanvasElement: (index: number) => void
-  getChildrenLayouts: (layoutId: string) => CanvasLayout[]
+  getLayoutById: (layoutId: string) => CanvasLayout | undefined
+  addLayout: (layoutId: string, direction: string) => void
 }
 
 export interface DesignTableConfig {
