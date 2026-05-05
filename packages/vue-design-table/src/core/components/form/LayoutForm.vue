@@ -1,0 +1,150 @@
+<template>
+  <aForm
+    ref="aFormRef"
+    :model="formData"
+    hideRequiredMark
+    layout="vertical">
+    <aRow :gutter="12">
+      <aCol :span="colSpan">
+        <aFormItem label="布局ID" name="id" :rules="rules.id">
+          <aInput v-model:value="formData.id" allow-clear />
+        </aFormItem>
+      </aCol>
+      <aCol :span="colSpan">
+        <aFormItem label="布局名称" name="name" :rules="rules.name">
+          <aInput v-model:value="formData.name" allow-clear />
+        </aFormItem>
+      </aCol>
+      <!-- <aCol :span="colSpan">
+        <aFormItem label="布局方向" name="direction">
+          <aRadioGroup v-model:value="formData.direction" button-style="solid">
+            <aRadioButton v-for="item in DirectionOptions" :key="item.value" :value="item.value">
+              {{ item.label }}
+            </aRadioButton>
+          </aRadioGroup>
+        </aFormItem>
+      </aCol> -->
+      <aCol :span="colSpan">
+        <aRow :gutter="4">
+          <aCol :span="12">
+            <aFormItem label="宽度" :name="['props', 'widthType']">
+              <aSelect
+                v-model:value="formData.props.widthType"
+                :options="widthTypeOptions"
+              />
+            </aFormItem>
+          </aCol>
+          <aCol :span="12">
+            <aFormItem label=" " :name="['props', 'widthValue']" :rules="rules.widthValue">
+              <aInputNumber
+                v-model:value="formData.props.widthValue"
+                v-bind="{
+                  ...createInputNumberProps('widthType'),
+                }"
+              />
+            </aFormItem>
+          </aCol>
+        </aRow>
+      </aCol>
+      <aCol :span="colSpan">
+        <aRow :gutter="4">
+          <aCol :span="12">
+            <aFormItem label="高度" :name="['props', 'heightType']">
+              <aSelect
+                v-model:value="formData.props.heightType"
+                :options="heightTypeOptions"
+              />
+            </aFormItem>
+          </aCol>
+          <aCol :span="12">
+            <aFormItem label=" " :name="['props', 'heightValue']" :rules="rules.heightValue">
+              <aInputNumber
+                v-model:value="formData.props.heightValue"
+                v-bind="{
+                  ...createInputNumberProps('heightType'),
+                }"
+              />
+            </aFormItem>
+          </aCol>
+        </aRow>
+      </aCol>
+      <aCol :span="colSpan">
+        <aFormItem label="内边距" tooltip="顺序: 上、右、下、左; 单位: px">
+          <PaddingInput v-model="formData.props.padding" :name="['props', 'padding']" />
+        </aFormItem>
+      </aCol>
+      <aCol :span="colSpan">
+        <aFormItem label="背景颜色">
+          <ColorPicker v-model="formData.props.backgroundColor" :name="['props', 'backgroundColor']" />
+        </aFormItem>
+      </aCol>
+    </aRow>
+  </aForm>
+</template>
+
+<script setup lang="ts">
+import { computed, useTemplateRef } from 'vue'
+import {
+  Form as aForm,
+  FormItem as aFormItem,
+  Input as aInput,
+  // RadioGroup as aRadioGroup,
+  // RadioButton as aRadioButton,
+  Row as aRow,
+  Col as aCol,
+  Select as aSelect,
+  InputNumber as aInputNumber,
+} from 'ant-design-vue'
+import type { RuleObject } from 'ant-design-vue/es/form'
+import ColorPicker from '@/components/ColorPicker.vue'
+import PaddingInput from '@/components/PaddingInput.vue'
+import type { CanvasLayout } from '@/types'
+import { widthTypeOptions, heightTypeOptions } from '@/datas' // DirectionOptions
+
+type propType = keyof CanvasLayout['props']
+
+interface Props {
+  formData: CanvasLayout, // 表单数据
+  cols?: number, // 布局列数
+}
+
+defineOptions({
+  name: 'LayoutForm',
+})
+
+const aFormRef = useTemplateRef<typeof aForm>('aFormRef')
+const props = withDefaults(defineProps<Props>(), {
+  cols: 2,
+})
+
+const rules: Record<string, RuleObject[]> = {
+  id: [{ required: true, message: '请输入布局ID' }],
+  name: [{ required: true, message: '请输入布局名称' }],
+  widthValue: [{ required: true, message: '请输入宽度值', type: 'number', min: 0 }],
+  heightValue: [{ required: true, message: '请输入高度值', type: 'number', min: 0 }],
+}
+
+const formData = computed(() => props.formData)
+const colSpan = computed(() => Math.floor(24 / props.cols))
+
+ // 动态生成数字组件的props
+function createInputNumberProps(field: propType) {
+  const layoutProps = props.formData?.props
+  const isFlex = layoutProps?.[field] === 'flex'
+  return {
+    addonAfter: isFlex ? '' : layoutProps?.[field],
+    addonBefore: isFlex ? 'flex=' : '',
+    min: 0,
+    max: isFlex ? 1 : 9999,
+  }
+}
+
+// 校验表单
+function validate() {
+  return aFormRef.value?.validate().then(() => formData.value).catch(() => false)
+}
+
+defineExpose({
+  validate,
+})
+</script>

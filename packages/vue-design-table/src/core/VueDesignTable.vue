@@ -8,17 +8,20 @@
 
     <!-- 右侧：属性编辑面板 -->
     <TableAttributes />
+
+    <!-- 创建布局弹窗 -->
+    <LayoutModal ref="layoutModalRef" @confirm="addLayoutConfirm" />
   </div>
 </template>
 
 <script setup lang="ts">
-import { ref, provide, onMounted } from 'vue'
+import { ref, provide, onMounted, useTemplateRef } from 'vue'
 import type { CanvasElement, CanvasData, CanvasLayout } from '@/types'
 import { Direction } from '@/types'
 import TableResource from './components/TableResource.vue'
 import TableDesigner from './components/TableDesigner.vue'
 import TableAttributes from './components/TableAttributes.vue'
-import { createLayout } from '@/core/design'
+import LayoutModal from './components/modal/LayoutModal.vue'
 
 // 页面配置总数据
 const canvasData = ref<CanvasData>({
@@ -63,6 +66,8 @@ const canvasData = ref<CanvasData>({
   },
   elements: {},
 })
+
+const layoutModalRef = useTemplateRef('layoutModalRef')
 // 当前选中的元素
 const activeCanvasElement = ref<CanvasElement>()
 // 当前选中的布局
@@ -107,21 +112,31 @@ function getLayoutById(layoutId: string): CanvasLayout {
 }
 
 // 添加布局
-function addLayout(layoutId: string, direction: string) {
-  console.log('添加布局', layoutId, direction)
-  const newLayout = createLayout('newLayout', layoutId, '新布局')
-  canvasData.value.layouts[newLayout.id] = newLayout
-  if (['top', 'bottom'].includes(direction)) {
-    getLayoutById(layoutId).direction = Direction.Vertical
-  } else if (['left', 'right'].includes(direction)) {
-    getLayoutById(layoutId).direction = Direction.Horizontal
+function addLayout(layoutId: string, clickDirection: string) {
+  layoutModalRef.value?.open(layoutId, clickDirection)
+}
+
+// 添加布局确认
+function addLayoutConfirm(layout: CanvasLayout, clickDirection: string) {
+  console.log('添加布局确认', layout, clickDirection)
+  // 添加到布局列表
+  canvasData.value.layouts[layout.id] = layout
+  const parentId = layout.parentId || ''
+  const parentLayout = getLayoutById(parentId)
+  // 更新父布局方向 和 children
+  if (['top', 'bottom'].includes(clickDirection)) {
+    parentLayout.direction = Direction.Vertical
+  } else if (['left', 'right'].includes(clickDirection)) {
+    parentLayout.direction = Direction.Horizontal
   }
-  if (['top', 'left'].includes(direction)) {
-    getLayoutById(layoutId).children?.unshift(newLayout.id)
+  if (['top', 'left'].includes(clickDirection)) {
+    parentLayout.children?.unshift(layout.id)
   } else {
-    getLayoutById(layoutId).children?.push(newLayout.id)
+    parentLayout.children?.push(layout.id)
   }
 }
+
+
 
 // 选择布局
 function selectLayout(layoutId: string) {

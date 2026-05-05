@@ -123,9 +123,12 @@ const lineStyle = computed(() => ({
   opacity: showLines.value ? 0.1 : 0,
 }))
 
-// 点击添加布局图标
-function handleAddLayout(direction: string) {
-  addLayout(props.layoutId, direction)
+/**
+ * 处理添加布局图标点击事件
+ * @param clickDirection 点击方向
+ */
+function handleAddLayout(clickDirection: string) {
+  addLayout(props.layoutId, clickDirection)
 }
 
 function handleMouseEnter() {
@@ -142,6 +145,7 @@ function handleMouseLeave() {
 <style scoped lang="scss">
 .table-layout-wrapper {
   position: relative;
+  border: 1px dashed #1890ff;
   .layout-icon {
     position: absolute;
     cursor: pointer;

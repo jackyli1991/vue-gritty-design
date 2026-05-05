@@ -2,14 +2,7 @@
   display: flex;
   height: 100%;
   gap: 12px;
-  :deep(.ant-input-number-affix-wrapper-disabled) {
-    background-color: #fafafa;
-    cursor: text;
-    .ant-input-number-disabled {
-      background-color: #fafafa;
-      .ant-input-number-input {
-        cursor: text;
-      }
-    }
+  :deep(.ant-form-item) {
+    margin-bottom: 20px;
   }
 }
