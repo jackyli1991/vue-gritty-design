@@ -1,5 +1,5 @@
 <template>
-  <div class="drag-layout">
+  <div id="vue-design-table">
     <!-- 左侧：可拖拽元素列表 -->
     <TableResource />
 
@@ -12,7 +12,7 @@
 </template>
 
 <script setup lang="ts">
-import { ref, provide } from 'vue'
+import { ref, provide, onMounted } from 'vue'
 import type { CanvasElement, CanvasData, CanvasLayout } from '@/types'
 import { Direction } from '@/types'
 import TableResource from './components/TableResource.vue'
@@ -48,7 +48,7 @@ const canvasData = ref<CanvasData>({
       parentId: 'tableMain',
       name: '表格',
       children: [],
-      direction: Direction.Vertical,
+      direction: undefined,
       props: {
         isForm: false,
         padding: [12, 12, 12, 12],
@@ -58,17 +58,20 @@ const canvasData = ref<CanvasData>({
         heightValue: 100,
         gap: 0,
         backgroundColor: '#FFF',
-      }
+      },
     },
   },
   elements: {},
 })
 // 当前选中的元素
-const activeCanvasElement = ref<CanvasElement | null>(null)
+const activeCanvasElement = ref<CanvasElement>()
+// 当前选中的布局
+const activeCanvasLayout = ref<CanvasLayout>()
 
 provide('canvasContext', {
   canvasData,
   activeCanvasElement,
+  activeCanvasLayout,
   addCanvasElement,
   deleteCanvasElement,
   selectCanvasElement,
@@ -76,14 +79,14 @@ provide('canvasContext', {
   addLayout,
 })
 
-// 添加配置数据
+// 添加元素
 function addCanvasElement(component: CanvasElement) {
   console.log('添加元素', component)
   // canvasData.value.elements.push.push(component)
   // selectCanvasElement(canvasData.value.length - 1)
 }
 
-// 删除配置数据
+// 删除元素
 function deleteCanvasElement(index: number) {
   console.log('删除元素', index)
   // const delItem = canvasData.value.splice(index, 1)
@@ -92,12 +95,11 @@ function deleteCanvasElement(index: number) {
   // }
 }
 
-// 设置当前选中的元素
+// 选择元素
 function selectCanvasElement(index: number) {
   console.log('选择元素', index)
   // activeCanvasElement.value = canvasData.value[index]
 }
-
 
 // 获取指定布局的信息
 function getLayoutById(layoutId: string): CanvasLayout {
@@ -121,6 +123,15 @@ function addLayout(layoutId: string, direction: string) {
   }
 }
 
+// 选择布局
+function selectLayout(layoutId: string) {
+  activeCanvasLayout.value = getLayoutById(layoutId)
+}
+
+onMounted(() => {
+  selectLayout('tableMain') // 初始化选择主布局
+})
+
 // 暴露方法给父组件
 defineExpose({
   // getElements: () => canvasElements.value,
@@ -135,9 +146,5 @@ defineExpose({
 </script>
 
 <style scoped lang="scss">
-.drag-layout {
-  display: flex;
-  height: 100%;
-  gap: 12px;
-}
+@import '../style.scss';
 </style>

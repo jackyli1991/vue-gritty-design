@@ -1,4 +1,3 @@
-
 import type { CanvasLayout } from '@/types'
 
 /**
@@ -23,8 +22,8 @@ export function createLayout(id: string, parentId: string, name: string): Canvas
       heightType: '%',
       heightValue: 50,
       gap: 12,
-      backgroundColor: 'red',
+      backgroundColor: '#f5f5f5',
       isForm: false,
-    }
+    },
   }
 }

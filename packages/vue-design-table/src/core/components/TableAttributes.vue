@@ -1,37 +1,27 @@
 <template>
-<div class="table-design-attributes">
-  <div class="attributes-content">
-    <div v-if="!activeCanvasElement" class="attributes-empty">
-      请选择一个元素进行编辑
-    </div>
-    <div v-else class="attributes-form">
-      <div class="attributes-group">
-        <div class="attributes-item">
-          <label>组件类型</label>
-          <div class="attributes-value">{{ activeCanvasElement.name }}</div>
-        </div>
-        <div class="attributes-item">
-          <label>ID</label>
-          <div class="attributes-value">{{ activeCanvasElement.id }}</div>
-        </div>
+  <div class="table-design-attributes">
+    <div class="attributes-content">
+      <div v-if="!activeCanvasElement && !activeCanvasLayout" class="attributes-empty">
+        请选择一个元素进行编辑
       </div>
+      <!-- 布局属性编辑 -->
+      <LayoutAttrs />
+      <!-- 元素属性编辑 -->
+      <ElementAttrs />
     </div>
   </div>
-</div>
 </template>
 
 <script lang="ts" setup>
 import { inject } from 'vue'
-import type { CanvasElement } from '@/types'
-
-interface CanvasContext {
-  activeCanvasElement: CanvasElement | null
-}
+import type { CanvasContext } from '@/types'
+import LayoutAttrs from './attrs/layout.vue' // 布局属性编辑组件
+import ElementAttrs from './attrs/element.vue' // 元素属性编辑组件
 
 const canvasContext = inject<CanvasContext>('canvasContext')
 
 const activeCanvasElement = canvasContext?.activeCanvasElement
-
+const activeCanvasLayout = canvasContext?.activeCanvasLayout
 </script>
 
 <style scoped lang="scss">
@@ -98,6 +88,5 @@ const activeCanvasElement = canvasContext?.activeCanvasElement
       word-break: break-all;
     }
   }
-
 }
 </style>

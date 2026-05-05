@@ -2,6 +2,9 @@
   "name": "@vue-gritty-design/vue-design-table",
   "version": "0.0.1",
   "description": "A Vue 3 visual design table component with drag-and-drop functionality",
+  "files": [
+    "dist"
+  ],
   "type": "module",
   "main": "./dist/index.js",
   "module": "./dist/index.js",
@@ -13,18 +16,10 @@
     },
     "./style.css": "./dist/style.css"
   },
-  "files": [
-    "dist"
-  ],
   "scripts": {
     "dev": "vite build --watch",
     "build": "vite build",
     "type-check": "echo 'skipped'"
-  },
-  "peerDependencies": {
-    "vue": "^3.3.0",
-    "ant-design-vue": "^4.0.0",
-    "@iconify/vue": "^4.0.0"
   },
   "devDependencies": {
     "@vitejs/plugin-vue": "^5.0.0",
@@ -33,12 +28,10 @@
     "vue": "^3.3.0",
     "vue-tsc": "^1.8.0"
   },
-  "keywords": [
-    "vue3",
-    "design",
-    "table",
-    "drag-drop",
-    "visual-editor"
-  ],
-  "license": "MIT"
+  "peerDependencies": {
+    "@iconify/vue": "^4.0.0",
+    "ant-design-vue": "^4.0.0",
+    "vue": "^3.3.0",
+    "vue-color": "^3.3.3"
+  }
 }

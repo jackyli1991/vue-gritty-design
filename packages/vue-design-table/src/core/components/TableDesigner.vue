@@ -25,7 +25,7 @@
         </div>
         <div class="element-actions">
           <button class="delete-btn" @click.stop="deleteElement(index)">
-            <Icon icon="material-symbols:delete-outline" />
+            <IconifyIcon icon="material-symbols:delete-outline" />
           </button>
         </div>
       </div> -->
@@ -35,7 +35,7 @@
 
 <script lang="ts" setup>
 import { ref, reactive, inject } from 'vue'
-// import { Icon } from '@iconify/vue'
+// import IconifyIcon from '@/components/IconifyIcon.vue'
 import type { CanvasElement, CanvasContext } from '@/types'
 import TableLayout from './TableLayout.vue'
 
@@ -74,7 +74,10 @@ const handleDrop = (e: DragEvent) => {
   const dragData = e.dataTransfer?.getData('dragResourceInfo')
   if (!dragData) return
 
-  const parsed = JSON.parse(dragData) as { group?: { key: string }; resource?: { type: string; name: string; defaultProps: Record<string, unknown> } }
+  const parsed = JSON.parse(dragData) as {
+    group?: { key: string }
+    resource?: { type: string; name: string; defaultProps: Record<string, unknown> }
+  }
   const { group, resource } = parsed
   if (!resource) return
 

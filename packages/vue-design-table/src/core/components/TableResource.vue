@@ -9,21 +9,19 @@
             :key="item.type"
             class="resource-item"
             draggable="true"
-            @dragstart="handleDragStart($event, group, item)">
-            <div class="resource-icon">
-              <Icon :icon="item.icon" />
-            </div>
+            @dragstart="handleDragStart($event, group, item)"
+          >
+            <IconifyIcon :icon="item.icon" />
             <div class="resource-name">{{ item.name }}</div>
           </div>
         </div>
-
       </div>
     </div>
   </div>
 </template>
 
 <script lang="ts" setup>
-import { Icon } from '@iconify/vue'
+import IconifyIcon from '@/components/IconifyIcon.vue'
 import type { ResourceItem, ResourceGroup } from '@/types'
 import { resourceGroupsList } from '@/datas'
 
@@ -67,18 +65,6 @@ const handleDragStart = (e: DragEvent, group: ResourceGroup, resource: ResourceI
         cursor: move;
         transition: all 0.2s;
         background: #fff;
-
-        .resource-icon {
-          width: 28px;
-          height: 28px;
-          display: flex;
-          align-items: center;
-          justify-content: center;
-          background: #f5f5f5;
-          border-radius: 4px;
-          font-size: 16px;
-          color: #666;
-        }
 
         .resource-name {
           font-size: 12px;

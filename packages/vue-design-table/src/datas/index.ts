@@ -1,4 +1,5 @@
 import type { ResourceItem, ResourceGroup } from '../types'
+export * from './directory'
 
 // 顶部栏组件列表
 export const topComponentsList: ResourceItem[] = [
@@ -66,7 +67,6 @@ export const columnsComponentsList: ResourceItem[] = [
     icon: 'material-symbols:fit-page-width-outline',
     props: {},
   },
-
 ]
 
 export const resourceGroupsList: ResourceGroup[] = [
