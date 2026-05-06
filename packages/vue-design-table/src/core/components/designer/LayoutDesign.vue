@@ -6,7 +6,7 @@
     @mouseleave.stop="handleMouseLeave"
   >
     <template v-for="child in layoutChildren" :key="child">
-      <TableLayout :layoutId="child" />
+      <LayoutDesign :layoutId="child" />
     </template>
     <!-- table是页面表格容器，不能再添加布局 -->
     <template v-if="!isTable">
@@ -30,7 +30,7 @@ import IconifyIcon from '@/components/IconifyIcon.vue'
 import { CanvasContext, Direction } from '@/types'
 
 defineOptions({
-  name: 'TableLayout',
+  name: 'LayoutDesign',
 })
 
 interface Props {

@@ -17,7 +17,7 @@ import type { CanvasLayout } from '@/types'
 import { ref, useTemplateRef } from 'vue'
 import { Modal as aModal } from 'ant-design-vue'
 import LayoutForm from '../form/LayoutForm.vue'
-import { createLayout } from '@/core/design'
+import { createLayout } from '../designer'
 
 defineOptions({
   name: 'CreateLayout',
@@ -51,7 +51,6 @@ async function handleOk() {
   emit('confirm', formData.value, direction.value)
   visible.value = false
 }
-
 
 defineExpose({
   open,

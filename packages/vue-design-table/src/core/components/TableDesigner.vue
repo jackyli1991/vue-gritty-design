@@ -10,7 +10,7 @@
       <!-- <div v-if="canvasData.length === 0" class="empty-tip">
         拖拽左侧组件到此处
       </div> -->
-      <TableLayout />
+      <LayoutDesign />
       <!-- <div
         v-for="(element, index) in canvasData"
         :key="element.id"
@@ -37,7 +37,7 @@
 import { ref, reactive, inject } from 'vue'
 // import IconifyIcon from '@/components/IconifyIcon.vue'
 import type { CanvasElement, CanvasContext } from '@/types'
-import TableLayout from './TableLayout.vue'
+import LayoutDesign from './designer/LayoutDesign.vue'
 
 // 从父组件注入配置数据
 const canvasContext = inject<CanvasContext>('canvasContext')
