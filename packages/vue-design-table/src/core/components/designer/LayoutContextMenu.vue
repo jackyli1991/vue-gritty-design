@@ -113,7 +113,7 @@ defineExpose({ open, close })
     transition: background 0.15s;
 
     &:hover {
-      background: #e6f7ff;
+      background: var(--vdt-primary-light);
     }
   }
 }

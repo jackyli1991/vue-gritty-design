@@ -73,8 +73,23 @@ export interface CanvasContext {
   deleteLayout: (layoutId: string) => void // 删除布局
 }
 
+// 主题上下文类型定义
+export interface ThemeContext {
+  themeColors: Required<ThemeColors>
+  setThemeColors: (colors: ThemeColors) => void
+}
+
+export interface ThemeColors {
+  primary?: string
+  danger?: string
+  success?: string
+  warning?: string
+  info?: string
+}
+
 export interface DesignTableConfig {
   components?: ResourceItem[]
   showProperties?: boolean
   canvasBackground?: string
+  themeColors?: ThemeColors
 }

@@ -110,8 +110,8 @@ const handleLinkClick = () => {
     align-items: center;
     justify-content: center;
     .link-icon-active {
-      color: #1890ff;
-      background-color: #e6f7ff;
+      color: var(--vdt-primary);
+      background-color: var(--vdt-primary-light);
     }
   }
 }

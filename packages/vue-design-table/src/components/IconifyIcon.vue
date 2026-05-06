@@ -44,8 +44,8 @@ const sizeStyle = computed(() => ({
   color: #666;
   cursor: pointer;
   &.danger {
-    background: #fcdfdf;
-    color: #ff4d4f;
+    background: var(--vdt-danger-light);
+    color: var(--vdt-danger);
   }
 }
 </style>

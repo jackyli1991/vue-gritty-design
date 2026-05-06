@@ -1,5 +1,5 @@
 <template>
-  <div id="vue-design-table">
+  <div id="vue-design-table" ref="containerRef">
     <!-- 左侧：可拖拽元素列表 -->
     <TableResource />
 
@@ -15,13 +15,21 @@
 </template>
 
 <script setup lang="ts">
-import { ref, provide, onMounted, useTemplateRef } from 'vue'
-import type { CanvasElement, CanvasData, CanvasLayout } from '@/types'
+import { ref, provide, onMounted, useTemplateRef, watch } from 'vue'
+import type { CanvasElement, CanvasData, CanvasLayout, ThemeColors } from '@/types'
 import { Direction } from '@/types'
+import { useThemeColors } from '@/composables/useThemeColors'
 import TableResource from './components/TableResource.vue'
 import TableDesigner from './components/TableDesigner.vue'
 import TableAttributes from './components/TableAttributes.vue'
 import LayoutModal from './components/modal/LayoutModal.vue'
+
+// Props
+const props = defineProps<{
+  themeColors?: ThemeColors
+}>()
+
+const containerRef = useTemplateRef('containerRef')
 
 // 页面配置总数据
 const canvasData = ref<CanvasData>({
@@ -77,6 +85,32 @@ const hoveredLayoutId = ref<string>('')
 // 新布局点击方向
 const newLayoutDirection = ref<string>('')
 
+// 颜色配置
+const { themeColors, setThemeColors, applyCssVariables } = useThemeColors(props.themeColors)
+
+// 监听 props.themeColors 变化
+watch(
+  () => props.themeColors,
+  (newColors) => {
+    console.log('newColors', newColors)
+    if (newColors) {
+      setThemeColors(newColors)
+      if (containerRef.value) {
+        applyCssVariables(containerRef.value)
+      }
+    }
+  },
+  { deep: true },
+)
+
+// 应用 CSS 变量
+onMounted(() => {
+  if (containerRef.value) {
+    applyCssVariables(containerRef.value)
+  }
+  selectLayout('tableMain') // 初始化选择主布局
+})
+
 provide('canvasContext', {
   canvasData,
   activeCanvasElement,
@@ -88,6 +122,11 @@ provide('canvasContext', {
   getLayoutById,
   addLayout,
   deleteLayout,
+})
+
+provide('themeContext', {
+  themeColors,
+  setThemeColors,
 })
 
 // 添加元素
@@ -202,6 +241,6 @@ defineExpose({
 })
 </script>
 
-<style scoped lang="scss">
+<style lang="scss">
 @import '../style.scss';
 </style>

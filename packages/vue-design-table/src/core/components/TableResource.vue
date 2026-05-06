@@ -72,8 +72,8 @@ const handleDragStart = (e: DragEvent, group: ResourceGroup, resource: ResourceI
         }
 
         &:hover {
-          border-color: #1890ff;
-          background: #e6f7ff;
+          border-color: var(--vdt-primary);
+          background: var(--vdt-primary-light);
           transform: scale(1.05);
         }
 

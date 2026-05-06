@@ -145,6 +145,6 @@ function handleContextMenu(e: MouseEvent) {
 <style scoped lang="scss">
 .table-layout-wrapper {
   position: relative;
-  border: 1px dashed #1890ff;
+  border: 1px dashed var(--vdt-primary);
 }
 </style>

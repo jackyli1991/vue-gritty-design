@@ -124,68 +124,8 @@ const handleDrop = (e: DragEvent) => {
     position: relative;
 
     &.drag-over {
-      background-color: #e6f7ff;
-      border-color: #1890ff;
-    }
-
-    .canvas-element {
-      position: relative;
-      margin-bottom: 16px;
-      border: 1px solid transparent;
-      border-radius: 4px;
-      transition: all 0.2s;
-      cursor: pointer;
-
-      &:hover {
-        border-color: #d9d9d9;
-      }
-
-      &.selected {
-        border-color: #1890ff;
-        box-shadow: 0 0 0 2px rgba(24, 144, 255, 0.2);
-        .element-actions {
-          opacity: 1;
-        }
-      }
-
-      .element-content {
-        min-height: 40px;
-        display: flex;
-        align-items: center;
-        justify-content: center;
-      }
-
-      .element-actions {
-        position: absolute;
-        top: -24px;
-        right: 0;
-        display: flex;
-        align-items: center;
-        gap: 8px;
-        opacity: 0;
-        transition: opacity 0.2s;
-
-        .canvas-element:hover &,
-        .canvas-element.selected & {
-          opacity: 1;
-        }
-      }
-      .delete-btn {
-        width: 20px;
-        height: 20px;
-        display: flex;
-        align-items: center;
-        justify-content: center;
-        background: #ff4d4f;
-        color: #fff;
-        border-radius: 4px;
-        cursor: pointer;
-        font-size: 12px;
-
-        &:hover {
-          background: #ff7875;
-        }
-      }
+      background-color: var(--vdt-primary-light);
+      border-color: var(--vdt-primary);
     }
 
     .empty-tip {
