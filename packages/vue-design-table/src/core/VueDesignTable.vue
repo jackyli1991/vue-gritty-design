@@ -31,7 +31,7 @@ const canvasData = ref<CanvasData>({
       id: 'tableMain',
       parentId: '',
       name: '表格主布局',
-      children: ['table'], // 子布局ID列表
+      children: [], // 子布局ID列表
       direction: Direction.Vertical,
       editable: false,
       props: {
@@ -72,6 +72,8 @@ const layoutModalRef = useTemplateRef('layoutModalRef')
 const activeCanvasElement = ref<CanvasElement>()
 // 当前选中的布局
 const activeCanvasLayout = ref<CanvasLayout>()
+// 当前鼠标悬停的布局ID
+const hoveredLayoutId = ref<string>('')
 // 新布局点击方向
 const newLayoutDirection = ref<string>('')
 
@@ -79,11 +81,13 @@ provide('canvasContext', {
   canvasData,
   activeCanvasElement,
   activeCanvasLayout,
+  hoveredLayoutId,
   addCanvasElement,
   deleteCanvasElement,
   selectCanvasElement,
   getLayoutById,
   addLayout,
+  deleteLayout,
 })
 
 // 添加元素
@@ -143,6 +147,42 @@ function addLayoutConfirm(layout: CanvasLayout) {
 // 选择布局
 function selectLayout(layoutId: string) {
   activeCanvasLayout.value = getLayoutById(layoutId)
+}
+
+// 删除布局 to do
+function deleteLayout(layoutId: string) {
+  const layout = canvasData.value.layouts[layoutId]
+  if (!layout) return
+  const parentId = layout.parentId
+  if (!parentId) return
+  const parentLayout = canvasData.value.layouts[parentId]
+  if (!parentLayout) return
+  // 递归收集所有子布局ID
+  const idsToDelete: string[] = [layoutId]
+  function collectChildIds(id: string) {
+    const item = canvasData.value.layouts[id]
+    if (item?.children) {
+      for (const childId of item.children) {
+        idsToDelete.push(childId)
+        collectChildIds(childId)
+      }
+    }
+  }
+  collectChildIds(layoutId)
+  // 从父布局的children中移除
+  parentLayout.children = parentLayout.children?.filter((id) => id !== layoutId)
+  // 如果父布局没有子布局了，清除方向
+  if (!parentLayout.children?.length) {
+    parentLayout.direction = undefined
+  }
+  // 删除所有收集到的布局
+  for (const id of idsToDelete) {
+    delete canvasData.value.layouts[id]
+  }
+  // 清除选中状态
+  if (activeCanvasLayout.value?.id === layoutId) {
+    activeCanvasLayout.value = undefined
+  }
 }
 
 onMounted(() => {

@@ -64,11 +64,13 @@ export interface CanvasContext {
   canvasData: CanvasData // 画布数据
   activeCanvasElement: CanvasElement | null // 当前选中的元素
   activeCanvasLayout: CanvasLayout | null // 当前选中的布局
+  hoveredLayoutId: string // 当前鼠标悬停的布局ID
   addCanvasElement: (component: CanvasElement) => void // 添加元素
   deleteCanvasElement: (index: number) => void // 删除元素
   selectCanvasElement: (index: number) => void // 选择元素
   getLayoutById: (layoutId: string) => CanvasLayout | undefined // 根据ID获取布局
   addLayout: (layoutId: string, direction: string) => void // 添加布局
+  deleteLayout: (layoutId: string) => void // 删除布局
 }
 
 export interface DesignTableConfig {

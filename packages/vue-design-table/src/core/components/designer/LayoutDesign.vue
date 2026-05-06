@@ -3,73 +3,71 @@
     :class="['table-layout-wrapper', props.layoutId]"
     :style="wrapperStyle"
     @mouseenter.stop="handleMouseEnter"
+    @mouseover.stop="handleMouseEnter"
     @mouseleave.stop="handleMouseLeave"
+    @contextmenu.prevent.stop="handleContextMenu"
   >
     <template v-for="child in layoutChildren" :key="child">
       <LayoutDesign :layoutId="child" />
     </template>
     <!-- table是页面表格容器，不能再添加布局 -->
     <template v-if="!isTable">
-      <span
-        v-for="line in lines"
-        :key="line.placement"
-        class="layout-icon"
-        :class="['layout-icon-' + line.placement]"
-        :style="lineStyle"
-        @click="handleAddLayout(line.placement)"
-      >
-        <IconifyIcon :icon="line.icon" />
-      </span>
+      <LayoutHoverToolbar
+        :visible="isHovered"
+        :canDelete="canDelete"
+        @add="handleAddLayout"
+        @delete="handleDeleteLayout"
+      />
+      <LayoutContextMenu
+        ref="contextMenuRef"
+        :canDelete="canDelete"
+        @add="handleAddLayout"
+        @delete="handleDeleteLayout"
+      />
     </template>
   </div>
 </template>
 
 <script setup lang="ts">
-import { computed, inject, ref } from 'vue'
-import IconifyIcon from '@/components/IconifyIcon.vue'
+import { computed, inject, toRef, useTemplateRef } from 'vue'
 import { CanvasContext, Direction } from '@/types'
+import LayoutHoverToolbar from './LayoutHoverToolbar.vue'
+import LayoutContextMenu from './LayoutContextMenu.vue'
 
 defineOptions({
   name: 'LayoutDesign',
 })
 
 interface Props {
-  layoutId?: string // 布局ID
+  layoutId?: string
 }
 
-// 添加布局图标
-const lines = [
-  {
-    placement: 'top',
-    icon: 'material-symbols:splitscreen-add-outline-rounded',
-  },
-  {
-    placement: 'bottom',
-    icon: 'material-symbols:splitscreen-add-outline-rounded',
-  },
-  {
-    placement: 'left',
-    icon: 'material-symbols:splitscreen-vertical-add-outline-rounded',
-  },
-  {
-    placement: 'right',
-    icon: 'material-symbols:splitscreen-vertical-add-outline-rounded',
-  },
-]
-
-const showLines = ref(false)
-// 从父组件注入配置数据
 const canvasContext = inject<CanvasContext>('canvasContext')
 const getLayoutById = canvasContext?.getLayoutById || (() => {})
 const addLayout = canvasContext?.addLayout || (() => {})
+const deleteLayout = canvasContext?.deleteLayout || (() => {})
+const hoveredLayoutId = toRef(canvasContext?.hoveredLayoutId)
 
 const props = withDefaults(defineProps<Props>(), {
   layoutId: 'tableMain',
 })
 
+// 右键上下文菜单
+const contextMenuRef = useTemplateRef('contextMenuRef')
+
+// 是否是表格布局
 const isTable = computed(() => props.layoutId === 'table')
 
-// 布局包装器额外样式
+// 是否悬停在布局上
+const isHovered = computed(() => hoveredLayoutId.value === props.layoutId)
+
+// 是否可以删除布局
+const canDelete = computed(() => {
+  const layout = getLayoutById(props.layoutId)
+  return !!layout?.parentId
+})
+
+// 布局额外样式
 const wrapperExtraStyle = computed(() => {
   const layout = getLayoutById(props.layoutId)
   if (!layout?.props) {
@@ -88,7 +86,7 @@ const wrapperExtraStyle = computed(() => {
   }
 })
 
-// 计算布局包装器样式
+// 布局样式
 const wrapperStyle = computed(() => {
   if (isTable.value) {
     return {
@@ -97,8 +95,8 @@ const wrapperStyle = computed(() => {
     }
   }
   const layout = getLayoutById(props.layoutId)
-  // 布局方向
   const direction = layout?.direction
+  // 布局方向样式
   const directionStyle: Record<string, string> = {}
   if (direction) {
     directionStyle.display = 'flex'
@@ -112,33 +110,35 @@ const wrapperStyle = computed(() => {
   }
 })
 
-// 布局包装器子元素
+// 布局子布局
 const layoutChildren = computed(() => {
   const layout = getLayoutById(props.layoutId)
   return layout?.children || []
 })
 
-// 线条样式
-const lineStyle = computed(() => ({
-  opacity: showLines.value ? 0.1 : 0,
-}))
-
-/**
- * 处理添加布局图标点击事件
- * @param clickDirection 点击方向
- */
-function handleAddLayout(clickDirection: string) {
-  addLayout(props.layoutId, clickDirection)
+// 添加布局
+function handleAddLayout(direction: string) {
+  addLayout(props.layoutId, direction)
 }
 
+// 删除布局
+function handleDeleteLayout() {
+  deleteLayout(props.layoutId)
+}
+
+// 鼠标悬停布局
 function handleMouseEnter() {
-  console.log('mouseenter', props.layoutId)
-  showLines.value = true
+  hoveredLayoutId.value = props.layoutId
 }
 
+// 鼠标离开布局
 function handleMouseLeave() {
-  console.log('mouseleave', props.layoutId)
-  showLines.value = false
+  hoveredLayoutId.value = ''
+}
+
+// 开启右键上下文菜单
+function handleContextMenu(e: MouseEvent) {
+  contextMenuRef.value?.open(e.clientX, e.clientY)
 }
 </script>
 
@@ -146,48 +146,5 @@ function handleMouseLeave() {
 .table-layout-wrapper {
   position: relative;
   border: 1px dashed #1890ff;
-  .layout-icon {
-    position: absolute;
-    cursor: pointer;
-    background-color: #999;
-    transition: all 0.2s ease-in-out;
-    &-top,
-    &-bottom {
-      width: 80%;
-      height: 2px;
-      border-radius: 1px;
-      left: 50%;
-      transform: translateX(-50%);
-    }
-    &-left,
-    &-right {
-      width: 2px;
-      height: 80%;
-      border-radius: 1px;
-      top: 50%;
-      transform: translateY(-50%);
-    }
-    &-top {
-      top: 5px;
-    }
-    &-bottom {
-      bottom: 5px;
-    }
-    &-left {
-      left: 5px;
-    }
-    &-right {
-      right: 5px;
-    }
-    svg {
-      position: absolute;
-      top: 50%;
-      left: 50%;
-      transform: translate(-50%, -50%);
-    }
-    &:hover {
-      opacity: 1;
-    }
-  }
 }
 </style>
