@@ -6,7 +6,7 @@
     cancelText="取消"
     okText="确定"
     @ok="handleOk"
-    @cancel="visible = false"
+    @cancel="handleCancel"
   >
     <LayoutForm ref="layoutFormRef" :formData="formData" />
   </aModal>
@@ -25,18 +25,15 @@ defineOptions({
 
 const emit = defineEmits(['confirm'])
 const visible = ref(false)
-const direction = ref('')
 const formData = ref<CanvasLayout>({} as CanvasLayout)
 const layoutFormRef = useTemplateRef<typeof LayoutForm>('layoutFormRef')
 
 /**
  * 打开创建布局弹窗
- * @param layoutId 父布局ID
- * @param clickDirection 点击方向
+ * @param parentId 父布局ID
  */
-function open(layoutId: string, clickDirection: string) {
-  formData.value = createLayout(layoutId)
-  direction.value = clickDirection
+function open(parentId: string) {
+  formData.value = createLayout(parentId)
   visible.value = true
 }
 
@@ -48,7 +45,15 @@ async function handleOk() {
   if (!valid) {
     return
   }
-  emit('confirm', formData.value, direction.value)
+  emit('confirm', formData.value)
+  visible.value = false
+}
+
+/**
+ * 处理取消按钮点击事件
+ */
+function handleCancel() {
+  layoutFormRef.value?.clearValidate()
   visible.value = false
 }
 

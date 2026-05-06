@@ -7,7 +7,6 @@ modelValue数据格式：[top, right, bottom, left] -->
       <aInputNumber
         :value="modelValue[0]"
         :disabled="disabled"
-        :controls="!disabled"
         @update:value="updateValue(0, $event as number)"
         prefix="上"
         :min="0"
@@ -19,7 +18,6 @@ modelValue数据格式：[top, right, bottom, left] -->
       <aInputNumber
         :value="modelValue[3]"
         :disabled="disabled"
-        :controls="!disabled"
         @update:value="updateValue(3, $event as number)"
         prefix="左"
         :min="0"
@@ -37,7 +35,6 @@ modelValue数据格式：[top, right, bottom, left] -->
       <aInputNumber
         :value="modelValue[1]"
         :disabled="disabled"
-        :controls="!disabled"
         @update:value="updateValue(1, $event as number)"
         prefix="右"
         :min="0"
@@ -49,7 +46,6 @@ modelValue数据格式：[top, right, bottom, left] -->
       <aInputNumber
         :value="modelValue[2]"
         :disabled="disabled"
-        :controls="!disabled"
         @update:value="updateValue(2, $event as number)"
         prefix="下"
         :min="0"

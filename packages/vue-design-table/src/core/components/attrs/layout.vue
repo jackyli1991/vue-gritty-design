@@ -1,6 +1,12 @@
 <template>
   <div class="layout-attrs">
-    <LayoutForm v-if="activeCanvasLayout" :formData="activeCanvasLayout" :cols="1" />
+    <LayoutForm
+      v-if="activeCanvasLayout"
+      :formData="activeCanvasLayout"
+      hideRequiredMark
+      :cols="1"
+      :disabledFields="['id']"
+    />
   </div>
 </template>
 

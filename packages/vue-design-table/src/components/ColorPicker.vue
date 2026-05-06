@@ -1,5 +1,5 @@
 <template>
-  <aPopover>
+  <aPopover v-if="!disabled">
     <div class="color-picker-container">
       <span class="color-picker-placeholder" :style="{ backgroundColor: modelValue }"></span>
     </div>
@@ -9,6 +9,9 @@
       </div>
     </template>
   </aPopover>
+  <div v-else class="color-picker-container">
+    <span class="color-picker-placeholder" :style="{ backgroundColor: modelValue }"></span>
+  </div>
 </template>
 
 <script setup lang="ts">
@@ -18,6 +21,13 @@ import 'vue-color/style.css'
 
 defineOptions({
   name: 'ColorPicker',
+})
+
+defineProps({
+  disabled: {
+    type: Boolean,
+    default: false,
+  },
 })
 
 const modelValue = defineModel<string>()

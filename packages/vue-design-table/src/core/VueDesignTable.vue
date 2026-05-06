@@ -72,6 +72,8 @@ const layoutModalRef = useTemplateRef('layoutModalRef')
 const activeCanvasElement = ref<CanvasElement>()
 // 当前选中的布局
 const activeCanvasLayout = ref<CanvasLayout>()
+// 新布局点击方向
+const newLayoutDirection = ref<string>('')
 
 provide('canvasContext', {
   canvasData,
@@ -113,30 +115,30 @@ function getLayoutById(layoutId: string): CanvasLayout {
 
 // 添加布局
 function addLayout(layoutId: string, clickDirection: string) {
-  layoutModalRef.value?.open(layoutId, clickDirection)
+  newLayoutDirection.value = clickDirection
+  layoutModalRef.value?.open(layoutId)
 }
 
 // 添加布局确认
-function addLayoutConfirm(layout: CanvasLayout, clickDirection: string) {
-  console.log('添加布局确认', layout, clickDirection)
+function addLayoutConfirm(layout: CanvasLayout) {
+  const layoutDirection = newLayoutDirection.value
+  console.log('添加布局确认', layout, layoutDirection)
   // 添加到布局列表
   canvasData.value.layouts[layout.id] = layout
   const parentId = layout.parentId || ''
   const parentLayout = getLayoutById(parentId)
   // 更新父布局方向 和 children
-  if (['top', 'bottom'].includes(clickDirection)) {
+  if (['top', 'bottom'].includes(layoutDirection)) {
     parentLayout.direction = Direction.Vertical
-  } else if (['left', 'right'].includes(clickDirection)) {
+  } else if (['left', 'right'].includes(layoutDirection)) {
     parentLayout.direction = Direction.Horizontal
   }
-  if (['top', 'left'].includes(clickDirection)) {
+  if (['top', 'left'].includes(layoutDirection)) {
     parentLayout.children?.unshift(layout.id)
   } else {
     parentLayout.children?.push(layout.id)
   }
 }
-
-
 
 // 选择布局
 function selectLayout(layoutId: string) {

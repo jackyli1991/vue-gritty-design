@@ -2,17 +2,19 @@
   <aForm
     ref="aFormRef"
     :model="formData"
-    hideRequiredMark
-    layout="vertical">
+    :hideRequiredMark="hideRequiredMark"
+    layout="vertical"
+    :disabled="disabled"
+  >
     <aRow :gutter="12">
       <aCol :span="colSpan">
         <aFormItem label="布局ID" name="id" :rules="rules.id">
-          <aInput v-model:value="formData.id" allow-clear />
+          <aInput v-model:value="formData.id" :disabled="props.disabledFields.includes('id')" />
         </aFormItem>
       </aCol>
       <aCol :span="colSpan">
         <aFormItem label="布局名称" name="name" :rules="rules.name">
-          <aInput v-model:value="formData.name" allow-clear />
+          <aInput v-model:value="formData.name" :disabled="props.disabledFields.includes('name')" />
         </aFormItem>
       </aCol>
       <!-- <aCol :span="colSpan">
@@ -28,10 +30,7 @@
         <aRow :gutter="4">
           <aCol :span="12">
             <aFormItem label="宽度" :name="['props', 'widthType']">
-              <aSelect
-                v-model:value="formData.props.widthType"
-                :options="widthTypeOptions"
-              />
+              <aSelect v-model:value="formData.props.widthType" :options="widthTypeOptions" />
             </aFormItem>
           </aCol>
           <aCol :span="12">
@@ -50,10 +49,7 @@
         <aRow :gutter="4">
           <aCol :span="12">
             <aFormItem label="高度" :name="['props', 'heightType']">
-              <aSelect
-                v-model:value="formData.props.heightType"
-                :options="heightTypeOptions"
-              />
+              <aSelect v-model:value="formData.props.heightType" :options="heightTypeOptions" />
             </aFormItem>
           </aCol>
           <aCol :span="12">
@@ -70,12 +66,20 @@
       </aCol>
       <aCol :span="colSpan">
         <aFormItem label="内边距" tooltip="顺序: 上、右、下、左; 单位: px">
-          <PaddingInput v-model="formData.props.padding" :name="['props', 'padding']" />
+          <PaddingInput
+            v-model="formData.props.padding"
+            :name="['props', 'padding']"
+            :disabled="disabled"
+          />
         </aFormItem>
       </aCol>
       <aCol :span="colSpan">
         <aFormItem label="背景颜色">
-          <ColorPicker v-model="formData.props.backgroundColor" :name="['props', 'backgroundColor']" />
+          <ColorPicker
+            v-model="formData.props.backgroundColor"
+            :name="['props', 'backgroundColor']"
+            :disabled="disabled"
+          />
         </aFormItem>
       </aCol>
     </aRow>
@@ -102,10 +106,14 @@ import type { CanvasLayout } from '@/types'
 import { widthTypeOptions, heightTypeOptions } from '@/datas' // DirectionOptions
 
 type propType = keyof CanvasLayout['props']
+type CanvasLayoutFields = keyof CanvasLayout
 
 interface Props {
-  formData: CanvasLayout, // 表单数据
-  cols?: number, // 布局列数
+  formData: CanvasLayout // 表单数据
+  disabled?: boolean // 是否禁用
+  disabledFields?: CanvasLayoutFields[] // 禁用的字段列表
+  hideRequiredMark?: boolean // 是否隐藏必填项提示
+  cols?: number // 布局列数
 }
 
 defineOptions({
@@ -115,6 +123,7 @@ defineOptions({
 const aFormRef = useTemplateRef<typeof aForm>('aFormRef')
 const props = withDefaults(defineProps<Props>(), {
   cols: 2,
+  disabledFields: () => [],
 })
 
 const rules: Record<string, RuleObject[]> = {
@@ -127,7 +136,7 @@ const rules: Record<string, RuleObject[]> = {
 const formData = computed(() => props.formData)
 const colSpan = computed(() => Math.floor(24 / props.cols))
 
- // 动态生成数字组件的props
+// 动态生成数字组件的props
 function createInputNumberProps(field: propType) {
   const layoutProps = props.formData?.props
   const isFlex = layoutProps?.[field] === 'flex'
@@ -141,10 +150,19 @@ function createInputNumberProps(field: propType) {
 
 // 校验表单
 function validate() {
-  return aFormRef.value?.validate().then(() => formData.value).catch(() => false)
+  return aFormRef.value
+    ?.validate()
+    .then(() => formData.value)
+    .catch(() => false)
+}
+
+// 清除表单校验
+function clearValidate() {
+  aFormRef.value?.clearValidate()
 }
 
 defineExpose({
   validate,
+  clearValidate,
 })
 </script>
