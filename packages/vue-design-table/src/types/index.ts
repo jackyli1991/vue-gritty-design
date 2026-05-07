@@ -25,7 +25,8 @@ export interface CanvasLayout {
   name: string // 布局名称
   direction?: Direction | undefined // 布局方向
   children?: string[] // 子布局ID列表
-  editable?: boolean // 是否可编辑
+  deleteAllowed?: boolean // 是否可删除
+  addAllowed?: boolean // 是否可添加子布局
   props: {
     padding: number[] // 内边距
     widthType: string // 宽度类型
@@ -71,6 +72,7 @@ export interface CanvasContext {
   getLayoutById: (layoutId: string) => CanvasLayout | undefined // 根据ID获取布局
   addLayout: (layoutId: string, direction: string) => void // 添加布局
   deleteLayout: (layoutId: string) => void // 删除布局
+  selectLayout: (layoutId: string) => void // 选择布局
 }
 
 // 主题上下文类型定义

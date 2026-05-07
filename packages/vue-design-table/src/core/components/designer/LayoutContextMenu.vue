@@ -7,7 +7,7 @@
           v-for="item in LayoutOperateOptions"
           :key="item.value"
           class="context-menu-item"
-          @click="handleAdd(item.value)"
+          @click="handleAction(item.value)"
         >
           <IconifyIcon :icon="item.icon" :danger="item.danger" />
           <span>{{ item.label }}</span>
@@ -30,8 +30,7 @@ defineProps<{
 }>()
 
 const emit = defineEmits<{
-  add: [direction: string]
-  delete: []
+  action: [direction: string]
 }>()
 
 const menuStyle = computed(() => ({
@@ -48,15 +47,11 @@ function close() {
   visible.value = false
 }
 
-function handleAdd(direction: string) {
-  emit('add', direction)
+// 处理操作
+function handleAction(direction: string) {
+  emit('action', direction)
   close()
 }
-
-// function handleDelete() {
-//   emit('delete', layoutId.value)
-//   close()
-// }
 
 function handleClickOutside() {
   if (visible.value) close()

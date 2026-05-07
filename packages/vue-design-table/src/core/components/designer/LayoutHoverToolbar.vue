@@ -5,7 +5,7 @@
         v-for="item in LayoutOperateOptions"
         :key="item.value"
         class="toolbar-item"
-        @click.stop="handleAdd(item.value)"
+        @click.stop="handleAction(item.value)"
       >
         <aTooltip :title="item.label" placement="top">
           <IconifyIcon :icon="item.icon" :size="20" :danger="item.danger" />
@@ -26,17 +26,13 @@ defineProps<{
 }>()
 
 const emit = defineEmits<{
-  add: [direction: string]
-  delete: []
+  action: [direction: string]
 }>()
 
-function handleAdd(direction: string) {
-  emit('add', direction)
+// 处理操作
+function handleAction(direction: string) {
+  emit('action', direction)
 }
-
-// function handleDelete() {
-//   emit('delete')
-// }
 </script>
 
 <style scoped lang="scss">

@@ -13,15 +13,15 @@
 </template>
 
 <script lang="ts" setup>
-import { inject } from 'vue'
+import { inject, computed } from 'vue'
 import type { CanvasContext } from '@/types'
-import LayoutAttrs from './attrs/layout.vue' // 布局属性编辑组件
-import ElementAttrs from './attrs/element.vue' // 元素属性编辑组件
+import LayoutAttrs from './attrs/layout.vue'
+import ElementAttrs from './attrs/element.vue'
 
 const canvasContext = inject<CanvasContext>('canvasContext')
 
-const activeCanvasElement = canvasContext?.activeCanvasElement
-const activeCanvasLayout = canvasContext?.activeCanvasLayout
+const activeCanvasElement = computed(() => canvasContext?.activeCanvasElement)
+const activeCanvasLayout = computed(() => canvasContext?.activeCanvasLayout)
 </script>
 
 <style scoped lang="scss">

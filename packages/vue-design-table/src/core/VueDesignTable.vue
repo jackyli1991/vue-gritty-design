@@ -11,6 +11,8 @@
 
     <!-- 创建布局弹窗 -->
     <LayoutModal ref="layoutModalRef" @confirm="addLayoutConfirm" />
+    <!-- 删除确认弹窗 -->
+    <DeleteConfirmModal ref="deleteConfirmModalRef" @confirm="handleDeleteConfirm" />
   </div>
 </template>
 
@@ -23,6 +25,8 @@ import TableResource from './components/TableResource.vue'
 import TableDesigner from './components/TableDesigner.vue'
 import TableAttributes from './components/TableAttributes.vue'
 import LayoutModal from './components/modal/LayoutModal.vue'
+import DeleteConfirmModal from './components/modal/DeleteConfirmModal.vue'
+import { createLayout } from './components/designer'
 
 // Props
 const props = defineProps<{
@@ -35,47 +39,38 @@ const containerRef = useTemplateRef('containerRef')
 const canvasData = ref<CanvasData>({
   layouts: {
     // 主布局
-    tableMain: {
-      id: 'tableMain',
-      parentId: '',
-      name: '表格主布局',
-      children: [], // 子布局ID列表
+    tableMain: createLayout('tableMain', '', {
       direction: Direction.Vertical,
-      editable: false,
-      props: {
-        isForm: false,
-        padding: [0, 0, 0, 0],
-        widthType: '%',
-        widthValue: 100,
-        heightType: '%',
-        heightValue: 100,
-        gap: 0,
-        backgroundColor: '#FFF',
-      },
-    },
-    // 表格
-    table: {
-      id: 'table',
-      parentId: 'tableMain',
-      name: '表格',
-      children: [],
+      name: '表格主布局',
+      deleteAllowed: false,
+      children: ['tableWrapper'],
+      heightType: '%',
+      heightValue: 100,
+    }),
+    // 表格容器
+    tableWrapper: createLayout('tableWrapper', 'tableMain', {
       direction: undefined,
-      props: {
-        isForm: false,
-        padding: [12, 12, 12, 12],
-        widthType: '%',
-        widthValue: 100,
-        heightType: '%',
-        heightValue: 100,
-        gap: 0,
-        backgroundColor: '#FFF',
-      },
-    },
+      name: '表格容器',
+      deleteAllowed: false,
+      children: ['table'],
+      heightType: '%',
+      heightValue: 100,
+    }),
+    // 表格
+    table: createLayout('table', 'tableWrapper', {
+      direction: undefined,
+      name: '表格',
+      deleteAllowed: false,
+      addAllowed: false,
+      heightType: '%',
+      heightValue: 100,
+    }),
   },
   elements: {},
 })
 
 const layoutModalRef = useTemplateRef('layoutModalRef')
+const deleteConfirmModalRef = useTemplateRef('deleteConfirmModalRef')
 // 当前选中的元素
 const activeCanvasElement = ref<CanvasElement>()
 // 当前选中的布局
@@ -84,6 +79,8 @@ const activeCanvasLayout = ref<CanvasLayout>()
 const hoveredLayoutId = ref<string>('')
 // 新布局点击方向
 const newLayoutDirection = ref<string>('')
+// 待删除的布局ID
+const pendingDeleteLayoutId = ref<string>('')
 
 // 颜色配置
 const { themeColors, setThemeColors, applyCssVariables } = useThemeColors(props.themeColors)
@@ -121,7 +118,8 @@ provide('canvasContext', {
   selectCanvasElement,
   getLayoutById,
   addLayout,
-  deleteLayout,
+  deleteLayout: openDeleteConfirm,
+  selectLayout,
 })
 
 provide('themeContext', {
@@ -166,17 +164,15 @@ function addLayout(layoutId: string, clickDirection: string) {
 function addLayoutConfirm(layout: CanvasLayout) {
   const layoutDirection = newLayoutDirection.value
   console.log('添加布局确认', layout, layoutDirection)
-  // 添加到布局列表
-  canvasData.value.layouts[layout.id] = layout
   const parentId = layout.parentId || ''
   const parentLayout = getLayoutById(parentId)
-  // 更新父布局方向 和 children
-  if (['top', 'bottom'].includes(layoutDirection)) {
-    parentLayout.direction = Direction.Vertical
-  } else if (['left', 'right'].includes(layoutDirection)) {
-    parentLayout.direction = Direction.Horizontal
-  }
-  if (['top', 'left'].includes(layoutDirection)) {
+  if (!parentLayout) return
+  const isVertical = layoutDirection === 'top' || layoutDirection === 'bottom' // 是否垂直方向
+  const direction = isVertical ? Direction.Vertical : Direction.Horizontal
+
+  canvasData.value.layouts[layout.id] = layout
+  parentLayout.direction = direction
+  if (isVertical) {
     parentLayout.children?.unshift(layout.id)
   } else {
     parentLayout.children?.push(layout.id)
@@ -188,8 +184,23 @@ function selectLayout(layoutId: string) {
   activeCanvasLayout.value = getLayoutById(layoutId)
 }
 
-// 删除布局 to do
-function deleteLayout(layoutId: string) {
+// 打开删除确认弹窗
+function openDeleteConfirm(layoutId: string) {
+  pendingDeleteLayoutId.value = layoutId
+  deleteConfirmModalRef.value?.open()
+}
+
+// 删除确认回调
+function handleDeleteConfirm() {
+  const layoutId = pendingDeleteLayoutId.value
+  if (layoutId) {
+    doDeleteLayout(layoutId)
+  }
+  pendingDeleteLayoutId.value = ''
+}
+
+// 实际执行删除布局
+function doDeleteLayout(layoutId: string) {
   const layout = canvasData.value.layouts[layoutId]
   if (!layout) return
   const parentId = layout.parentId
@@ -223,10 +234,6 @@ function deleteLayout(layoutId: string) {
     activeCanvasLayout.value = undefined
   }
 }
-
-onMounted(() => {
-  selectLayout('tableMain') // 初始化选择主布局
-})
 
 // 暴露方法给父组件
 defineExpose({

@@ -2,6 +2,7 @@
   <div
     :class="['table-layout-wrapper', props.layoutId]"
     :style="wrapperStyle"
+    @click.stop="handleClick"
     @mouseenter.stop="handleMouseEnter"
     @mouseover.stop="handleMouseEnter"
     @mouseleave.stop="handleMouseLeave"
@@ -12,18 +13,8 @@
     </template>
     <!-- table是页面表格容器，不能再添加布局 -->
     <template v-if="!isTable">
-      <LayoutHoverToolbar
-        :visible="isHovered"
-        :canDelete="canDelete"
-        @add="handleAddLayout"
-        @delete="handleDeleteLayout"
-      />
-      <LayoutContextMenu
-        ref="contextMenuRef"
-        :canDelete="canDelete"
-        @add="handleAddLayout"
-        @delete="handleDeleteLayout"
-      />
+      <LayoutHoverToolbar :visible="isHovered" :canDelete="canDelete" @action="handleAction" />
+      <LayoutContextMenu ref="contextMenuRef" :canDelete="canDelete" @action="handleAction" />
     </template>
   </div>
 </template>
@@ -46,6 +37,7 @@ const canvasContext = inject<CanvasContext>('canvasContext')
 const getLayoutById = canvasContext?.getLayoutById || (() => {})
 const addLayout = canvasContext?.addLayout || (() => {})
 const deleteLayout = canvasContext?.deleteLayout || (() => {})
+const selectLayout = canvasContext?.selectLayout || (() => {})
 const hoveredLayoutId = toRef(canvasContext?.hoveredLayoutId)
 
 const props = withDefaults(defineProps<Props>(), {
@@ -116,6 +108,15 @@ const layoutChildren = computed(() => {
   return layout?.children || []
 })
 
+// 处理操作
+function handleAction(direction: string) {
+  if (direction === 'delete') {
+    handleDeleteLayout()
+    return
+  }
+  handleAddLayout(direction)
+}
+
 // 添加布局
 function handleAddLayout(direction: string) {
   addLayout(props.layoutId, direction)
@@ -124,6 +125,11 @@ function handleAddLayout(direction: string) {
 // 删除布局
 function handleDeleteLayout() {
   deleteLayout(props.layoutId)
+}
+
+// 点击布局
+function handleClick() {
+  selectLayout(props.layoutId)
 }
 
 // 鼠标悬停布局
