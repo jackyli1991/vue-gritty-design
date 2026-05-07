@@ -1,5 +1,6 @@
 import { ref, computed } from 'vue'
 import type { ThemeColors } from '@/types'
+import { lighten, darken } from '@/utils/colorUtils'
 
 // 默认主题颜色
 const DEFAULT_THEME_COLORS: Required<ThemeColors> = {
@@ -16,22 +17,23 @@ export function useThemeColors(initialColors?: ThemeColors) {
   // 计算CSS变量
   // 用于在组件中使用var(--vdt-primary)等变量
   const cssVariables = computed(() => {
+    const c = themeColors.value
     return {
-      '--vdt-primary': themeColors.value.primary,
-      '--vdt-primary-hover': themeColors.value.primary,
-      '--vdt-primary-light': themeColors.value.primary,
-      '--vdt-danger': themeColors.value.danger,
-      '--vdt-danger-hover': themeColors.value.danger,
-      '--vdt-danger-light': themeColors.value.danger,
-      '--vdt-success': themeColors.value.success,
-      '--vdt-success-hover': themeColors.value.success,
-      '--vdt-success-light': themeColors.value.success,
-      '--vdt-warning': themeColors.value.warning,
-      '--vdt-warning-hover': themeColors.value.warning,
-      '--vdt-warning-light': themeColors.value.warning,
-      '--vdt-info': themeColors.value.info,
-      '--vdt-info-hover': themeColors.value.info,
-      '--vdt-info-light': themeColors.value.info,
+      '--vdt-primary': c.primary,
+      '--vdt-primary-hover': darken(c.primary, 0.1),
+      '--vdt-primary-light': lighten(c.primary, 0.9),
+      '--vdt-danger': c.danger,
+      '--vdt-danger-hover': darken(c.danger, 0.1),
+      '--vdt-danger-light': lighten(c.danger, 0.9),
+      '--vdt-success': c.success,
+      '--vdt-success-hover': darken(c.success, 0.1),
+      '--vdt-success-light': lighten(c.success, 0.9),
+      '--vdt-warning': c.warning,
+      '--vdt-warning-hover': darken(c.warning, 0.1),
+      '--vdt-warning-light': lighten(c.warning, 0.9),
+      '--vdt-info': c.info,
+      '--vdt-info-hover': darken(c.info, 0.1),
+      '--vdt-info-light': lighten(c.info, 0.9),
     }
   })
 

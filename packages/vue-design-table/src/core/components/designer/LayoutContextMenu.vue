@@ -79,9 +79,9 @@ defineExpose({ open, close })
 .layout-context-menu {
   position: fixed;
   z-index: 9999;
-  min-width: 180px;
+  min-width: 135px;
   background: #fff;
-  border-radius: 8px;
+  border-radius: 6px;
   box-shadow:
     0 6px 16px 0 rgba(0, 0, 0, 0.08),
     0 3px 6px -4px rgba(0, 0, 0, 0.12),
@@ -106,9 +106,9 @@ defineExpose({ open, close })
     display: flex;
     align-items: center;
     gap: 8px;
-    padding: 6px 12px;
+    padding: 6px 8px;
     cursor: pointer;
-    font-size: 13px;
+    font-size: 12px;
     color: #333;
     transition: background 0.15s;
 
