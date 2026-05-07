@@ -4,10 +4,10 @@
       <div class="context-menu-group">
         <div class="context-menu-group-title">添加布局</div>
         <div
-          v-for="item in LayoutOperateOptions"
-          :key="item.value"
+          v-for="item in operateOptions"
+          :key="item.value as string"
           class="context-menu-item"
-          @click="handleAction(item.value)"
+          @click="handleAction(item.value as string)"
         >
           <IconifyIcon :icon="item.icon" :danger="item.danger" />
           <span>{{ item.label }}</span>
@@ -21,11 +21,12 @@
 import { ref, computed, onMounted, onUnmounted } from 'vue'
 import IconifyIcon from '@/components/IconifyIcon.vue'
 import { LayoutOperateOptions } from '@/datas/directory'
+import { excludeOption } from '@/utils'
 
 const visible = ref(false)
 const position = ref({ x: 0, y: 0 })
 
-defineProps<{
+const props = defineProps<{
   canDelete: boolean
 }>()
 
@@ -37,6 +38,13 @@ const menuStyle = computed(() => ({
   left: `${position.value.x}px`,
   top: `${position.value.y}px`,
 }))
+
+const operateOptions = computed(() => {
+  if (props.canDelete) {
+    return LayoutOperateOptions
+  }
+  return excludeOption(LayoutOperateOptions, 'delete')
+})
 
 function open(x: number, y: number) {
   position.value = { x, y }

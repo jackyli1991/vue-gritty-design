@@ -33,7 +33,9 @@ const layoutFormRef = useTemplateRef<typeof LayoutForm>('layoutFormRef')
  * @param parentId 父布局ID
  */
 function open(parentId: string) {
-  formData.value = createLayout(parentId)
+  formData.value = createLayout('', parentId, {
+    name: '新布局',
+  })
   visible.value = true
 }
 

@@ -1,6 +1,10 @@
 <template>
   <div
-    :class="['table-layout-wrapper', props.layoutId]"
+    :class="[
+      'table-layout-wrapper',
+      props.layoutId,
+      {'table-layout-wrapper-drop': canDropElement},
+      ]"
     :style="wrapperStyle"
     @click.stop="handleClick"
     @mouseenter.stop="handleMouseEnter"
@@ -12,7 +16,7 @@
       <LayoutDesign :layoutId="child" />
     </template>
     <!-- table是页面表格容器，不能再添加布局 -->
-    <template v-if="!isTable">
+    <template v-if="canAddLayout">
       <LayoutHoverToolbar :visible="isHovered" :canDelete="canDelete" @action="handleAction" />
       <LayoutContextMenu ref="contextMenuRef" :canDelete="canDelete" @action="handleAction" />
     </template>
@@ -41,14 +45,14 @@ const selectLayout = canvasContext?.selectLayout || (() => {})
 const hoveredLayoutId = toRef(canvasContext?.hoveredLayoutId)
 
 const props = withDefaults(defineProps<Props>(), {
-  layoutId: 'tableMain',
+  layoutId: 'tablePage',
 })
 
 // 右键上下文菜单
 const contextMenuRef = useTemplateRef('contextMenuRef')
 
 // 是否是表格布局
-const isTable = computed(() => props.layoutId === 'table')
+const isTable = computed(() => props.layoutId === 'table' || props.layoutId === 'tableWrapper')
 
 // 是否悬停在布局上
 const isHovered = computed(() => hoveredLayoutId.value === props.layoutId)
@@ -56,8 +60,22 @@ const isHovered = computed(() => hoveredLayoutId.value === props.layoutId)
 // 是否可以删除布局
 const canDelete = computed(() => {
   const layout = getLayoutById(props.layoutId)
-  return !!layout?.parentId
+  return !!layout && layout?.deleteAllowed === true
 })
+
+// 是否可以添加布局
+const canAddLayout = computed(() => {
+  const layout = getLayoutById(props.layoutId)
+  return !!layout && layout?.addAllowed !== false
+})
+
+// 是否可以拖拽元素到该布局
+const canDropElement = computed(() => {
+  const layout = getLayoutById(props.layoutId)
+  return !!layout && layout?.dropAllowed === true
+})
+
+
 
 // 布局额外样式
 const wrapperExtraStyle = computed(() => {
@@ -130,6 +148,7 @@ function handleDeleteLayout() {
 // 点击布局
 function handleClick() {
   selectLayout(props.layoutId)
+  contextMenuRef.value?.close()
 }
 
 // 鼠标悬停布局
@@ -151,6 +170,9 @@ function handleContextMenu(e: MouseEvent) {
 <style scoped lang="scss">
 .table-layout-wrapper {
   position: relative;
-  border: 1px dashed var(--vdt-primary);
+  box-sizing: border-box;
+  &-drop {
+    border: 1px dashed var(--vdt-primary);
+  }
 }
 </style>

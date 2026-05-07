@@ -1,27 +1,29 @@
-export const YesNoOptions = [
+import { Option } from '@/types'
+
+export const YesNoOptions: Option[] = [
   { label: '是', value: 1 },
   { label: '否', value: 0 },
 ]
 
-export const DirectionOptions = [
+export const DirectionOptions: Option[] = [
   { label: '水平', value: 'horizontal' },
   { label: '垂直', value: 'vertical' },
 ]
 
-export const widthTypeOptions = [
+export const widthTypeOptions: Option[] = [
   { label: '固定宽度', value: 'px' },
   { label: '百分比', value: '%' },
   { label: '弹性布局', value: 'flex' },
 ]
 
-export const heightTypeOptions = [
+export const heightTypeOptions: Option[] = [
   { label: '固定高度', value: 'px' },
   { label: '百分比', value: '%' },
   { label: '弹性布局', value: 'flex' },
 ]
 
 // 布局操作选项
-export const LayoutOperateOptions = [
+export const LayoutOperateOptions: Option[] = [
   {
     label: '在上方添加',
     value: 'top',

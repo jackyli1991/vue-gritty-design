@@ -39,25 +39,30 @@ const containerRef = useTemplateRef('containerRef')
 const canvasData = ref<CanvasData>({
   layouts: {
     // 主布局
-    tableMain: createLayout('tableMain', '', {
+    tablePage: createLayout('tablePage', '', {
       direction: Direction.Vertical,
-      name: '表格主布局',
+      name: '页面容器',
       deleteAllowed: false,
+      dropAllowed: false,
       children: ['tableWrapper'],
       heightType: '%',
       heightValue: 100,
+      backgroundColor: '#fefefe',
+      padding: [10, 10, 10, 10],
     }),
     // 表格容器
-    tableWrapper: createLayout('tableWrapper', 'tableMain', {
+    tableWrapper: createLayout('tableWrapper', 'tablePage', {
       direction: undefined,
       name: '表格容器',
       deleteAllowed: false,
-      children: ['table'],
+      dropAllowed: false,
+      children: ['tableMain'],
       heightType: '%',
       heightValue: 100,
+      padding: [10, 10, 10, 10],
     }),
     // 表格
-    table: createLayout('table', 'tableWrapper', {
+    tableMain: createLayout('tableMain', 'tableWrapper', {
       direction: undefined,
       name: '表格',
       deleteAllowed: false,
@@ -105,7 +110,7 @@ onMounted(() => {
   if (containerRef.value) {
     applyCssVariables(containerRef.value)
   }
-  selectLayout('tableMain') // 初始化选择主布局
+  selectLayout('tablePage') // 初始化选择主布局
 })
 
 provide('canvasContext', {

@@ -2,10 +2,10 @@
   <Transition name="toolbar-fade">
     <div v-if="visible" class="layout-hover-toolbar">
       <div
-        v-for="item in LayoutOperateOptions"
-        :key="item.value"
+        v-for="item in operateOptions"
+        :key="item.value as string"
         class="toolbar-item"
-        @click.stop="handleAction(item.value)"
+        @click.stop="handleAction(item.value as string)"
       >
         <aTooltip :title="item.label" placement="top">
           <IconifyIcon :icon="item.icon" :size="20" :danger="item.danger" />
@@ -16,11 +16,14 @@
 </template>
 
 <script setup lang="ts">
+import { computed } from 'vue'
+import { excludeOption } from '@/utils'
+
 import IconifyIcon from '@/components/IconifyIcon.vue'
 import { LayoutOperateOptions } from '@/datas/directory'
 import { Tooltip as aTooltip } from 'ant-design-vue'
 
-defineProps<{
+const props = defineProps<{
   visible: boolean
   canDelete: boolean
 }>()
@@ -28,6 +31,13 @@ defineProps<{
 const emit = defineEmits<{
   action: [direction: string]
 }>()
+
+const operateOptions = computed(() => {
+  if (props.canDelete) {
+    return LayoutOperateOptions
+  }
+  return excludeOption(LayoutOperateOptions, 'delete')
+})
 
 // 处理操作
 function handleAction(direction: string) {

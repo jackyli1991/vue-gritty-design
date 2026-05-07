@@ -8,6 +8,7 @@ interface CreateLayoutConfig extends Omit<CanvasLayout, 'id' | 'props'> {
   gap?: number
   backgroundColor?: string
   isForm?: boolean
+  padding?: number[]
 }
 
 /**
@@ -29,9 +30,11 @@ export function createLayout(
     name: config.name ?? '',
     direction: config.direction ?? undefined,
     children: config.children ?? [],
-    deleteAllowed: config.deleteAllowed ?? false,
+    deleteAllowed: config.deleteAllowed ?? true,
+    addAllowed: config.addAllowed ?? true,
+    dropAllowed: config.dropAllowed ?? true,
     props: {
-      padding: [0, 0, 0, 0],
+      padding: config.padding ?? [0, 0, 0, 0],
       widthType: config.widthType ?? '%',
       widthValue: config.widthValue ?? 100,
       heightType: config.heightType ?? 'px',

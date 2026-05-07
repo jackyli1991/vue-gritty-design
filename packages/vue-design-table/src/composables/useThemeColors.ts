@@ -1,6 +1,6 @@
 import { ref, computed } from 'vue'
 import type { ThemeColors } from '@/types'
-import { lighten, darken } from '@/utils/colorUtils'
+import { lighten, darken } from '@/utils'
 
 // 默认主题颜色
 const DEFAULT_THEME_COLORS: Required<ThemeColors> = {

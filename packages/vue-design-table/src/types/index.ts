@@ -3,6 +3,14 @@ export enum Direction {
   Horizontal = 'horizontal',
 }
 
+export interface Option {
+  value: string | number | boolean
+  label: string
+  icon?: string
+  danger?: boolean
+  color?: string
+}
+
 // 组件类型定义
 export interface ResourceItem {
   type: string
@@ -27,6 +35,7 @@ export interface CanvasLayout {
   children?: string[] // 子布局ID列表
   deleteAllowed?: boolean // 是否可删除
   addAllowed?: boolean // 是否可添加子布局
+  dropAllowed?: boolean // 是否可拖拽元素到该布局
   props: {
     padding: number[] // 内边距
     widthType: string // 宽度类型
