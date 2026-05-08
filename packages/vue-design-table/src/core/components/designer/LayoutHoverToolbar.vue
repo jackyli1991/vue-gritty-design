@@ -5,7 +5,7 @@
         v-for="item in operateOptions"
         :key="item.value as string"
         class="toolbar-item"
-        @click.stop="handleAction(item.value as string)"
+        @click.stop="handleAction(item.value as Position)"
       >
         <aTooltip :title="item.label" placement="top">
           <IconifyIcon :icon="item.icon" :size="20" :danger="item.danger" />
@@ -18,6 +18,7 @@
 <script setup lang="ts">
 import { computed } from 'vue'
 import { excludeOption } from '@/utils'
+import { Position } from '@/types'
 
 import IconifyIcon from '@/components/IconifyIcon.vue'
 import { LayoutOperateOptions } from '@/datas/directory'
@@ -29,18 +30,18 @@ const props = defineProps<{
 }>()
 
 const emit = defineEmits<{
-  action: [direction: string]
+  action: [direction: Position]
 }>()
 
 const operateOptions = computed(() => {
   if (props.canDelete) {
     return LayoutOperateOptions
   }
-  return excludeOption(LayoutOperateOptions, 'delete')
+  return excludeOption(LayoutOperateOptions, 'delete') // 排除删除选项
 })
 
 // 处理操作
-function handleAction(direction: string) {
+function handleAction(direction: Position) {
   emit('action', direction)
 }
 </script>

@@ -14,6 +14,7 @@
 
 <script setup lang="ts">
 import type { CanvasLayout } from '@/types'
+import { Position } from '@/types'
 import { ref, useTemplateRef } from 'vue'
 import { Modal as aModal } from 'ant-design-vue'
 import LayoutForm from '../form/LayoutForm.vue'
@@ -25,17 +26,36 @@ defineOptions({
 
 const emit = defineEmits(['confirm'])
 const visible = ref(false)
+const layoutDirection = ref<Position>(Position.Top)
 const formData = ref<CanvasLayout>({} as CanvasLayout)
 const layoutFormRef = useTemplateRef<typeof LayoutForm>('layoutFormRef')
 
 /**
  * 打开创建布局弹窗
  * @param parentId 父布局ID
+ * @param clickDirection 点击方向，用于确定添加位置
  */
-function open(parentId: string) {
-  formData.value = createLayout('', parentId, {
+function open(parentId: string, clickDirection: Position) {
+  const layOutProps = {
     name: '新布局',
-  })
+  }
+  if (clickDirection === Position.Top || clickDirection === Position.Bottom) {
+    Object.assign(layOutProps, {
+      widthType: '%',
+      widthValue: 100,
+      heightType: 'px',
+      heightValue: 60,
+    })
+  } else {
+    Object.assign(layOutProps, {
+      widthType: 'px',
+      widthValue: 60,
+      heightType: '%',
+      heightValue: 100,
+    })
+  }
+  layoutDirection.value = clickDirection
+  formData.value = createLayout('', parentId, layOutProps)
   visible.value = true
 }
 
@@ -47,7 +67,7 @@ async function handleOk() {
   if (!valid) {
     return
   }
-  emit('confirm', formData.value)
+  emit('confirm', formData.value, layoutDirection.value)
   visible.value = false
 }
 

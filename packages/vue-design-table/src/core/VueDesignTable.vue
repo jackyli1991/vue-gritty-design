@@ -19,7 +19,7 @@
 <script setup lang="ts">
 import { ref, provide, onMounted, useTemplateRef, watch } from 'vue'
 import type { CanvasElement, CanvasData, CanvasLayout, ThemeColors } from '@/types'
-import { Direction } from '@/types'
+import { Direction, Position } from '@/types'
 import { useThemeColors } from '@/composables/useThemeColors'
 import TableResource from './components/TableResource.vue'
 import TableDesigner from './components/TableDesigner.vue'
@@ -82,8 +82,6 @@ const activeCanvasElement = ref<CanvasElement>()
 const activeCanvasLayout = ref<CanvasLayout>()
 // 当前鼠标悬停的布局ID
 const hoveredLayoutId = ref<string>('')
-// 新布局点击方向
-const newLayoutDirection = ref<string>('')
 // 待删除的布局ID
 const pendingDeleteLayoutId = ref<string>('')
 
@@ -160,24 +158,26 @@ function getLayoutById(layoutId: string): CanvasLayout {
 }
 
 // 添加布局
-function addLayout(layoutId: string, clickDirection: string) {
-  newLayoutDirection.value = clickDirection
-  layoutModalRef.value?.open(layoutId)
+function addLayout(layoutId: string, clickDirection: Position) {
+  layoutModalRef.value?.open(layoutId, clickDirection)
 }
 
 // 添加布局确认
-function addLayoutConfirm(layout: CanvasLayout) {
-  const layoutDirection = newLayoutDirection.value
+function addLayoutConfirm(layout: CanvasLayout, layoutDirection: Position) {
   console.log('添加布局确认', layout, layoutDirection)
   const parentId = layout.parentId || ''
   const parentLayout = getLayoutById(parentId)
   if (!parentLayout) return
-  const isVertical = layoutDirection === 'top' || layoutDirection === 'bottom' // 是否垂直方向
+  const isVertical = layoutDirection === Position.Top || layoutDirection === Position.Bottom // 是否垂直方向
   const direction = isVertical ? Direction.Vertical : Direction.Horizontal
 
   canvasData.value.layouts[layout.id] = layout
   parentLayout.direction = direction
-  if (isVertical) {
+  // 按方向添加到父布局的children中
+  // top、left: 添加到children的开头
+  // bottom、right: 添加到children的末尾
+  const isUnshift = layoutDirection === Position.Top || layoutDirection === Position.Left
+  if (isUnshift) {
     parentLayout.children?.unshift(layout.id)
   } else {
     parentLayout.children?.push(layout.id)

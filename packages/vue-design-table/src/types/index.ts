@@ -3,6 +3,13 @@ export enum Direction {
   Horizontal = 'horizontal',
 }
 
+export enum Position {
+  Top = 'top',
+  Bottom = 'bottom',
+  Left = 'left',
+  Right = 'right',
+}
+
 export interface Option {
   value: string | number | boolean
   label: string
@@ -79,7 +86,7 @@ export interface CanvasContext {
   deleteCanvasElement: (index: number) => void // 删除元素
   selectCanvasElement: (index: number) => void // 选择元素
   getLayoutById: (layoutId: string) => CanvasLayout | undefined // 根据ID获取布局
-  addLayout: (layoutId: string, direction: string) => void // 添加布局
+  addLayout: (layoutId: string, direction: Position) => void // 添加布局
   deleteLayout: (layoutId: string) => void // 删除布局
   selectLayout: (layoutId: string) => void // 选择布局
 }

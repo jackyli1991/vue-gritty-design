@@ -7,7 +7,7 @@
           v-for="item in operateOptions"
           :key="item.value as string"
           class="context-menu-item"
-          @click="handleAction(item.value as string)"
+          @click="handleAction(item.value as Position)"
         >
           <IconifyIcon :icon="item.icon" :danger="item.danger" />
           <span>{{ item.label }}</span>
@@ -22,6 +22,7 @@ import { ref, computed, onMounted, onUnmounted } from 'vue'
 import IconifyIcon from '@/components/IconifyIcon.vue'
 import { LayoutOperateOptions } from '@/datas/directory'
 import { excludeOption } from '@/utils'
+import { Position } from '@/types'
 
 const visible = ref(false)
 const position = ref({ x: 0, y: 0 })
@@ -31,7 +32,7 @@ const props = defineProps<{
 }>()
 
 const emit = defineEmits<{
-  action: [direction: string]
+  action: [direction: Position]
 }>()
 
 const menuStyle = computed(() => ({
@@ -43,7 +44,7 @@ const operateOptions = computed(() => {
   if (props.canDelete) {
     return LayoutOperateOptions
   }
-  return excludeOption(LayoutOperateOptions, 'delete')
+  return excludeOption(LayoutOperateOptions, 'delete') // 排除删除选项
 })
 
 function open(x: number, y: number) {
@@ -56,7 +57,7 @@ function close() {
 }
 
 // 处理操作
-function handleAction(direction: string) {
+function handleAction(direction: Position) {
   emit('action', direction)
   close()
 }

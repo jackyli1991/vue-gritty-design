@@ -1,11 +1,11 @@
-import { Option } from '@/types'
+import { Option, Position } from '@/types'
 
-export const YesNoOptions: Option[] = [
+export const yesNoOptions: Option[] = [
   { label: '是', value: 1 },
   { label: '否', value: 0 },
 ]
 
-export const DirectionOptions: Option[] = [
+export const directionOptions: Option[] = [
   { label: '水平', value: 'horizontal' },
   { label: '垂直', value: 'vertical' },
 ]
@@ -26,22 +26,22 @@ export const heightTypeOptions: Option[] = [
 export const LayoutOperateOptions: Option[] = [
   {
     label: '在上方添加',
-    value: 'top',
+    value: Position.Top,
     icon: 'material-symbols:splitscreen-add-outline-rounded',
   },
   {
     label: '在下方添加',
-    value: 'bottom',
+    value: Position.Bottom,
     icon: 'material-symbols:splitscreen-add-outline-rounded',
   },
   {
     label: '在左侧添加',
-    value: 'left',
+    value: Position.Left,
     icon: 'material-symbols:splitscreen-vertical-add-outline-rounded',
   },
   {
     label: '在右侧添加',
-    value: 'right',
+    value: Position.Right,
     icon: 'material-symbols:splitscreen-vertical-add-outline-rounded',
   },
   {

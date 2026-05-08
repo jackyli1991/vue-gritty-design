@@ -3,8 +3,8 @@
     :class="[
       'table-layout-wrapper',
       props.layoutId,
-      {'table-layout-wrapper-drop': canDropElement},
-      ]"
+      { 'table-layout-wrapper-drop': canDropElement },
+    ]"
     :style="wrapperStyle"
     @click.stop="handleClick"
     @mouseenter.stop="handleMouseEnter"
@@ -25,7 +25,7 @@
 
 <script setup lang="ts">
 import { computed, inject, toRef, useTemplateRef } from 'vue'
-import { CanvasContext, Direction } from '@/types'
+import { CanvasContext, Direction, Position } from '@/types'
 import LayoutHoverToolbar from './LayoutHoverToolbar.vue'
 import LayoutContextMenu from './LayoutContextMenu.vue'
 
@@ -51,9 +51,6 @@ const props = withDefaults(defineProps<Props>(), {
 // 右键上下文菜单
 const contextMenuRef = useTemplateRef('contextMenuRef')
 
-// 是否是表格布局
-const isTable = computed(() => props.layoutId === 'table' || props.layoutId === 'tableWrapper')
-
 // 是否悬停在布局上
 const isHovered = computed(() => hoveredLayoutId.value === props.layoutId)
 
@@ -74,8 +71,6 @@ const canDropElement = computed(() => {
   const layout = getLayoutById(props.layoutId)
   return !!layout && layout?.dropAllowed === true
 })
-
-
 
 // 布局额外样式
 const wrapperExtraStyle = computed(() => {
@@ -98,7 +93,8 @@ const wrapperExtraStyle = computed(() => {
 
 // 布局样式
 const wrapperStyle = computed(() => {
-  if (isTable.value) {
+  // 表格布局，默认flex=1，铺满剩余空间
+  if (props.layoutId === 'tableMain') {
     return {
       ...wrapperExtraStyle.value,
       flex: 1,
@@ -136,7 +132,7 @@ function handleAction(direction: string) {
 }
 
 // 添加布局
-function handleAddLayout(direction: string) {
+function handleAddLayout(direction: Position) {
   addLayout(props.layoutId, direction)
 }
 

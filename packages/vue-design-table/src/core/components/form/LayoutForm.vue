@@ -20,7 +20,7 @@
       <!-- <aCol :span="colSpan">
         <aFormItem label="布局方向" name="direction">
           <aRadioGroup v-model:value="formData.direction" button-style="solid">
-            <aRadioButton v-for="item in DirectionOptions" :key="item.value" :value="item.value">
+            <aRadioButton v-for="item in directionOptions" :key="item.value" :value="item.value">
               {{ item.label }}
             </aRadioButton>
           </aRadioGroup>
@@ -103,7 +103,7 @@ import type { RuleObject } from 'ant-design-vue/es/form'
 import ColorPicker from '@/components/ColorPicker.vue'
 import PaddingInput from '@/components/PaddingInput.vue'
 import type { CanvasLayout } from '@/types'
-import { widthTypeOptions, heightTypeOptions } from '@/datas' // DirectionOptions
+import { widthTypeOptions, heightTypeOptions } from '@/datas' // directionOptions
 
 type propType = keyof CanvasLayout['props']
 type CanvasLayoutFields = keyof CanvasLayout
