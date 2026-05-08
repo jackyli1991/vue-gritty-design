@@ -2,14 +2,26 @@
   <div
     v-show="progressStore.visible"
     class="progress-bar"
-    :style="{ width: `${progressStore.percentage}%`, opacity: progressStore.visible ? 1 : 0 }"
+    :style="progressBarStyle"
   />
 </template>
 
 <script setup lang="ts">
+import { storeToRefs } from 'pinia'
+import { computed } from 'vue'
 import { useProgressStore } from '@/stores/progress'
+import { useLayoutStore } from '@/stores/layout'
 
 const progressStore = useProgressStore()
+const layoutStore = useLayoutStore()
+const { visible, percentage } = storeToRefs(progressStore)
+const { themeColor } = storeToRefs(layoutStore)
+
+const progressBarStyle = computed(() => ({
+  background: `linear-gradient(90deg, ${themeColor.value} 0%, #FFF 100%)`,
+  width: `${percentage.value}%`,
+  opacity: visible.value ? 1 : 0,
+}))
 </script>
 
 <style scoped>
@@ -18,10 +30,9 @@ const progressStore = useProgressStore()
   top: 0;
   left: 0;
   height: 2px;
-  background: linear-gradient(90deg, #1890ff 0%, #52c41a 100%);
   z-index: 9999;
   transition: width 0.3s ease, opacity 0.3s ease;
-  box-shadow: 0 0 10px rgba(24, 144, 255, 0.5);
+  box-shadow: 0 0 10px rgba(225, 225, 225, 0.5);
 }
 
 .progress-bar::after {
