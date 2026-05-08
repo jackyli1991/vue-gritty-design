@@ -12,12 +12,13 @@ export default defineConfig({
       formats: ['es'],
     },
     rollupOptions: {
-      external: ['vue', 'ant-design-vue', '@iconify/vue'],
+      external: ['vue', 'ant-design-vue', '@iconify/vue', 'pinia'],
       output: {
         globals: {
           vue: 'Vue',
           'ant-design-vue': 'antd',
           '@iconify/vue': 'IconifyVue',
+          pinia: 'Pinia',
         },
       },
     },

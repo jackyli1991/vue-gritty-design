@@ -6,7 +6,7 @@
     cancelText="取消"
     okText="确定"
     @ok="handleOk"
-    @cancel="handleCancel"
+    @cancel="close"
   >
     <div class="delete-confirm-content">
       <div class="confirm-text">
@@ -20,10 +20,9 @@
 <script setup lang="ts">
 import { ref } from 'vue'
 import { Modal as aModal } from 'ant-design-vue'
+import { useDesignContext } from '@/composables/useDesignContext'
 
-const emit = defineEmits<{
-  confirm: []
-}>()
+const { deleteLayout, hoveredLayoutId } = useDesignContext()
 
 const visible = ref(false)
 
@@ -36,11 +35,7 @@ function close() {
 }
 
 function handleOk() {
-  emit('confirm')
-  close()
-}
-
-function handleCancel() {
+  deleteLayout(hoveredLayoutId.value)
   close()
 }
 

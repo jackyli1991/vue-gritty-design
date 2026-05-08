@@ -24,8 +24,9 @@
 </template>
 
 <script setup lang="ts">
-import { computed, inject, toRef, useTemplateRef } from 'vue'
-import { CanvasContext, Direction, Position } from '@/types'
+import { computed, useTemplateRef } from 'vue'
+import { Direction, Position } from '@/types'
+import { useDesignContext } from '@/composables/useDesignContext'
 import LayoutHoverToolbar from './LayoutHoverToolbar.vue'
 import LayoutContextMenu from './LayoutContextMenu.vue'
 
@@ -37,12 +38,8 @@ interface Props {
   layoutId?: string
 }
 
-const canvasContext = inject<CanvasContext>('canvasContext')
-const getLayoutById = canvasContext?.getLayoutById || (() => {})
-const addLayout = canvasContext?.addLayout || (() => {})
-const deleteLayout = canvasContext?.deleteLayout || (() => {})
-const selectLayout = canvasContext?.selectLayout || (() => {})
-const hoveredLayoutId = toRef(canvasContext?.hoveredLayoutId)
+const { getLayout, addLayout, deleteLayout, selectLayout, hoveredLayoutId, hoverLayout } =
+  useDesignContext()
 
 const props = withDefaults(defineProps<Props>(), {
   layoutId: 'tablePage',
@@ -56,25 +53,25 @@ const isHovered = computed(() => hoveredLayoutId.value === props.layoutId)
 
 // 是否可以删除布局
 const canDelete = computed(() => {
-  const layout = getLayoutById(props.layoutId)
+  const layout = getLayout(props.layoutId)
   return !!layout && layout?.deleteAllowed === true
 })
 
 // 是否可以添加布局
 const canAddLayout = computed(() => {
-  const layout = getLayoutById(props.layoutId)
+  const layout = getLayout(props.layoutId)
   return !!layout && layout?.addAllowed !== false
 })
 
 // 是否可以拖拽元素到该布局
 const canDropElement = computed(() => {
-  const layout = getLayoutById(props.layoutId)
+  const layout = getLayout(props.layoutId)
   return !!layout && layout?.dropAllowed === true
 })
 
 // 布局额外样式
 const wrapperExtraStyle = computed(() => {
-  const layout = getLayoutById(props.layoutId)
+  const layout = getLayout(props.layoutId)
   if (!layout?.props) {
     return {}
   }
@@ -100,7 +97,7 @@ const wrapperStyle = computed(() => {
       flex: 1,
     }
   }
-  const layout = getLayoutById(props.layoutId)
+  const layout = getLayout(props.layoutId)
   const direction = layout?.direction
   // 布局方向样式
   const directionStyle: Record<string, string> = {}
@@ -118,7 +115,7 @@ const wrapperStyle = computed(() => {
 
 // 布局子布局
 const layoutChildren = computed(() => {
-  const layout = getLayoutById(props.layoutId)
+  const layout = getLayout(props.layoutId)
   return layout?.children || []
 })
 
@@ -128,12 +125,12 @@ function handleAction(direction: string) {
     handleDeleteLayout()
     return
   }
-  handleAddLayout(direction)
+  handleAddLayout(direction as Position)
 }
 
 // 添加布局
 function handleAddLayout(direction: Position) {
-  addLayout(props.layoutId, direction)
+  addLayout(direction)
 }
 
 // 删除布局
@@ -149,12 +146,12 @@ function handleClick() {
 
 // 鼠标悬停布局
 function handleMouseEnter() {
-  hoveredLayoutId.value = props.layoutId
+  hoverLayout(props.layoutId)
 }
 
 // 鼠标离开布局
 function handleMouseLeave() {
-  hoveredLayoutId.value = ''
+  hoverLayout('')
 }
 
 // 开启右键上下文菜单

@@ -34,23 +34,12 @@
 </template>
 
 <script lang="ts" setup>
-import { ref, reactive, inject } from 'vue'
-// import IconifyIcon from '@/components/IconifyIcon.vue'
-import type { CanvasElement, CanvasContext } from '@/types'
+import { ref, reactive } from 'vue'
+import type { CanvasElement } from '@/types'
+import { useDesignContext } from '@/composables/useDesignContext'
 import LayoutDesign from './designer/LayoutDesign.vue'
 
-// 从父组件注入配置数据
-const canvasContext = inject<CanvasContext>('canvasContext')
-
-// 提供默认值
-// const canvasData = canvasContext?.canvasData || {
-//   layouts: {},
-//   elements: {},
-// }
-// const activeCanvasElement = canvasContext?.activeCanvasElement ?? null
-const addCanvasElement = canvasContext?.addCanvasElement ?? (() => {})
-// const deleteCanvasElement = canvasContext?.deleteCanvasElement ?? (() => {})
-// const selectCanvasElement = canvasContext?.selectCanvasElement ?? (() => {})
+const { addCanvasElement } = useDesignContext()
 
 const isDragOver = ref(false)
 

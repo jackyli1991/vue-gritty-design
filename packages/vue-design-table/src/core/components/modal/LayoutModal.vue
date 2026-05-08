@@ -19,22 +19,19 @@ import { ref, useTemplateRef } from 'vue'
 import { Modal as aModal } from 'ant-design-vue'
 import LayoutForm from '../form/LayoutForm.vue'
 import { createLayout } from '../designer'
+import { useDesignContext } from '@/composables/useDesignContext'
 
 defineOptions({
   name: 'CreateLayout',
 })
 
-const emit = defineEmits(['confirm'])
+const { addLayout } = useDesignContext()
+
 const visible = ref(false)
 const layoutDirection = ref<Position>(Position.Top)
 const formData = ref<CanvasLayout>({} as CanvasLayout)
 const layoutFormRef = useTemplateRef<typeof LayoutForm>('layoutFormRef')
 
-/**
- * 打开创建布局弹窗
- * @param parentId 父布局ID
- * @param clickDirection 点击方向，用于确定添加位置
- */
 function open(parentId: string, clickDirection: Position) {
   const layOutProps = {
     name: '新布局',
@@ -59,27 +56,20 @@ function open(parentId: string, clickDirection: Position) {
   visible.value = true
 }
 
-/**
- * 处理确定按钮点击事件
- */
 async function handleOk() {
   const valid = await layoutFormRef.value?.validate()
   if (!valid) {
     return
   }
-  emit('confirm', formData.value, layoutDirection.value)
+  // addLayout(formData.value, layoutDirection.value)
+  addLayout()
   visible.value = false
 }
 
-/**
- * 处理取消按钮点击事件
- */
 function handleCancel() {
   layoutFormRef.value?.clearValidate()
   visible.value = false
 }
 
-defineExpose({
-  open,
-})
+defineExpose({ open })
 </script>

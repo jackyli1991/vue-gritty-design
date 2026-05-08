@@ -17,14 +17,11 @@
 </template>
 
 <script setup lang="ts">
-import { inject } from 'vue'
-import type { CanvasContext } from '@/types'
+import { useDesignContext } from '@/composables/useDesignContext'
 
 defineOptions({
   name: 'ElementAttrs',
 })
 
-// 从父组件注入配置数据
-const canvasContext = inject<CanvasContext>('canvasContext')
-const activeCanvasElement = canvasContext?.activeCanvasElement
+const { activeCanvasElement } = useDesignContext()
 </script>

@@ -13,15 +13,11 @@
 </template>
 
 <script lang="ts" setup>
-import { inject, computed } from 'vue'
-import type { CanvasContext } from '@/types'
+import { useDesignContext } from '@/composables/useDesignContext'
 import LayoutAttrs from './attrs/layout.vue'
 import ElementAttrs from './attrs/element.vue'
 
-const canvasContext = inject<CanvasContext>('canvasContext')
-
-const activeCanvasElement = computed(() => canvasContext?.activeCanvasElement)
-const activeCanvasLayout = computed(() => canvasContext?.activeCanvasLayout)
+const { activeCanvasElement, activeCanvasLayout } = useDesignContext()
 </script>
 
 <style scoped lang="scss">
