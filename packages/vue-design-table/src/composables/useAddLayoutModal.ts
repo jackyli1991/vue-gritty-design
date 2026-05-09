@@ -6,8 +6,6 @@ import AddLayoutModal from '@/core/components/modal/AddLayoutModal.vue' // 添�
 interface AddLayoutOptions {
   direction: Position // 添加布局的方向
   parentId: string // 父级布局的ID
-  onCancel: () => void
-  onConfirm: (layout: CanvasLayout, direction: Position) => void
 }
 
 const visible = ref(false)
@@ -28,10 +26,15 @@ function closeModal() {
  * @param options 添加布局弹窗的选项
  * @returns
  */
-export function useAddLayout(options: AddLayoutOptions) {
-  const { onCancel, onConfirm, ...args } = options
+export function useAddLayout(
+  options: AddLayoutOptions,
+  onConfirm: (layout: CanvasLayout, direction: Position) => void,
+  onCancel: () => void,
+) {
+  // 设置异步组件为添加布局弹窗
   const store = useDesignStore()
-  store.setAsyncComponent(AddLayoutModal, args || {}) // 设置异步组件为添加布局弹窗
+  store.setAsyncComponent(AddLayoutModal, options || {})
+  // 回调函数
   onCancelCallback.value = onCancel
   onConfirmCallback.value = onConfirm
   return {

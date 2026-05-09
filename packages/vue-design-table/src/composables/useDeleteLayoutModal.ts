@@ -3,8 +3,6 @@ import { useDesignStore } from '@/stores'
 import DeleteConfirmModal from '@/core/components/modal/DeleteConfirmModal.vue' // 删除确认弹窗
 
 interface UseDeleteConfirmOptions {
-  onCancel: () => void
-  onConfirm: (layoutId: string) => void
   title: string // 弹窗标题
   content: string // 弹窗内容
   subContent?: string // 弹窗子内容，用于显示警告信息等
@@ -35,11 +33,14 @@ function closeModal() {
  */
 
 export function useDeleteConfirm(
-  options: UseDeleteConfirmOptions
+  options: UseDeleteConfirmOptions,
+  onConfirm: (layoutId: string) => void,
+  onCancel: () => void,
 ) {
-  const { onCancel, onConfirm, ...args } = options
+  // 设置异步组件为删除确认弹窗
   const store = useDesignStore()
-  store.setAsyncComponent(DeleteConfirmModal, args || {}) // 设置异步组件为删除确认弹窗
+  store.setAsyncComponent(DeleteConfirmModal, options || {})
+  // 回调函数
   onCancelCallback.value = onCancel
   onConfirmCallback.value = onConfirm
   return {

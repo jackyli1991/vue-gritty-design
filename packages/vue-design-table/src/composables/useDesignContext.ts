@@ -28,11 +28,13 @@ export function useDesignContext() {
           content: '确定要删除该布局吗？',
           subContent: '该操作将同时删除所有子布局，且不可撤销。',
           confirmText: '确定',
-          cancelText: '取消',
-          onCancel: () => {},
-          onConfirm: () => {
-            store.deleteLayout(layoutId)
-          },
+          cancelText: '取消'
+        },
+        () => {
+          store.deleteLayout(layoutId)
+        },
+        () => {
+          console.log('删除布局取消')
         }
       )
       openModal()
@@ -42,11 +44,14 @@ export function useDesignContext() {
       const { openModal } = useAddLayout(
         {
           direction,
-          parentId,
-          onCancel: () => {},
-          onConfirm: store.addLayout,
+          parentId
+        },
+        store.addLayout,
+        () => {
+          console.log('添加布局取消')
         }
       )
+
       openModal()
     },
     hoverLayout: store.hoverLayout,
