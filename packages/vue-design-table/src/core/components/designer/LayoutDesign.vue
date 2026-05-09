@@ -130,7 +130,7 @@ function handleAction(direction: string) {
 
 // 添加布局
 function handleAddLayout(direction: Position) {
-  addLayout(direction)
+  addLayout(props.layoutId, direction)
 }
 
 // 删除布局

@@ -1,4 +1,5 @@
 import { ref } from 'vue'
+import type { Component } from 'vue'
 import { defineStore } from 'pinia'
 import type { CanvasElement, CanvasData, CanvasLayout } from '@/types'
 import { Direction, Position } from '@/types'
@@ -40,10 +41,24 @@ const initialCanvasData: CanvasData = {
 }
 
 export const useDesignStore = defineStore('tableDesign', () => {
+  const asyncComponent = ref<Component>() // 动态组件
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  const asyncComponentProps = ref<Record<string, any>>({}) // 动态组件属性
   const canvasData = ref<CanvasData>(JSON.parse(JSON.stringify(initialCanvasData)))
   const activeCanvasElement = ref<CanvasElement>()
   const activeCanvasLayout = ref<CanvasLayout>()
   const hoveredLayoutId = ref<string>('')
+
+  /**
+   * 设置动态组件
+   * @param component 动态组件
+   * @param props 动态组件属性
+   */
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  function setAsyncComponent(component: Component, props: Record<string, any>) {
+    asyncComponent.value = component
+    asyncComponentProps.value = props || {}
+  }
 
   function selectCanvasElement(index: number) {
     console.log('选择元素', index)
@@ -150,6 +165,8 @@ export const useDesignStore = defineStore('tableDesign', () => {
   }
 
   return {
+    asyncComponent,
+    asyncComponentProps,
     canvasData,
     activeCanvasElement,
     activeCanvasLayout,
@@ -166,5 +183,8 @@ export const useDesignStore = defineStore('tableDesign', () => {
     deleteCanvasElement,
     // 重置画布
     resetCanvas,
+    setAsyncComponent,
   }
 })
+
+export type DesignStore = ReturnType<typeof useDesignStore>

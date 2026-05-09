@@ -1,5 +1,8 @@
 import { storeToRefs } from 'pinia'
 import { useDesignStore } from '@/stores'
+import { useAddLayout } from '@/composables/useAddLayoutModal'
+import { useDeleteConfirm } from '@/composables/useDeleteLayoutModal'
+import { Position } from '@/types'
 
 /**
  * 设计上下文
@@ -17,8 +20,35 @@ export function useDesignContext() {
     hoveredLayoutId,
     getLayout: store.getLayout,
     selectLayout: store.selectLayout,
-    deleteLayout: store.deleteLayout,
-    addLayout: useAddLayoutModal(store),
+    // 删除布局拦截，弹窗确认后删除布局
+    deleteLayout: (layoutId: string) => {
+      const { openModal } = useDeleteConfirm(
+        {
+          title: '删除布局',
+          content: '确定要删除该布局吗？',
+          subContent: '该操作将同时删除所有子布局，且不可撤销。',
+          confirmText: '确定',
+          cancelText: '取消',
+          onCancel: () => {},
+          onConfirm: () => {
+            store.deleteLayout(layoutId)
+          },
+        }
+      )
+      openModal()
+    },
+    // 添加布局拦截，弹窗编辑后添加布局
+    addLayout: (parentId: string, direction: Position) => {
+      const { openModal } = useAddLayout(
+        {
+          direction,
+          parentId,
+          onCancel: () => {},
+          onConfirm: store.addLayout,
+        }
+      )
+      openModal()
+    },
     hoverLayout: store.hoverLayout,
     selectCanvasElement: store.selectCanvasElement,
     addCanvasElement: store.addCanvasElement,

@@ -15,45 +15,50 @@
 <script setup lang="ts">
 import type { CanvasLayout } from '@/types'
 import { Position } from '@/types'
-import { ref, useTemplateRef } from 'vue'
+import { ref, useTemplateRef, watch } from 'vue'
 import { Modal as aModal } from 'ant-design-vue'
 import LayoutForm from '../form/LayoutForm.vue'
 import { createLayout } from '../designer'
-import { useDesignContext } from '@/composables/useDesignContext'
+import { useAddLayoutModal } from '@/composables/useAddLayoutModal'
 
 defineOptions({
-  name: 'CreateLayout',
+  name: 'AddLayoutModal',
 })
 
-const { addLayout } = useDesignContext()
+const props = defineProps<{
+  direction: Position // 添加布局的方向
+  parentId: string // 父级布局的ID
+}>()
 
-const visible = ref(false)
-const layoutDirection = ref<Position>(Position.Top)
-const formData = ref<CanvasLayout>({} as CanvasLayout)
+const { visible, closeModal, onConfirm } = useAddLayoutModal()
+
+const formData = ref<CanvasLayout>({
+  props: {},
+} as CanvasLayout)
 const layoutFormRef = useTemplateRef<typeof LayoutForm>('layoutFormRef')
 
-function open(parentId: string, clickDirection: Position) {
-  const layOutProps = {
+function init() {
+  const layoutProps = {
     name: '新布局',
   }
-  if (clickDirection === Position.Top || clickDirection === Position.Bottom) {
-    Object.assign(layOutProps, {
+  const { direction, parentId } = props
+  console.log('弹窗初始化', direction, parentId)
+  if (direction === Position.Top || direction === Position.Bottom) {
+    Object.assign(layoutProps, {
       widthType: '%',
       widthValue: 100,
       heightType: 'px',
       heightValue: 60,
     })
   } else {
-    Object.assign(layOutProps, {
+    Object.assign(layoutProps, {
       widthType: 'px',
       widthValue: 60,
       heightType: '%',
       heightValue: 100,
     })
   }
-  layoutDirection.value = clickDirection
-  formData.value = createLayout('', parentId, layOutProps)
-  visible.value = true
+  formData.value = createLayout('', parentId, layoutProps)
 }
 
 async function handleOk() {
@@ -61,15 +66,18 @@ async function handleOk() {
   if (!valid) {
     return
   }
-  // addLayout(formData.value, layoutDirection.value)
-  addLayout()
-  visible.value = false
+  const direction = props.direction
+  onConfirm(formData.value, direction)
+  handleCancel()
 }
 
 function handleCancel() {
   layoutFormRef.value?.clearValidate()
-  visible.value = false
+  closeModal()
 }
 
-defineExpose({ open })
+watch(() => visible, init, {
+  deep: true,
+  immediate: true,
+})
 </script>

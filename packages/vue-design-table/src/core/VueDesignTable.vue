@@ -9,27 +9,28 @@
     <!-- 右侧：属性编辑面板 -->
     <TableAttributes />
 
-    <!-- 创建布局弹窗 -->
-    <!-- <LayoutModal ref="layoutModalRef" /> -->
-    <!-- 删除确认弹窗 -->
-    <!-- <DeleteConfirmModal ref="deleteConfirmModalRef" /> -->
+    <!-- 所有动态组件 -->
+    <component :is="asyncComponent" v-bind="asyncComponentProps" v-if="asyncComponentProps" />
   </div>
 </template>
 
 <script setup lang="ts">
+import { storeToRefs } from 'pinia'
 import { onMounted, useTemplateRef, watch } from 'vue'
 import type { ThemeColors } from '@/types'
 import { useDesignContext } from '@/composables/useDesignContext'
 import { useThemeColors } from '@/composables/useThemeColors'
+import { useDesignStore } from '@/stores'
 import TableResource from './components/TableResource.vue'
 import TableDesigner from './components/TableDesigner.vue'
 import TableAttributes from './components/TableAttributes.vue'
-// import LayoutModal from './components/modal/LayoutModal.vue'
-// import DeleteConfirmModal from './components/modal/DeleteConfirmModal.vue'
 
 const props = defineProps<{
   themeColors?: ThemeColors
 }>()
+
+const store = useDesignStore()
+const { asyncComponent, asyncComponentProps } = storeToRefs(store)
 
 const containerRef = useTemplateRef('containerRef')
 
