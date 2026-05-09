@@ -30,13 +30,14 @@ const props = defineProps<{
   parentId: string // 父级布局的ID
 }>()
 
-const { visible, closeModal, onConfirm } = useAddLayoutModal()
+const { visible, closeModal, onConfirm, onCancel } = useAddLayoutModal()
 
 const formData = ref<CanvasLayout>({
   props: {},
 } as CanvasLayout)
 const layoutFormRef = useTemplateRef<typeof LayoutForm>('layoutFormRef')
 
+// 初始化弹窗数据
 function init() {
   const layoutProps = {
     name: '新布局',
@@ -61,6 +62,12 @@ function init() {
   formData.value = createLayout('', parentId, layoutProps)
 }
 
+// 清除表单验证状态
+function clearValidate() {
+  layoutFormRef.value?.clearValidate()
+}
+
+// 确认添加布局
 async function handleOk() {
   const valid = await layoutFormRef.value?.validate()
   if (!valid) {
@@ -68,12 +75,15 @@ async function handleOk() {
   }
   const direction = props.direction
   onConfirm(formData.value, direction)
-  handleCancel()
+  clearValidate()
+  closeModal()
 }
 
+// 取消添加布局
 function handleCancel() {
-  layoutFormRef.value?.clearValidate()
+  clearValidate()
   closeModal()
+  onCancel()
 }
 
 watch(() => visible, init, {
