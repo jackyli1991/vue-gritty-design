@@ -8,11 +8,14 @@ interface UseDeleteConfirmOptions {
   subContent?: string // 弹窗子内容，用于显示警告信息等
   confirmText?: string // 确认按钮文本
   cancelText?: string // 取消按钮文本
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  [key: string]: any
 }
 
 const visible = ref(false) // 弹窗是否可见
 const onCancelCallback = ref() // 取消回调
 const onConfirmCallback = ref() // 确认回调
+const deleteLayoutId = ref('') // 布局ID
 
 // 打开弹窗
 function openModal() {
@@ -21,6 +24,8 @@ function openModal() {
 
 // 关闭弹窗
 function closeModal() {
+  onCancelCallback.value = null
+  onConfirmCallback.value = null
   visible.value = false
 }
 
@@ -35,11 +40,13 @@ function closeModal() {
 export function useDeleteConfirm(
   options: UseDeleteConfirmOptions,
   onConfirm: (layoutId: string) => void,
-  onCancel: () => void,
+  onCancel: (layoutId: string) => void,
 ) {
   // 设置异步组件为删除确认弹窗
   const store = useDesignStore()
   store.setAsyncComponent(DeleteConfirmModal, options || {})
+  // 要删除的布局ID
+  deleteLayoutId.value = options.layoutId || ''
   // 回调函数
   onCancelCallback.value = onCancel
   onConfirmCallback.value = onConfirm
@@ -57,7 +64,7 @@ export function useDeleteConfirmModal() {
   return {
     visible,
     closeModal,
-    onConfirm: onConfirmCallback.value,
-    onCancel: onCancelCallback.value,
+    onConfirm: () => onConfirmCallback.value(deleteLayoutId.value),
+    onCancel: () => onCancelCallback.value(deleteLayoutId.value),
   }
 }

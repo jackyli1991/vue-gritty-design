@@ -22,19 +22,21 @@ export function useDesignContext() {
     selectLayout: store.selectLayout,
     // 删除布局拦截，弹窗确认后删除布局
     deleteLayout: (layoutId: string) => {
+      if (!layoutId) {
+        return
+      }
       const { openModal } = useDeleteConfirm(
         {
           title: '删除布局',
           content: '确定要删除该布局吗？',
           subContent: '该操作将同时删除所有子布局，且不可撤销。',
           confirmText: '确定',
-          cancelText: '取消'
+          cancelText: '取消',
+          layoutId // 要删除的布局ID
         },
-        () => {
-          store.deleteLayout(layoutId)
-        },
-        () => {
-          console.log('删除布局取消')
+        store.deleteLayout,
+        (layoutId: string) => {
+          console.log('删除布局取消', layoutId)
         }
       )
       openModal()
@@ -47,8 +49,8 @@ export function useDesignContext() {
           parentId
         },
         store.addLayout,
-        () => {
-          console.log('添加布局取消')
+        (parentId: string) => {
+          console.log('添加布局取消', parentId)
         }
       )
 

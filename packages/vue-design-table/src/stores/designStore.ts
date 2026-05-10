@@ -1,4 +1,4 @@
-import { ref } from 'vue'
+import { ref, markRaw } from 'vue'
 import type { Component } from 'vue'
 import { defineStore } from 'pinia'
 import type { CanvasElement, CanvasData, CanvasLayout } from '@/types'
@@ -56,7 +56,7 @@ export const useDesignStore = defineStore('tableDesign', () => {
    */
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   function setAsyncComponent(component: Component, props: Record<string, any>) {
-    asyncComponent.value = component
+    asyncComponent.value = markRaw(component)
     asyncComponentProps.value = props || {}
   }
 
@@ -100,11 +100,12 @@ export const useDesignStore = defineStore('tableDesign', () => {
   /**
    * 添加布局
    * @param layout 布局
+   * @param parentId 父级布局的ID
    * @param layoutDirection 布局方向
    */
-  function addLayout(layout: CanvasLayout, layoutDirection: Position) {
+  function addLayout(layout: CanvasLayout, parentId: string, layoutDirection: Position) {
     console.log('添加布局确认', layout, layoutDirection)
-    const parentId = layout.parentId || ''
+    layout.parentId = parentId
     const parentLayout = getLayout(parentId)
     if (!parentLayout) return
     const isVertical = layoutDirection === Position.Top || layoutDirection === Position.Bottom

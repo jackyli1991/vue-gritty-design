@@ -11,12 +11,16 @@ interface AddLayoutOptions {
 const visible = ref(false)
 const onCancelCallback = ref() // 取消回调
 const onConfirmCallback = ref() // 确认回调
+const parentId = ref<string>() // 父级布局的ID
+const direction = ref<Position>() // 添加布局的方向
 
 function openModal() {
   visible.value = true
 }
 
 function closeModal() {
+  onCancelCallback.value = null
+  onConfirmCallback.value = null
   visible.value = false
 }
 
@@ -28,12 +32,15 @@ function closeModal() {
  */
 export function useAddLayout(
   options: AddLayoutOptions,
-  onConfirm: (layout: CanvasLayout, direction: Position) => void,
-  onCancel: () => void,
+  onConfirm: (layout: CanvasLayout, parentId: string, direction: Position) => void,
+  onCancel: (parentId: string) => void,
 ) {
   // 设置异步组件为添加布局弹窗
   const store = useDesignStore()
   store.setAsyncComponent(AddLayoutModal, options || {})
+  // 初始化弹窗数据
+  parentId.value = options.parentId || ''
+  direction.value = options.direction || Position.Top
   // 回调函数
   onCancelCallback.value = onCancel
   onConfirmCallback.value = onConfirm
@@ -51,7 +58,7 @@ export function useAddLayoutModal() {
   return {
     visible,
     closeModal,
-    onConfirm: onConfirmCallback.value,
-    onCancel: onCancelCallback.value,
+    onConfirm: (layout: CanvasLayout) => onConfirmCallback.value(layout, parentId.value, direction.value),
+    onCancel: () => onCancelCallback.value(parentId.value),
   }
 }

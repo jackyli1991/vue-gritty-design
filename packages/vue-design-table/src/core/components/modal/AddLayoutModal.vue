@@ -27,7 +27,6 @@ defineOptions({
 
 const props = defineProps<{
   direction: Position // 添加布局的方向
-  parentId: string // 父级布局的ID
 }>()
 
 const { visible, closeModal, onConfirm, onCancel } = useAddLayoutModal()
@@ -42,8 +41,8 @@ function init() {
   const layoutProps = {
     name: '新布局',
   }
-  const { direction, parentId } = props
-  console.log('弹窗初始化', direction, parentId)
+  const { direction } = props
+  console.log('弹窗初始化', direction)
   if (direction === Position.Top || direction === Position.Bottom) {
     Object.assign(layoutProps, {
       widthType: '%',
@@ -59,7 +58,7 @@ function init() {
       heightValue: 100,
     })
   }
-  formData.value = createLayout('', parentId, layoutProps)
+  formData.value = createLayout('', '', layoutProps)
 }
 
 // 清除表单验证状态
@@ -73,8 +72,7 @@ async function handleOk() {
   if (!valid) {
     return
   }
-  const direction = props.direction
-  onConfirm(formData.value, direction)
+  onConfirm(formData.value)
   clearValidate()
   closeModal()
 }
