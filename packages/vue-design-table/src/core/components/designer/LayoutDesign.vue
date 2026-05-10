@@ -3,7 +3,10 @@
     :class="[
       'table-layout-wrapper',
       props.layoutId,
-      { 'table-layout-wrapper-drop': canDropElement },
+      {
+        'table-layout-wrapper-drop': canDropElement,
+        'is-hovered': isHovered,
+      },
     ]"
     :style="wrapperStyle"
     @click.stop="handleClick"
@@ -17,8 +20,8 @@
     </template>
     <!-- table是页面表格容器，不能再添加布局 -->
     <template v-if="canAddLayout">
-      <LayoutHoverToolbar :visible="isHovered" :canDelete="canDelete" @action="handleAction" />
-      <LayoutContextMenu ref="contextMenuRef" :canDelete="canDelete" @action="handleAction" />
+      <LayoutHoverToolbar :visible="isHovered" @action="handleAction" />
+      <LayoutContextMenu ref="contextMenuRef" @action="handleAction" />
     </template>
   </div>
 </template>
@@ -50,12 +53,6 @@ const contextMenuRef = useTemplateRef('contextMenuRef')
 
 // 是否悬停在布局上
 const isHovered = computed(() => hoveredLayoutId.value === props.layoutId)
-
-// 是否可以删除布局
-const canDelete = computed(() => {
-  const layout = getLayout(props.layoutId)
-  return !!layout && layout?.deleteAllowed === true
-})
 
 // 是否可以添加布局
 const canAddLayout = computed(() => {
@@ -166,6 +163,9 @@ function handleContextMenu(e: MouseEvent) {
   box-sizing: border-box;
   &-drop {
     border: 1px dashed var(--vdt-primary);
+  }
+  &.is-hovered {
+    box-shadow: 0 0 6px -2px var(--vdt-primary-hover);
   }
 }
 </style>

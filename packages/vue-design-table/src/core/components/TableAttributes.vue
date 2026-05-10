@@ -1,5 +1,5 @@
 <template>
-  <div class="table-design-attributes">
+  <div class="table-design-attributes table-design-wrapper">
     <div class="attributes-content">
       <div v-if="!activeCanvasElement && !activeCanvasLayout" class="attributes-empty">
         请选择一个元素进行编辑
@@ -22,9 +22,6 @@ const { activeCanvasElement, activeCanvasLayout } = useDesignContext()
 
 <style scoped lang="scss">
 .table-design-attributes {
-  background: #fff;
-  border-radius: 8px;
-  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
   display: flex;
   flex-direction: column;
   overflow: hidden;

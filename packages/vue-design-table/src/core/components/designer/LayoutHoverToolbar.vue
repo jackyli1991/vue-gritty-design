@@ -17,28 +17,23 @@
 
 <script setup lang="ts">
 import { computed } from 'vue'
-import { excludeOption } from '@/utils'
 import { Position } from '@/types'
 
 import IconifyIcon from '@/components/IconifyIcon.vue'
-import { LayoutOperateOptions } from '@/datas/directory'
 import { Tooltip as aTooltip } from 'ant-design-vue'
+import { useDesignContext } from '@/composables/useDesignContext'
 
-const props = defineProps<{
+const { getLayoutToolbar, hoveredLayoutId } = useDesignContext()
+
+defineProps<{
   visible: boolean
-  canDelete: boolean
 }>()
 
 const emit = defineEmits<{
   action: [direction: Position]
 }>()
 
-const operateOptions = computed(() => {
-  if (props.canDelete) {
-    return LayoutOperateOptions
-  }
-  return excludeOption(LayoutOperateOptions, 'delete') // 排除删除选项
-})
+const operateOptions = computed(() => getLayoutToolbar(hoveredLayoutId.value))
 
 // 处理操作
 function handleAction(direction: Position) {

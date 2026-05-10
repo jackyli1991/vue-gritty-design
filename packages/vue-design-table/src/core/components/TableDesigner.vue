@@ -1,5 +1,5 @@
 <template>
-  <div class="table-design-designer">
+  <div class="table-design-designer table-design-wrapper">
     <div
       class="canvas-area"
       :class="{ 'drag-over': isDragOver }"
@@ -97,10 +97,7 @@ const handleDrop = (e: DragEvent) => {
 
 <style scoped lang="scss">
 .table-design-designer {
-  background: #fff;
-  border-radius: 8px;
   overflow: hidden;
-  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
   flex: 1;
   .canvas-area {
     box-sizing: border-box;

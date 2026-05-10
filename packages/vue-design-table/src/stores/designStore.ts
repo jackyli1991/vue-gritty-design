@@ -3,7 +3,9 @@ import type { Component } from 'vue'
 import { defineStore } from 'pinia'
 import type { CanvasElement, CanvasData, CanvasLayout } from '@/types'
 import { Direction, Position } from '@/types'
+import { excludeOption } from '@/utils'
 import { createLayout } from '@/core/components/designer'
+import { LayoutOperateOptions } from '@/datas/directory'
 
 const initialCanvasData: CanvasData = {
   layouts: {
@@ -159,6 +161,20 @@ export const useDesignStore = defineStore('tableDesign', () => {
   }
 
   /**
+   * 获取布局的编辑工具条选项
+   * @param layoutId 布局ID
+   * @returns 工具条选项
+   */
+  function getLayoutToolbar(layoutId: string) {
+    const layout = getLayout(layoutId)
+    if (!layout) return []
+    const canDelete = layout?.deleteAllowed === true
+    if (canDelete) return LayoutOperateOptions
+    else return excludeOption(LayoutOperateOptions, 'delete') // 排除删除选项
+  }
+
+
+  /**
    * 重置画布
    */
   function resetCanvas() {
@@ -182,6 +198,7 @@ export const useDesignStore = defineStore('tableDesign', () => {
     deleteLayout,
     addLayout,
     hoverLayout,
+    getLayoutToolbar,
     // element相关操作
     selectCanvasElement,
     addCanvasElement,

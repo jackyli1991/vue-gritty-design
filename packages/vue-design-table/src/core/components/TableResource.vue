@@ -1,5 +1,5 @@
 <template>
-  <div class="table-design-resource">
+  <div class="table-design-resource table-design-wrapper">
     <div class="resource-list">
       <div v-for="group in resourceGroupsList" :key="group.title">
         <div class="resource-group-title">{{ group.title }}</div>
@@ -34,9 +34,6 @@ const handleDragStart = (e: DragEvent, group: ResourceGroup, resource: ResourceI
 
 <style scoped lang="scss">
 .table-design-resource {
-  background: #fff;
-  border-radius: 8px;
-  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
   width: 240px;
   .resource-list {
     height: 100%;

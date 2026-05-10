@@ -10,8 +10,13 @@ import { Position } from '@/types'
  */
 export function useDesignContext() {
   const store = useDesignStore()
-  const { canvasData, activeCanvasElement, activeCanvasLayout, hoveredLayoutId, layoutIds } =
-    storeToRefs(store)
+  const {
+    canvasData,
+    activeCanvasElement,
+    activeCanvasLayout,
+    hoveredLayoutId,
+    layoutIds
+  } = storeToRefs(store)
 
   return {
     canvasData,
@@ -58,6 +63,7 @@ export function useDesignContext() {
       openModal()
     },
     hoverLayout: store.hoverLayout,
+    getLayoutToolbar: store.getLayoutToolbar,
     selectCanvasElement: store.selectCanvasElement,
     addCanvasElement: store.addCanvasElement,
     deleteCanvasElement: store.deleteCanvasElement,

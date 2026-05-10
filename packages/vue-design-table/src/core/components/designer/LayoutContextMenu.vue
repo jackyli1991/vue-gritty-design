@@ -20,16 +20,13 @@
 <script setup lang="ts">
 import { ref, computed, onMounted, onUnmounted } from 'vue'
 import IconifyIcon from '@/components/IconifyIcon.vue'
-import { LayoutOperateOptions } from '@/datas/directory'
-import { excludeOption } from '@/utils'
 import { Position } from '@/types'
+import { useDesignContext } from '@/composables/useDesignContext'
+
+const { getLayoutToolbar, hoveredLayoutId } = useDesignContext()
 
 const visible = ref(false)
 const position = ref({ x: 0, y: 0 })
-
-const props = defineProps<{
-  canDelete: boolean
-}>()
 
 const emit = defineEmits<{
   action: [direction: Position]
@@ -40,12 +37,7 @@ const menuStyle = computed(() => ({
   top: `${position.value.y}px`,
 }))
 
-const operateOptions = computed(() => {
-  if (props.canDelete) {
-    return LayoutOperateOptions
-  }
-  return excludeOption(LayoutOperateOptions, 'delete') // 排除删除选项
-})
+const operateOptions = computed(() => getLayoutToolbar(hoveredLayoutId.value))
 
 function open(x: number, y: number) {
   position.value = { x, y }

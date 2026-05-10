@@ -3,11 +3,16 @@
     <!-- 左侧：可拖拽元素列表 -->
     <TableResource />
 
-    <!-- 中间：放置区域 -->
-    <TableDesigner />
-
-    <!-- 右侧：属性编辑面板 -->
-    <TableAttributes />
+    <div class="table-design-edit-wrapper">
+      <!-- 工具条 -->
+      <TableToolbar />
+      <div class="table-design-edit-content">
+        <!-- 中间：放置区域 -->
+        <TableDesigner />
+        <!-- 右侧：属性编辑面板 -->
+        <TableAttributes />
+      </div>
+    </div>
 
     <!-- 所有动态组件 -->
     <component :is="asyncComponent" v-bind="asyncComponentProps" v-if="asyncComponentProps" />
@@ -23,6 +28,7 @@ import { useThemeColors } from '@/composables/useThemeColors'
 import { useDesignStore } from '@/stores'
 import TableResource from './components/TableResource.vue'
 import TableDesigner from './components/TableDesigner.vue'
+import TableToolbar from './components/TableToolbar.vue'
 import TableAttributes from './components/TableAttributes.vue'
 
 const props = defineProps<{
