@@ -1,4 +1,4 @@
-import { ref, markRaw } from 'vue'
+import { computed, ref, markRaw } from 'vue'
 import type { Component } from 'vue'
 import { defineStore } from 'pinia'
 import type { CanvasElement, CanvasData, CanvasLayout } from '@/types'
@@ -48,6 +48,9 @@ export const useDesignStore = defineStore('tableDesign', () => {
   const activeCanvasElement = ref<CanvasElement>()
   const activeCanvasLayout = ref<CanvasLayout>()
   const hoveredLayoutId = ref<string>('')
+
+  // 所有布局ID列表
+  const layoutIds = computed(() => Object.keys(canvasData.value.layouts))
 
   /**
    * 设置动态组件
@@ -169,6 +172,7 @@ export const useDesignStore = defineStore('tableDesign', () => {
     asyncComponent,
     asyncComponentProps,
     canvasData,
+    layoutIds,
     activeCanvasElement,
     activeCanvasLayout,
     hoveredLayoutId,

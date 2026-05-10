@@ -10,11 +10,12 @@ import { Position } from '@/types'
  */
 export function useDesignContext() {
   const store = useDesignStore()
-  const { canvasData, activeCanvasElement, activeCanvasLayout, hoveredLayoutId } =
+  const { canvasData, activeCanvasElement, activeCanvasLayout, hoveredLayoutId, layoutIds } =
     storeToRefs(store)
 
   return {
     canvasData,
+    layoutIds,
     activeCanvasElement,
     activeCanvasLayout,
     hoveredLayoutId,

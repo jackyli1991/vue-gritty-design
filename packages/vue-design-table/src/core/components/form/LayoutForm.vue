@@ -8,7 +8,7 @@
   >
     <aRow :gutter="12">
       <aCol :span="colSpan">
-        <aFormItem label="布局ID" name="id" :rules="rules.id">
+        <aFormItem label="布局ID" name="id" :rules="rules.id" :tooltip="'不能和已有布局ID重复'">
           <aInput v-model:value="formData.id" :disabled="props.disabledFields.includes('id')" />
         </aFormItem>
       </aCol>
@@ -30,7 +30,7 @@
         <aRow :gutter="4">
           <aCol :span="12">
             <aFormItem label="宽度" :name="['props', 'widthType']">
-              <aSelect v-model:value="formData.props.widthType" :options="widthTypeOptions" />
+              <aSelect v-model:value="formData.props.widthType" :options="widthTypeOptions as DefaultOptionType[]"  />
             </aFormItem>
           </aCol>
           <aCol :span="12">
@@ -49,7 +49,7 @@
         <aRow :gutter="4">
           <aCol :span="12">
             <aFormItem label="高度" :name="['props', 'heightType']">
-              <aSelect v-model:value="formData.props.heightType" :options="heightTypeOptions" />
+              <aSelect v-model:value="formData.props.heightType" :options="heightTypeOptions as DefaultOptionType[]" />
             </aFormItem>
           </aCol>
           <aCol :span="12">
@@ -100,9 +100,11 @@ import {
   InputNumber as aInputNumber,
 } from 'ant-design-vue'
 import type { RuleObject } from 'ant-design-vue/es/form'
+import type { DefaultOptionType } from 'ant-design-vue/es/select'
+import type { CanvasLayout } from '@/types'
 import ColorPicker from '@/components/ColorPicker.vue'
 import PaddingInput from '@/components/PaddingInput.vue'
-import type { CanvasLayout } from '@/types'
+import { useDesignContext } from '@/composables/useDesignContext'
 import { widthTypeOptions, heightTypeOptions } from '@/datas' // directionOptions
 
 type propType = keyof CanvasLayout['props']
@@ -120,18 +122,30 @@ defineOptions({
   name: 'LayoutForm',
 })
 
+const { layoutIds } = useDesignContext()
 const aFormRef = useTemplateRef<typeof aForm>('aFormRef')
 const props = withDefaults(defineProps<Props>(), {
   cols: 2,
   disabledFields: () => [],
 })
 
-const rules: Record<string, RuleObject[]> = {
-  id: [{ required: true, message: '请输入布局ID' }],
+const rules = computed<Record<string, RuleObject[]>>(() => ({
+  id: [
+    { required: true, message: '请输入布局ID' },
+    { validator:
+      (rule, value) => {
+        if (layoutIds.value.includes(value)) {
+          return Promise.reject('布局ID已存在')
+        } else {
+          return Promise.resolve()
+        }
+      }
+    },
+  ],
   name: [{ required: true, message: '请输入布局名称' }],
   widthValue: [{ required: true, message: '请输入宽度值', type: 'number', min: 0 }],
   heightValue: [{ required: true, message: '请输入高度值', type: 'number', min: 0 }],
-}
+}))
 
 const formData = computed(() => props.formData)
 const colSpan = computed(() => Math.floor(24 / props.cols))
