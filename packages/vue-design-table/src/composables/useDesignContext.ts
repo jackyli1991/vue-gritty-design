@@ -15,7 +15,8 @@ export function useDesignContext() {
     activeCanvasElement,
     activeCanvasLayout,
     hoveredLayoutId,
-    layoutIds
+    layoutIds,
+    attributesPanelCollapsed,
   } = storeToRefs(store)
 
   return {
@@ -24,8 +25,10 @@ export function useDesignContext() {
     activeCanvasElement,
     activeCanvasLayout,
     hoveredLayoutId,
+    attributesPanelCollapsed,
     getLayout: store.getLayout,
     selectLayout: store.selectLayout,
+    toggleAttributesPanel: store.toggleAttributesPanel,
     // 删除布局拦截，弹窗确认后删除布局
     deleteLayout: (layoutId: string) => {
       if (!layoutId) {

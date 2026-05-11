@@ -19,8 +19,14 @@
       </aTooltip>
       <aButton size="small">预览</aButton>
       <aButton size="small" type="primary">保存</aButton>
-      <aTooltip title="折叠属性面板" placement="top">
-        <IconifyIcon icon="material-symbols:keyboard-double-arrow-right-rounded" :size="20" />
+      <aTooltip :title="attributesPanelCollapsed ? '展开属性面板' : '折叠属性面板'" placement="top">
+        <div
+          class="collapse-btn"
+          :class="{ collapsed: attributesPanelCollapsed }"
+          @click="toggleAttributesPanel"
+        >
+          <IconifyIcon :icon="'material-symbols:keyboard-double-arrow-right-rounded'" :size="20" />
+        </div>
       </aTooltip>
     </div>
   </div>
@@ -33,7 +39,8 @@ import { Tooltip as aTooltip, Button as aButton } from 'ant-design-vue'
 import IconifyIcon from '@/components/IconifyIcon.vue'
 import { useDesignContext } from '@/composables/useDesignContext'
 
-const { getLayoutToolbar, activeCanvasLayout } = useDesignContext()
+const { getLayoutToolbar, activeCanvasLayout, attributesPanelCollapsed, toggleAttributesPanel } =
+  useDesignContext()
 
 const operateOptions = computed(() => {
   if (!activeCanvasLayout.value) {
@@ -41,7 +48,6 @@ const operateOptions = computed(() => {
   }
   return getLayoutToolbar(activeCanvasLayout.value?.id)
 })
-
 
 // 处理操作
 function handleAction(direction: Position) {
@@ -71,6 +77,29 @@ function handleAction(direction: Position) {
     display: flex;
     justify-content: flex-end;
     align-items: center;
+  }
+}
+
+.collapse-btn {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 24px;
+  height: 24px;
+  border-radius: 4px;
+  cursor: pointer;
+  transition: all 0.3s ease;
+
+  &:hover {
+    background-color: rgba(0, 0, 0, 0.06);
+  }
+
+  :deep(.iconify-icon) {
+    transition: transform 0.3s ease;
+  }
+
+  &.collapsed :deep(.iconify-icon) {
+    transform: rotate(180deg);
   }
 }
 </style>

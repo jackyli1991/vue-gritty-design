@@ -23,3 +23,21 @@
     box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
   }
 }
+
+// 属性面板折叠/展开过渡动画
+.slide-panel-enter-active,
+.slide-panel-leave-active {
+  transition: all 0.3s ease;
+}
+
+.slide-panel-enter-from,
+.slide-panel-leave-to {
+  opacity: 0;
+  transform: translateX(20px);
+}
+
+.slide-panel-enter-to,
+.slide-panel-leave-from {
+  opacity: 1;
+  transform: translateX(0);
+}

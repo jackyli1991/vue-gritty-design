@@ -50,6 +50,7 @@ export const useDesignStore = defineStore('tableDesign', () => {
   const activeCanvasElement = ref<CanvasElement>()
   const activeCanvasLayout = ref<CanvasLayout>()
   const hoveredLayoutId = ref<string>('')
+  const attributesPanelCollapsed = ref(false) // 属性面板折叠状态
 
   // 所有布局ID列表
   const layoutIds = computed(() => Object.keys(canvasData.value.layouts))
@@ -184,6 +185,13 @@ export const useDesignStore = defineStore('tableDesign', () => {
     hoveredLayoutId.value = ''
   }
 
+  /**
+   * 切换属性面板折叠状态
+   */
+  function toggleAttributesPanel() {
+    attributesPanelCollapsed.value = !attributesPanelCollapsed.value
+  }
+
   return {
     asyncComponent,
     asyncComponentProps,
@@ -192,6 +200,7 @@ export const useDesignStore = defineStore('tableDesign', () => {
     activeCanvasElement,
     activeCanvasLayout,
     hoveredLayoutId,
+    attributesPanelCollapsed,
     // layout相关操作
     getLayout,
     selectLayout,
@@ -206,6 +215,8 @@ export const useDesignStore = defineStore('tableDesign', () => {
     // 重置画布
     resetCanvas,
     setAsyncComponent,
+    // 属性面板
+    toggleAttributesPanel,
   }
 })
 

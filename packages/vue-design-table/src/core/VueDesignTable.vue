@@ -10,7 +10,9 @@
         <!-- 中间：放置区域 -->
         <TableDesigner />
         <!-- 右侧：属性编辑面板 -->
-        <TableAttributes />
+        <Transition name="slide-panel">
+          <TableAttributes v-show="!attributesPanelCollapsed" />
+        </Transition>
       </div>
     </div>
 
@@ -36,7 +38,7 @@ const props = defineProps<{
 }>()
 
 const store = useDesignStore()
-const { asyncComponent, asyncComponentProps } = storeToRefs(store)
+const { asyncComponent, asyncComponentProps, attributesPanelCollapsed } = storeToRefs(store)
 
 const containerRef = useTemplateRef('containerRef')
 
