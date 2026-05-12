@@ -6,6 +6,7 @@ import { excludeOption } from '@/utils'
 import { createLayout } from '@/core/components/designer'
 import { LayoutOperateOptions } from '@/datas/directory'
 
+// 初始画布数据
 const initialCanvasData: CanvasData = {
   layouts: {
     tablePage: createLayout('tablePage', '', {
@@ -42,13 +43,13 @@ const initialCanvasData: CanvasData = {
 }
 
 export const useDesignStore = defineStore('tableDesign', () => {
-  const canvasData = ref<CanvasData>(JSON.parse(JSON.stringify(initialCanvasData)))
-  const activeCanvasElement = ref<CanvasElement>()
-  const activeCanvasLayout = ref<CanvasLayout>()
-  const hoveredLayoutId = ref<string>('')
-  const attributesPanelCollapsed = ref(false)
+  const canvasData = ref<CanvasData>(JSON.parse(JSON.stringify(initialCanvasData))) // 画布数据
+  const activeCanvasElement = ref<CanvasElement>() // 当前选中的画布元素
+  const activeCanvasLayout = ref<CanvasLayout>() // 当前选中的画布布局
+  const hoveredLayoutId = ref<string>('') // 当前悬停的画布布局ID
+  const attributesPanelCollapsed = ref(false) // 属性面板是否折叠
 
-  const layoutIds = computed(() => Object.keys(canvasData.value.layouts))
+  const layoutIds = computed(() => Object.keys(canvasData.value.layouts)) // 所有布局ID列表
 
   function selectCanvasElement(index: number) {
     console.log('选择元素', index)
@@ -62,18 +63,41 @@ export const useDesignStore = defineStore('tableDesign', () => {
     console.log('删除元素', index)
   }
 
+  /**
+   * 获取布局
+   * @description 获取指定画布布局对象
+   * @param layoutId 布局ID
+   * @returns 布局对象
+   */
   function getLayout(layoutId: string): CanvasLayout | undefined {
     return canvasData.value.layouts[layoutId]
   }
 
+  /**
+   * 获取悬停布局ID
+   * @description 获取当前悬停的画布布局ID
+   * @param layoutId 布局ID
+   */
   function hoverLayout(layoutId: string) {
     hoveredLayoutId.value = layoutId
   }
 
+  /**
+   * 选择布局
+   * @description 选择当前画布布局
+   * @param layoutId 布局ID
+   */
   function selectLayout(layoutId: string) {
     activeCanvasLayout.value = getLayout(layoutId)
   }
 
+  /**
+   * 添加布局
+   * @description 添加一个画布布局到指定父布局
+   * @param layout 布局对象
+   * @param parentId 父布局ID
+   * @param layoutDirection 布局方向
+   */
   function addLayout(layout: CanvasLayout, parentId: string, layoutDirection: Position) {
     layout.parentId = parentId
     const parentLayout = getLayout(parentId)
@@ -91,6 +115,11 @@ export const useDesignStore = defineStore('tableDesign', () => {
     }
   }
 
+  /**
+   * 删除布局
+   * @description 删除一个画布布局及其子布局
+   * @param layoutId 布局ID
+   */
   function deleteLayout(layoutId: string) {
     const layout = canvasData.value.layouts[layoutId]
     if (!layout) return
@@ -99,6 +128,10 @@ export const useDesignStore = defineStore('tableDesign', () => {
     const parentLayout = canvasData.value.layouts[parentId]
     if (!parentLayout) return
     const idsToDelete: string[] = [layoutId]
+    /**
+     * 获取所有子布局ID
+     * @param id 布局ID
+     */
     function collectChildIds(id: string) {
       const item = canvasData.value.layouts[id]
       if (item?.children) {
@@ -121,6 +154,12 @@ export const useDesignStore = defineStore('tableDesign', () => {
     }
   }
 
+  /**
+   * 获取布局操作选项
+   * @description 获取指定画布布局的操作选项
+   * @param layoutId 布局ID
+   * @returns 布局操作选项列表
+   */
   function getLayoutToolbar(layoutId: string) {
     const layout = getLayout(layoutId)
     if (!layout) return []
@@ -129,6 +168,10 @@ export const useDesignStore = defineStore('tableDesign', () => {
     else return excludeOption(LayoutOperateOptions, 'delete')
   }
 
+  /**
+   * 重置画布
+   * @description 重置画布数据为初始状态
+   */
   function resetCanvas() {
     canvasData.value = JSON.parse(JSON.stringify(initialCanvasData))
     activeCanvasElement.value = undefined
@@ -136,6 +179,10 @@ export const useDesignStore = defineStore('tableDesign', () => {
     hoveredLayoutId.value = ''
   }
 
+  /**
+   * 切换属性面板
+   * @description 切换属性面板的显示状态
+   */
   function toggleAttributesPanel() {
     attributesPanelCollapsed.value = !attributesPanelCollapsed.value
   }

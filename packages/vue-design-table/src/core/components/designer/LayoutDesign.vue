@@ -5,7 +5,8 @@
       props.layoutId,
       {
         'table-layout-wrapper-drop': canDropElement,
-        'is-hovered': isHovered,
+        'is-hover': isHovered,
+        'is-active': isActive,
       },
     ]"
     :style="wrapperStyle"
@@ -41,8 +42,15 @@ interface Props {
   layoutId?: string
 }
 
-const { getLayout, addLayout, deleteLayout, selectLayout, hoveredLayoutId, hoverLayout } =
-  useDesignContext()
+const {
+  getLayout,
+  addLayout,
+  deleteLayout,
+  selectLayout,
+  hoveredLayoutId,
+  hoverLayout,
+  activeCanvasLayout,
+} = useDesignContext()
 
 const props = withDefaults(defineProps<Props>(), {
   layoutId: 'tablePage',
@@ -53,6 +61,9 @@ const contextMenuRef = useTemplateRef('contextMenuRef')
 
 // 是否悬停在布局上
 const isHovered = computed(() => hoveredLayoutId.value === props.layoutId)
+
+// 是否选中
+const isActive = computed(() => activeCanvasLayout.value?.id === props.layoutId)
 
 // 是否可以添加布局
 const canAddLayout = computed(() => {
@@ -164,7 +175,8 @@ function handleContextMenu(e: MouseEvent) {
   &-drop {
     border: 1px dashed var(--vdt-primary);
   }
-  &.is-hovered {
+  &.is-hover,
+  &.is-active {
     box-shadow: 0 0 6px -2px var(--vdt-primary-hover);
   }
 }

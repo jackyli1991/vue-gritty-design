@@ -42,10 +42,10 @@ export function useDesignContext() {
     deleteLayout: (layoutId: string) => {
       if (!layoutId) return
       modalStore.openDeleteLayoutModal(layoutId)
-    },
+    }, // 删除布局，打开确认弹窗，回调方法为：confirmDeleteLayout
     addLayout: (parentId: string, direction: Position) => {
       modalStore.openAddLayoutModal(parentId, direction)
-    },
+    }, // 添加布局，打开新增弹窗，回调方法为：confirmAddLayout
     confirmDeleteLayout: designStore.deleteLayout,
     confirmAddLayout: designStore.addLayout,
     closeAddLayoutModal: modalStore.closeAddLayoutModal,
