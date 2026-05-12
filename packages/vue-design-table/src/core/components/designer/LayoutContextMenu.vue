@@ -18,26 +18,28 @@
 </template>
 
 <script setup lang="ts">
-import { ref, computed, onMounted, onUnmounted } from 'vue'
+import { ref, computed } from 'vue'
 import IconifyIcon from '@/components/IconifyIcon.vue'
 import { Position } from '@/types'
 import { useDesignContext } from '@/composables/useDesignContext'
+import { useToolbarAction } from '@/composables/useToolbarAction'
 
-const { getLayoutToolbar, hoveredLayoutId } = useDesignContext()
+const { getLayoutToolbar, activeCanvasLayout } = useDesignContext()
+const { handleLayoutToolbarAction } = useToolbarAction()
 
 const visible = ref(false)
 const position = ref({ x: 0, y: 0 })
 
-const emit = defineEmits<{
-  action: [direction: Position]
-}>()
+// const emit = defineEmits<{
+//   action: [direction: Position]
+// }>()
 
 const menuStyle = computed(() => ({
   left: `${position.value.x}px`,
   top: `${position.value.y}px`,
 }))
 
-const operateOptions = computed(() => getLayoutToolbar(hoveredLayoutId.value))
+const operateOptions = computed(() => getLayoutToolbar(activeCanvasLayout.value?.id as string))
 
 function open(x: number, y: number) {
   position.value = { x, y }
@@ -50,23 +52,10 @@ function close() {
 
 // 处理操作
 function handleAction(direction: Position) {
-  emit('action', direction)
+  // emit('action', direction)
+  handleLayoutToolbarAction(direction)
   close()
 }
-
-function handleClickOutside() {
-  if (visible.value) close()
-}
-
-onMounted(() => {
-  document.addEventListener('click', handleClickOutside)
-  document.addEventListener('contextmenu', handleClickOutside)
-})
-
-onUnmounted(() => {
-  document.removeEventListener('click', handleClickOutside)
-  document.removeEventListener('contextmenu', handleClickOutside)
-})
 
 defineExpose({ open, close })
 </script>

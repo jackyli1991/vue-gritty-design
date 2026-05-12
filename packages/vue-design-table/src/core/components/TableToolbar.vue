@@ -6,7 +6,7 @@
         v-for="item in operateOptions"
         :key="item.value as string"
         class="toolbar-item"
-        @click.stop="handleAction(item.value as Position)"
+        @click.stop="handleLayoutToolbarAction(item.value as Position)"
       >
         <aTooltip :title="item.label" placement="top">
           <IconifyIcon :icon="item.icon" :size="20" :danger="item.danger" />
@@ -42,6 +42,9 @@ import { Position } from '@/types'
 import { Tooltip as aTooltip, Button as aButton } from 'ant-design-vue'
 import IconifyIcon from '@/components/IconifyIcon.vue'
 import { useDesignContext } from '@/composables/useDesignContext'
+import { useToolbarAction } from '@/composables/useToolbarAction'
+
+const { handleLayoutToolbarAction } = useToolbarAction()
 
 const {
   getLayoutToolbar,
@@ -53,6 +56,7 @@ const {
   closeLayerPanel,
 } = useDesignContext()
 
+// 工具条操作项
 const operateOptions = computed(() => {
   if (!activeCanvasLayout.value) {
     return []
@@ -67,12 +71,6 @@ function handleLayerPanel() {
   } else {
     openLayerPanel()
   }
-}
-
-// 处理操作
-function handleAction(direction: Position) {
-  console.log(direction)
-  // emit('action', direction)
 }
 </script>
 
