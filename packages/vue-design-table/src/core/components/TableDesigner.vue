@@ -119,7 +119,7 @@ const handleDrop = (e: DragEvent) => {
       top: 50%;
       left: 50%;
       transform: translate(-50%, -50%);
-      color: #999;
+      color: var(--vdt-font-color-light);
       font-size: 12px;
       text-align: center;
       padding: 40px;

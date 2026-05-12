@@ -93,7 +93,7 @@ defineExpose({ open, close })
     .context-menu-group-title {
       padding: 5px 12px 2px;
       font-size: 12px;
-      color: #999;
+      color: var(--vdt-font-color-light);
       line-height: 20px;
     }
   }
@@ -105,7 +105,7 @@ defineExpose({ open, close })
     padding: 6px 8px;
     cursor: pointer;
     font-size: 12px;
-    color: #333;
+    color: var(--vdt-font-color);
     transition: background 0.15s;
 
     &:hover {

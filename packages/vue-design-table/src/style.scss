@@ -2,6 +2,8 @@
   display: flex;
   height: 100%;
   gap: 12px;
+  color: var(--vdt-font-color);
+  font-size: 12px;
   :deep(.ant-form-item) {
     margin-bottom: 20px;
   }
@@ -15,6 +17,7 @@
       display: flex;
       gap: 12px;
       overflow: hidden;
+      position: relative;
     }
   }
   .table-design-wrapper {
@@ -40,4 +43,22 @@
 .slide-panel-leave-from {
   opacity: 1;
   transform: translateX(0);
+}
+
+// 图层面板从上方滑下过渡动画
+.slide-down-enter-active,
+.slide-down-leave-active {
+  transition: all 0.3s ease;
+}
+
+.slide-down-enter-from,
+.slide-down-leave-to {
+  opacity: 0;
+  transform: translateY(-20px);
+}
+
+.slide-down-enter-to,
+.slide-down-leave-from {
+  opacity: 1;
+  transform: translateY(0);
 }

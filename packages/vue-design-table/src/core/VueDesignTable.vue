@@ -13,11 +13,16 @@
         <Transition name="slide-panel">
           <TableAttributes v-show="!attributesPanelCollapsed" />
         </Transition>
+        <!-- 图层面板：从上方滑下 -->
+        <Transition name="slide-down">
+          <TableLayer v-if="layerPanelVisible" />
+        </Transition>
       </div>
     </div>
 
-    <!-- 所有动态组件 -->
-    <component :is="asyncComponent" v-bind="asyncComponentProps" v-if="asyncComponentProps" />
+    <!-- Modal 组件 -->
+    <AddLayoutModal />
+    <DeleteConfirmModal />
   </div>
 </template>
 
@@ -32,13 +37,18 @@ import TableResource from './components/TableResource.vue'
 import TableDesigner from './components/TableDesigner.vue'
 import TableToolbar from './components/TableToolbar.vue'
 import TableAttributes from './components/TableAttributes.vue'
+import TableLayer from './components/TableLayer.vue'
+import AddLayoutModal from './components/modal/AddLayoutModal.vue'
+import DeleteConfirmModal from './components/modal/DeleteConfirmModal.vue'
 
 const props = defineProps<{
   themeColors?: ThemeColors
 }>()
 
 const store = useDesignStore()
-const { asyncComponent, asyncComponentProps, attributesPanelCollapsed } = storeToRefs(store)
+const { attributesPanelCollapsed } = storeToRefs(store)
+
+const { layerPanelVisible } = useDesignContext()
 
 const containerRef = useTemplateRef('containerRef')
 

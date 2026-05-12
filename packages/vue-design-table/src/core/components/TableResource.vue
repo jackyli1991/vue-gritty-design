@@ -43,7 +43,6 @@ const handleDragStart = (e: DragEvent, group: ResourceGroup, resource: ResourceI
       font-size: 14px;
       line-height: 24px;
       font-weight: 500;
-      color: #333;
       margin-bottom: 8px;
     }
     .resource-group {
@@ -62,11 +61,6 @@ const handleDragStart = (e: DragEvent, group: ResourceGroup, resource: ResourceI
         cursor: move;
         transition: all 0.2s;
         background: #fff;
-
-        .resource-name {
-          font-size: 12px;
-          color: #333;
-        }
 
         &:hover {
           border-color: var(--vdt-primary);

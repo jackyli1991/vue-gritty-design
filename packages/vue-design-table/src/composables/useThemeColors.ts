@@ -19,6 +19,8 @@ export function useThemeColors(initialColors?: ThemeColors) {
   const cssVariables = computed(() => {
     const c = themeColors.value
     return {
+      '--vdt-font-color': '#333',
+      '--vdt-font-color-light': '#999',
       '--vdt-primary': c.primary,
       '--vdt-primary-hover': darken(c.primary, 0.1),
       '--vdt-primary-light': lighten(c.primary, 0.9),

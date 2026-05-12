@@ -12,12 +12,16 @@
           <IconifyIcon :icon="item.icon" :size="20" :danger="item.danger" />
         </aTooltip>
       </div>
+      <aTooltip :title="layerPanelVisible ? '关闭图层' : '图层'" placement="top">
+        <div class="toolbar-item" :class="{ active: layerPanelVisible }" @click="handleLayerPanel">
+          <IconifyIcon icon="material-symbols:layers-outline-rounded" :size="20" />
+        </div>
+      </aTooltip>
     </div>
     <div class="table-toolbar-right">
-      <aTooltip title="图层" placement="top">
-        <IconifyIcon icon="material-symbols:layers-outline-rounded" :size="20" />
-      </aTooltip>
-      <aButton size="small">预览</aButton>
+      <aButton size="small">指引</aButton>
+      <aButton size="small">数据预览</aButton>
+      <aButton size="small">表格预览</aButton>
       <aButton size="small" type="primary">保存</aButton>
       <aTooltip :title="attributesPanelCollapsed ? '展开属性面板' : '折叠属性面板'" placement="top">
         <div
@@ -39,8 +43,15 @@ import { Tooltip as aTooltip, Button as aButton } from 'ant-design-vue'
 import IconifyIcon from '@/components/IconifyIcon.vue'
 import { useDesignContext } from '@/composables/useDesignContext'
 
-const { getLayoutToolbar, activeCanvasLayout, attributesPanelCollapsed, toggleAttributesPanel } =
-  useDesignContext()
+const {
+  getLayoutToolbar,
+  activeCanvasLayout,
+  attributesPanelCollapsed,
+  toggleAttributesPanel,
+  layerPanelVisible,
+  openLayerPanel,
+  closeLayerPanel,
+} = useDesignContext()
 
 const operateOptions = computed(() => {
   if (!activeCanvasLayout.value) {
@@ -48,6 +59,15 @@ const operateOptions = computed(() => {
   }
   return getLayoutToolbar(activeCanvasLayout.value?.id)
 })
+
+// 处理图层弹窗
+function handleLayerPanel() {
+  if (layerPanelVisible.value) {
+    closeLayerPanel()
+  } else {
+    openLayerPanel()
+  }
+}
 
 // 处理操作
 function handleAction(direction: Position) {
@@ -77,6 +97,26 @@ function handleAction(direction: Position) {
     display: flex;
     justify-content: flex-end;
     align-items: center;
+  }
+}
+
+.toolbar-item {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 24px;
+  height: 24px;
+  border-radius: 4px;
+  cursor: pointer;
+  transition: all 0.3s ease;
+
+  &:hover {
+    background-color: rgba(0, 0, 0, 0.06);
+  }
+
+  &.active {
+    background-color: var(--vdt-primary-light);
+    color: var(--vdt-primary);
   }
 }
 

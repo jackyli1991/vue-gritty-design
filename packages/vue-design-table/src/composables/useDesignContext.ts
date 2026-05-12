@@ -1,15 +1,12 @@
 import { storeToRefs } from 'pinia'
-import { useDesignStore } from '@/stores'
-import { useAddLayout } from '@/composables/useAddLayoutModal'
-import { useDeleteConfirm } from '@/composables/useDeleteLayoutModal'
+import { useDesignStore } from '@/stores/designStore'
+import { useModalStore } from '@/stores/modalStore'
 import { Position } from '@/types'
 
-/**
- * 设计上下文
- * 将设计状态和操作暴露给组件，并且提供中间拦截操作，例如添加弹窗、删除确认、日志记录、操作历史等
- */
 export function useDesignContext() {
-  const store = useDesignStore()
+  const designStore = useDesignStore()
+  const modalStore = useModalStore()
+
   const {
     canvasData,
     activeCanvasElement,
@@ -17,7 +14,15 @@ export function useDesignContext() {
     hoveredLayoutId,
     layoutIds,
     attributesPanelCollapsed,
-  } = storeToRefs(store)
+  } = storeToRefs(designStore)
+
+  const {
+    addLayoutModalVisible,
+    addLayoutModalData,
+    deleteLayoutModalVisible,
+    deleteLayoutModalId,
+    layerPanelVisible,
+  } = storeToRefs(modalStore)
 
   return {
     canvasData,
@@ -26,50 +31,32 @@ export function useDesignContext() {
     activeCanvasLayout,
     hoveredLayoutId,
     attributesPanelCollapsed,
-    getLayout: store.getLayout,
-    selectLayout: store.selectLayout,
-    toggleAttributesPanel: store.toggleAttributesPanel,
-    // 删除布局拦截，弹窗确认后删除布局
+    addLayoutModalVisible,
+    addLayoutModalData,
+    deleteLayoutModalVisible,
+    deleteLayoutModalId,
+    layerPanelVisible,
+    getLayout: designStore.getLayout,
+    selectLayout: designStore.selectLayout,
+    toggleAttributesPanel: designStore.toggleAttributesPanel,
     deleteLayout: (layoutId: string) => {
-      if (!layoutId) {
-        return
-      }
-      const { openModal } = useDeleteConfirm(
-        {
-          title: '删除布局',
-          content: '确定要删除该布局吗？',
-          subContent: '该操作将同时删除所有子布局，且不可撤销。',
-          confirmText: '确定',
-          cancelText: '取消',
-          layoutId // 要删除的布局ID
-        },
-        store.deleteLayout,
-        (layoutId: string) => {
-          console.log('删除布局取消', layoutId)
-        }
-      )
-      openModal()
+      if (!layoutId) return
+      modalStore.openDeleteLayoutModal(layoutId)
     },
-    // 添加布局拦截，弹窗编辑后添加布局
     addLayout: (parentId: string, direction: Position) => {
-      const { openModal } = useAddLayout(
-        {
-          direction,
-          parentId
-        },
-        store.addLayout,
-        (parentId: string) => {
-          console.log('添加布局取消', parentId)
-        }
-      )
-
-      openModal()
+      modalStore.openAddLayoutModal(parentId, direction)
     },
-    hoverLayout: store.hoverLayout,
-    getLayoutToolbar: store.getLayoutToolbar,
-    selectCanvasElement: store.selectCanvasElement,
-    addCanvasElement: store.addCanvasElement,
-    deleteCanvasElement: store.deleteCanvasElement,
-    resetCanvas: store.resetCanvas,
+    confirmDeleteLayout: designStore.deleteLayout,
+    confirmAddLayout: designStore.addLayout,
+    closeAddLayoutModal: modalStore.closeAddLayoutModal,
+    closeDeleteLayoutModal: modalStore.closeDeleteLayoutModal,
+    openLayerPanel: modalStore.openLayerPanel,
+    closeLayerPanel: modalStore.closeLayerPanel,
+    hoverLayout: designStore.hoverLayout,
+    getLayoutToolbar: designStore.getLayoutToolbar,
+    selectCanvasElement: designStore.selectCanvasElement,
+    addCanvasElement: designStore.addCanvasElement,
+    deleteCanvasElement: designStore.deleteCanvasElement,
+    resetCanvas: designStore.resetCanvas,
   }
 }

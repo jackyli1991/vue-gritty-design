@@ -1,6 +1,6 @@
 import type { CanvasLayout } from '@/types'
 
-interface CreateLayoutConfig extends Omit<CanvasLayout, 'id' | 'props'> {
+export interface CreateLayoutConfig extends Omit<CanvasLayout, 'id' | 'props'> {
   widthType?: string
   heightType?: string
   widthValue?: number

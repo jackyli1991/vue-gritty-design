@@ -34,7 +34,7 @@ const { activeCanvasElement, activeCanvasLayout } = useDesignContext()
   }
   .attributes-empty {
     text-align: center;
-    color: #999;
+    color: var(--vdt-font-color-light);
     padding: 40px 0;
     font-size: 12px;
   }
@@ -51,7 +51,7 @@ const { activeCanvasElement, activeCanvasLayout } = useDesignContext()
     .attributes-title {
       font-weight: 600;
       font-size: 14px;
-      color: #333;
+      color: var(--vdt-font-color);
       margin-bottom: 12px;
       padding-bottom: 8px;
       border-bottom: 1px solid #f0f0f0;
@@ -67,7 +67,7 @@ const { activeCanvasElement, activeCanvasLayout } = useDesignContext()
       label {
         display: block;
         font-size: 13px;
-        color: #666;
+        color: var(--vdt-font-color);
         margin-bottom: 8px;
       }
     }
@@ -77,7 +77,7 @@ const { activeCanvasElement, activeCanvasLayout } = useDesignContext()
       background: #f5f5f5;
       border-radius: 4px;
       font-size: 13px;
-      color: #333;
+      color: var(--vdt-font-color);
       word-break: break-all;
     }
   }

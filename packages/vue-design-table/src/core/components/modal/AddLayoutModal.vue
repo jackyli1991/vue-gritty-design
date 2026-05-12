@@ -1,7 +1,7 @@
 <template>
   <aModal
     title="创建布局"
-    :open="visible"
+    :open="addLayoutModalVisible"
     :width="'50vw'"
     cancelText="取消"
     okText="确定"
@@ -18,31 +18,27 @@ import { Position } from '@/types'
 import { ref, useTemplateRef, watch } from 'vue'
 import { Modal as aModal } from 'ant-design-vue'
 import LayoutForm from '../form/LayoutForm.vue'
-import { createLayout } from '../designer'
-import { useAddLayoutModal } from '@/composables/useAddLayoutModal'
+import { createLayout, CreateLayoutConfig } from '../designer'
+import { useDesignContext } from '@/composables/useDesignContext'
 
 defineOptions({
   name: 'AddLayoutModal',
 })
 
-const props = defineProps<{
-  direction: Position // 添加布局的方向
-}>()
-
-const { visible, closeModal, onConfirm, onCancel } = useAddLayoutModal()
+const { addLayoutModalVisible, addLayoutModalData, confirmAddLayout, closeAddLayoutModal } =
+  useDesignContext()
 
 const formData = ref<CanvasLayout>({
   props: {},
 } as CanvasLayout)
 const layoutFormRef = useTemplateRef<typeof LayoutForm>('layoutFormRef')
 
-// 初始化弹窗数据
 function init() {
-  const layoutProps = {
+  if (!addLayoutModalData.value) return
+  const { direction } = addLayoutModalData.value
+  const layoutProps: CreateLayoutConfig = {
     name: '新布局',
   }
-  const { direction } = props
-  console.log('弹窗初始化', direction)
   if (direction === Position.Top || direction === Position.Bottom) {
     Object.assign(layoutProps, {
       widthType: '%',
@@ -61,31 +57,29 @@ function init() {
   formData.value = createLayout('', '', layoutProps)
 }
 
-// 清除表单验证状态
 function clearValidate() {
   layoutFormRef.value?.clearValidate()
 }
 
-// 确认添加布局
 async function handleOk() {
   const valid = await layoutFormRef.value?.validate()
-  if (!valid) {
+  if (!valid || !addLayoutModalData.value) {
     return
   }
-  onConfirm(formData.value)
+  const { parentId, direction } = addLayoutModalData.value
+  confirmAddLayout(formData.value, parentId, direction)
   clearValidate()
-  closeModal()
+  closeAddLayoutModal()
 }
 
-// 取消添加布局
 function handleCancel() {
   clearValidate()
-  closeModal()
-  onCancel()
+  closeAddLayoutModal()
 }
 
-watch(() => visible, init, {
-  deep: true,
-  immediate: true,
+watch(addLayoutModalVisible, (visible) => {
+  if (visible) {
+    init()
+  }
 })
 </script>
