@@ -51,10 +51,22 @@ export const useModalStore = defineStore('modal', () => {
     layerPanelVisible.value = false
   }
 
-  // 是否有打开的弹窗
-  // const hasOpenModal = computed(() => {
-  //   return addLayoutModalVisible.value || deleteLayoutModalVisible.value || layerPanelVisible.value
-  // })
+  /** ************************* 右键菜单相关 ************************* */
+
+  const activeContextMenuId = ref<string>('') // 当前激活的右键菜单ID
+  const contextMenuPosition = ref({ x: 0, y: 0 }) // 右键菜单位置
+
+  // 打开右键菜单
+  function openContextMenu(menuId: string, x: number, y: number) {
+    activeContextMenuId.value = menuId
+    contextMenuPosition.value = { x, y }
+  }
+
+  // 关闭右键菜单
+  function closeContextMenu() {
+    activeContextMenuId.value = ''
+    contextMenuPosition.value = { x: 0, y: 0 }
+  }
 
   return {
     addLayoutModalVisible,
@@ -62,13 +74,16 @@ export const useModalStore = defineStore('modal', () => {
     deleteLayoutModalVisible,
     deleteLayoutModalId,
     layerPanelVisible,
-    // hasOpenModal,
+    activeContextMenuId,
+    contextMenuPosition,
     openAddLayoutModal,
     closeAddLayoutModal,
     openDeleteLayoutModal,
     closeDeleteLayoutModal,
     openLayerPanel,
     closeLayerPanel,
+    openContextMenu,
+    closeContextMenu,
   }
 })
 

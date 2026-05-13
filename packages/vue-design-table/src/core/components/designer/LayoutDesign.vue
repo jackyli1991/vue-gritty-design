@@ -19,20 +19,13 @@
     <template v-for="child in layoutChildren" :key="child">
       <LayoutDesign :layoutId="child" />
     </template>
-    <!-- table是页面表格容器，不能再添加布局 -->
-    <template v-if="canAddLayout">
-      <!-- <LayoutHoverToolbar :visible="isHovered" @action="handleAction" /> -->
-      <LayoutContextMenu ref="contextMenuRef" />
-    </template>
   </div>
 </template>
 
 <script setup lang="ts">
-import { computed, useTemplateRef, onMounted, onUnmounted } from 'vue'
+import { computed } from 'vue'
 import { Direction } from '@/types'
 import { useDesignContext } from '@/composables/useDesignContext'
-// import LayoutHoverToolbar from './LayoutHoverToolbar.vue'
-import LayoutContextMenu from './LayoutContextMenu.vue'
 
 defineOptions({
   name: 'LayoutDesign',
@@ -42,15 +35,11 @@ interface Props {
   layoutId?: string
 }
 
-const { getLayout, selectLayout, hoveredLayoutId, hoverLayout, activeCanvasLayout } =
-  useDesignContext()
+const { getLayout, selectLayout, hoveredLayoutId, hoverLayout, activeCanvasLayout, closeContextMenu, openContextMenu } = useDesignContext()
 
 const props = withDefaults(defineProps<Props>(), {
   layoutId: 'tablePage',
 })
-
-// 右键上下文菜单
-const contextMenuRef = useTemplateRef('contextMenuRef')
 
 // 是否悬停在布局上
 const isHovered = computed(() => hoveredLayoutId.value === props.layoutId)
@@ -123,7 +112,7 @@ const layoutChildren = computed(() => {
 // 点击布局
 function handleClick() {
   selectLayout(props.layoutId)
-  contextMenuRef.value?.close()
+  closeContextMenu()
 }
 
 // 鼠标悬停布局
@@ -138,23 +127,11 @@ function handleMouseLeave() {
 
 // 开启右键上下文菜单
 function handleContextMenu(e: MouseEvent) {
-  selectLayout(props.layoutId)
-  contextMenuRef.value?.open(e.clientX, e.clientY)
+  if (canAddLayout.value) {
+    selectLayout(props.layoutId)
+    openContextMenu(props.layoutId, e.clientX, e.clientY)
+  }
 }
-
-function handleClickOutside() {
-  contextMenuRef.value?.close()
-}
-
-onMounted(() => {
-  document.addEventListener('click', handleClickOutside)
-  document.addEventListener('contextmenu', handleClickOutside)
-})
-
-onUnmounted(() => {
-  document.removeEventListener('click', handleClickOutside)
-  document.removeEventListener('contextmenu', handleClickOutside)
-})
 </script>
 
 <style scoped lang="scss">

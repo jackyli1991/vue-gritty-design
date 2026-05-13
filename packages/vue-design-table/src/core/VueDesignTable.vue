@@ -23,12 +23,14 @@
     <!-- Modal 组件 -->
     <AddLayoutModal />
     <DeleteConfirmModal />
+    <!-- 布局右键菜单 -->
+    <LayoutContextMenu />
   </div>
 </template>
 
 <script setup lang="ts">
 import { storeToRefs } from 'pinia'
-import { onMounted, useTemplateRef, watch } from 'vue'
+import { onMounted, useTemplateRef, watch, onUnmounted } from 'vue'
 import type { ThemeColors } from '@/types'
 import { useDesignContext } from '@/composables/useDesignContext'
 import { useThemeColors } from '@/composables/useThemeColors'
@@ -40,6 +42,7 @@ import TableAttributes from './components/TableAttributes.vue'
 import TableLayer from './components/TableLayer.vue'
 import AddLayoutModal from './components/modal/AddLayoutModal.vue'
 import DeleteConfirmModal from './components/modal/DeleteConfirmModal.vue'
+import LayoutContextMenu from './components/designer/LayoutContextMenu.vue'
 
 const props = defineProps<{
   themeColors?: ThemeColors
@@ -48,12 +51,17 @@ const props = defineProps<{
 const store = useDesignStore()
 const { attributesPanelCollapsed } = storeToRefs(store)
 
-const { layerPanelVisible } = useDesignContext()
+const { layerPanelVisible, closeContextMenu } = useDesignContext()
 
 const containerRef = useTemplateRef('containerRef')
 
 const { selectLayout } = useDesignContext()
 const { setThemeColors, applyCssVariables } = useThemeColors(props.themeColors)
+
+// 点击外部关闭菜单
+function handleClickOutside() {
+  closeContextMenu()
+}
 
 watch(
   () => props.themeColors,
@@ -73,6 +81,14 @@ onMounted(() => {
     applyCssVariables(containerRef.value)
   }
   selectLayout('tablePage')
+  // 监听点击关闭菜单
+  document.addEventListener('click', handleClickOutside)
+  document.addEventListener('contextmenu', handleClickOutside)
+})
+
+onUnmounted(() => {
+  document.removeEventListener('click', handleClickOutside)
+  document.removeEventListener('contextmenu', handleClickOutside)
 })
 </script>
 

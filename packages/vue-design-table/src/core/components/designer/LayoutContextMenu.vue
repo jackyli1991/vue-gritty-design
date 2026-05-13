@@ -1,6 +1,6 @@
 <template>
   <Teleport to="body">
-    <div v-if="visible" class="layout-context-menu" :style="menuStyle" @click.stop>
+    <div v-if="isVisible" class="layout-context-menu" :style="menuStyle" @click.stop>
       <div class="context-menu-group">
         <div class="context-menu-group-title">添加布局</div>
         <div
@@ -18,46 +18,36 @@
 </template>
 
 <script setup lang="ts">
-import { ref, computed } from 'vue'
+import { computed } from 'vue'
 import IconifyIcon from '@/components/IconifyIcon.vue'
 import { Position } from '@/types'
 import { useDesignContext } from '@/composables/useDesignContext'
 import { useToolbarAction } from '@/composables/useToolbarAction'
 
-const { getLayoutToolbar, activeCanvasLayout } = useDesignContext()
+const {
+  getLayoutToolbar,
+  activeCanvasLayout,
+  activeContextMenuId,
+  contextMenuPosition,
+  closeContextMenu,
+} = useDesignContext()
 const { handleLayoutToolbarAction } = useToolbarAction()
 
-const visible = ref(false)
-const position = ref({ x: 0, y: 0 })
-
-// const emit = defineEmits<{
-//   action: [direction: Position]
-// }>()
+// 只要有菜单ID就显示
+const isVisible = computed(() => !!activeContextMenuId.value)
 
 const menuStyle = computed(() => ({
-  left: `${position.value.x}px`,
-  top: `${position.value.y}px`,
+  left: `${contextMenuPosition.value.x}px`,
+  top: `${contextMenuPosition.value.y}px`,
 }))
 
 const operateOptions = computed(() => getLayoutToolbar(activeCanvasLayout.value?.id as string))
 
-function open(x: number, y: number) {
-  position.value = { x, y }
-  visible.value = true
-}
-
-function close() {
-  visible.value = false
-}
-
 // 处理操作
 function handleAction(direction: Position) {
-  // emit('action', direction)
   handleLayoutToolbarAction(direction)
-  close()
+  closeContextMenu()
 }
-
-defineExpose({ open, close })
 </script>
 
 <style scoped lang="scss">

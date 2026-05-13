@@ -22,6 +22,8 @@ export function useDesignContext() {
     deleteLayoutModalVisible,
     deleteLayoutModalId,
     layerPanelVisible,
+    activeContextMenuId,
+    contextMenuPosition,
   } = storeToRefs(modalStore)
 
   return {
@@ -36,6 +38,8 @@ export function useDesignContext() {
     deleteLayoutModalVisible,
     deleteLayoutModalId,
     layerPanelVisible,
+    activeContextMenuId,
+    contextMenuPosition,
     getLayout: designStore.getLayout,
     selectLayout: designStore.selectLayout,
     toggleAttributesPanel: designStore.toggleAttributesPanel,
@@ -52,6 +56,8 @@ export function useDesignContext() {
     closeDeleteLayoutModal: modalStore.closeDeleteLayoutModal,
     openLayerPanel: modalStore.openLayerPanel,
     closeLayerPanel: modalStore.closeLayerPanel,
+    openContextMenu: modalStore.openContextMenu,
+    closeContextMenu: modalStore.closeContextMenu,
     hoverLayout: designStore.hoverLayout,
     getLayoutToolbar: designStore.getLayoutToolbar,
     selectCanvasElement: designStore.selectCanvasElement,
