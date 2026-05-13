@@ -1,4 +1,5 @@
-import type { CanvasLayout } from '@/types'
+import type { CanvasLayout, CanvasElement } from '@/types'
+import { BaseLayouts } from '@/types'
 
 export interface CreateLayoutConfig extends Omit<CanvasLayout, 'id' | 'props'> {
   widthType?: string
@@ -27,6 +28,7 @@ export function createLayout(
   return {
     id,
     parentId,
+    type: config.type ?? BaseLayouts.Common,
     name: config.name ?? '',
     direction: config.direction ?? undefined,
     children: config.children ?? [],
@@ -43,5 +45,22 @@ export function createLayout(
       backgroundColor: config.backgroundColor ?? '#fff',
       isForm: config.isForm ?? false,
     },
+  }
+}
+
+/**
+ * 创建元素
+ * @description 创建一个画布元素对象
+ * @param layoutId 布局ID
+ * @param config 元素配置
+ * @returns 元素对象
+ */
+export function createElement(layoutId: string, config: Omit<CanvasElement, 'id'>): CanvasElement {
+  return {
+    id: `element_${Date.now()}_${Math.random().toString(36)}`,
+    layoutId,
+    name: config.name ?? '',
+    type: config.type ?? 'div',
+    props: config.props ?? {},
   }
 }

@@ -1,7 +1,7 @@
 import { computed, ref } from 'vue'
 import { defineStore } from 'pinia'
 import type { CanvasElement, CanvasData, CanvasLayout } from '@/types'
-import { Direction, Position } from '@/types'
+import { Direction, Position, BaseLayouts } from '@/types'
 import { excludeOption } from '@/utils'
 import { createLayout } from '@/core/components/designer'
 import { LayoutOperateOptions } from '@/datas/directory'
@@ -9,28 +9,31 @@ import { LayoutOperateOptions } from '@/datas/directory'
 // 初始画布数据
 const initialCanvasData: CanvasData = {
   layouts: {
-    tablePage: createLayout('tablePage', '', {
+    [BaseLayouts.TablePage]: createLayout(BaseLayouts.TablePage, '', {
+      type: BaseLayouts.TablePage,
       direction: Direction.Vertical,
       name: '页面容器',
       deleteAllowed: false,
       dropAllowed: false,
-      children: ['tableWrapper'],
+      children: [BaseLayouts.TableWrapper],
       heightType: '%',
       heightValue: 100,
       backgroundColor: '#fefefe',
       padding: [10, 10, 10, 10],
     }),
-    tableWrapper: createLayout('tableWrapper', 'tablePage', {
+    [BaseLayouts.TableWrapper]: createLayout(BaseLayouts.TableWrapper, BaseLayouts.TablePage, {
+      type: BaseLayouts.TableWrapper,
       direction: undefined,
       name: '表格容器',
       deleteAllowed: false,
       dropAllowed: false,
-      children: ['tableMain'],
+      children: [BaseLayouts.TableMain],
       heightType: '%',
       heightValue: 100,
       padding: [10, 10, 10, 10],
     }),
-    tableMain: createLayout('tableMain', 'tableWrapper', {
+    [BaseLayouts.TableMain]: createLayout(BaseLayouts.TableMain, BaseLayouts.TableWrapper, {
+      type: BaseLayouts.TableMain,
       direction: undefined,
       name: '表格',
       deleteAllowed: false,
@@ -55,8 +58,12 @@ export const useDesignStore = defineStore('tableDesign', () => {
     console.log('选择元素', index)
   }
 
+  /**
+   * 添加元素
+   * @param component 元素数据对象
+   */
   function addCanvasElement(component: CanvasElement) {
-    console.log('添加元素', component)
+    canvasData.value.elements[component.id] = component
   }
 
   function deleteCanvasElement(index: number) {

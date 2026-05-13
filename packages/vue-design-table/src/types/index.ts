@@ -10,6 +10,14 @@ export enum Position {
   Right = 'right',
 }
 
+export enum BaseLayouts {
+  TablePage = 'tablePage', // 表格页面布局
+  TableWrapper = 'tableWrapper', // 表格包裹布局
+  TableMain = 'tableMain', // 表格主体布局
+  TableForm = 'tableForm', // 表格表单布局
+  Common = 'common', // 通用布局
+}
+
 export interface Option {
   value: string | number | boolean
   label: string
@@ -28,15 +36,16 @@ export interface ResourceItem {
 
 // 组件分类类型定义
 export interface ResourceGroup {
-  title: string
-  key: string
-  components: ResourceItem[]
+  title: string // 分类标题
+  target?: BaseLayouts // 目标布局
+  components: ResourceItem[] // 组件列表
 }
 
 // 画布布局类型定义
 export interface CanvasLayout {
   id: string // 布局ID
   parentId?: string // 父布局ID
+  type: BaseLayouts // 布局类型
   name: string // 布局名称
   direction?: Direction | undefined // 布局方向
   children?: string[] // 子布局ID列表
@@ -64,16 +73,10 @@ export interface CanvasElement {
   props: Record<string, unknown> // 元素属性
 }
 
-// 画布元素组类型定义
-export interface CanvasElementGroup {
-  layoutId: string // 布局ID
-  children: CanvasElement[] // 子元素
-}
-
 // 画布数据类型定义
 export interface CanvasData {
   layouts: Record<string, CanvasLayout> // 画布布局
-  elements: Record<string, CanvasElementGroup> // 画布元素
+  elements: Record<string, CanvasElement> // 画布元素
 }
 
 // 主题上下文类型定义

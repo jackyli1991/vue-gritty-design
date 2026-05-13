@@ -32,6 +32,7 @@
 import { storeToRefs } from 'pinia'
 import { onMounted, useTemplateRef, watch, onUnmounted } from 'vue'
 import type { ThemeColors } from '@/types'
+import { BaseLayouts } from '@/types'
 import { useDesignContext } from '@/composables/useDesignContext'
 import { useThemeColors } from '@/composables/useThemeColors'
 import { useDesignStore } from '@/stores'
@@ -80,7 +81,7 @@ onMounted(() => {
   if (containerRef.value) {
     applyCssVariables(containerRef.value)
   }
-  selectLayout('tablePage')
+  selectLayout(BaseLayouts.TablePage)
   // 监听点击关闭菜单
   document.addEventListener('click', handleClickOutside)
   document.addEventListener('contextmenu', handleClickOutside)

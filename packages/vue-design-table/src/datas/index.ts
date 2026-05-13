@@ -1,8 +1,9 @@
-import type { ResourceItem, ResourceGroup } from '../types'
+import type { ResourceItem, ResourceGroup } from '@/types'
+import { BaseLayouts } from '@/types'
 export * from './directory'
 
-// 顶部栏组件列表
-export const topComponentsList: ResourceItem[] = [
+// 基础组件列表
+export const baseComponentsList: ResourceItem[] = [
   {
     type: 'title',
     name: '标题',
@@ -21,9 +22,15 @@ export const topComponentsList: ResourceItem[] = [
     icon: 'material-symbols:buttons-alt-outline',
     props: {},
   },
+  {
+    type: 'icon',
+    name: '图标',
+    icon: 'material-symbols:emoticon-rounded',
+    props: {},
+  },
 ]
 
-// 表格列组件列表
+// 表格相关组件列表
 export const columnsComponentsList: ResourceItem[] = [
   {
     type: 'column',
@@ -69,20 +76,30 @@ export const columnsComponentsList: ResourceItem[] = [
   },
 ]
 
+// 表单相关组件列表
+export const formComponentsList: ResourceItem[] = [
+  {
+    type: 'input',
+    name: '输入框',
+    icon: 'material-symbols:form-outline',
+    props: {},
+  },
+]
+
 export const resourceGroupsList: ResourceGroup[] = [
   {
-    title: '顶部栏',
-    key: 'table-top', // 目的拖拽区域标识
-    components: topComponentsList,
+    title: '基础',
+    target: BaseLayouts.Common, // 目的拖拽区域标识
+    components: baseComponentsList,
   },
   {
     title: '表格',
-    key: 'table-columns', // 目的拖拽区域标识
+    target: BaseLayouts.TableMain, // 目的拖拽区域标识
     components: columnsComponentsList,
   },
   {
     title: '表单',
-    key: 'table-form', // 目的拖拽区域标识
-    components: [],
+    target: BaseLayouts.TableForm, // 目的拖拽区域标识
+    components: formComponentsList,
   },
 ]
