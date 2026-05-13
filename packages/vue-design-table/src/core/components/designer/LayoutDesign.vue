@@ -20,7 +20,7 @@
     @dragleave="handleDragLeave"
     @drop.prevent.stop="handleDrop"
   >
-    <TableLayoutDesign v-if="isTableLayout" />
+    <TableDesign v-if="isTableLayout" />
     <template v-else v-for="child in layoutChildren" :key="child">
       <LayoutDesign :layoutId="child" />
     </template>
@@ -33,7 +33,7 @@ import type { CanvasElement, ResourceItem } from '@/types'
 import { Direction, BaseLayouts } from '@/types'
 import { useDesignContext } from '@/composables/useDesignContext'
 import { createElement } from '@/core/components/designer'
-import TableLayoutDesign from './TableLayoutDesign.vue'
+import TableDesign from './TableDesign.vue'
 
 defineOptions({
   name: 'LayoutDesign',
@@ -190,9 +190,9 @@ const handleDrop = (e: DragEvent) => {
   if (!canDropElement.value) return
   isDragOver.value = false
 
-  const { resource } = getDragData(e)
+  const { group, resource } = getDragData(e)
   if (!resource) return
-
+  if (group?.target !== layout.value?.type) return // 非目标拖拽布局，不处理
   // console.log('拖拽的数据', group?.target, resource)
 
   // 生成新的元素

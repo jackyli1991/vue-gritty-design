@@ -63,6 +63,7 @@ export function useDesignContext() {
     selectCanvasElement: designStore.selectCanvasElement,
     addCanvasElement: designStore.addCanvasElement,
     deleteCanvasElement: designStore.deleteCanvasElement,
+    getTableElements: designStore.getTableElements,
     resetCanvas: designStore.resetCanvas,
   }
 }

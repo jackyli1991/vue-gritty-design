@@ -71,6 +71,17 @@ export const useDesignStore = defineStore('tableDesign', () => {
   }
 
   /**
+   * 获取所有表格元素
+   * @description 获取画布上的所有表格元素
+   * @returns 所有表格元素列表
+   */
+  function getTableElements() {
+    return Object.values(canvasData.value.elements).filter(
+      (element) => element.layoutId === BaseLayouts.TableMain,
+    )
+  }
+
+  /**
    * 获取布局
    * @description 获取指定画布布局对象
    * @param layoutId 布局ID
@@ -210,6 +221,7 @@ export const useDesignStore = defineStore('tableDesign', () => {
     selectCanvasElement,
     addCanvasElement,
     deleteCanvasElement,
+    getTableElements,
     resetCanvas,
     toggleAttributesPanel,
   }

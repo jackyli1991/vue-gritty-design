@@ -27,7 +27,7 @@ import { resourceGroupsList } from '@/datas'
 
 // 拖拽开始
 const handleDragStart = (e: DragEvent, group: ResourceGroup, resource: ResourceItem) => {
-  e.dataTransfer?.setData('dragResourceInfo', JSON.stringify({ resource }))
+  e.dataTransfer?.setData('dragResourceInfo', JSON.stringify({ resource, group }))
   e.dataTransfer?.setData(group?.target || '', JSON.stringify({ group }))
 }
 </script>
