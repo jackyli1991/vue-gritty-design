@@ -28,6 +28,12 @@ export const alignOptions: Option[] = [
   { label: '右对齐', value: 'right' },
 ]
 
+export const fixedOptions: Option[] = [
+  { label: '不固定', value: false },
+  { label: '左侧', value: 'left' },
+  { label: '右侧', value: 'right' },
+]
+
 // 布局操作选项
 export const LayoutOperateOptions: Option[] = [
   {
