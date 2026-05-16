@@ -6,9 +6,26 @@ import { Option } from '@/types'
  * @param excludeValues 排除值列表或单个值
  * @returns 排除后的选项列表
  */
-export function excludeOption(list: Option[], excludeValues: (string | number | boolean)[] | string | number | boolean) {
+export function excludeOption(
+  list: Option[],
+  excludeValues: (string | number | boolean)[] | string | number | boolean,
+) {
   if (Array.isArray(excludeValues)) {
-    return list.filter(item => !excludeValues.includes(item.value))
+    return list.filter((item) => !excludeValues.includes(item.value))
   }
-  return list.filter(item => item.value !== excludeValues)
+  return list.filter((item) => item.value !== excludeValues)
+}
+
+/**
+ * 创建UUID
+ * @returns UUID字符串
+ */
+export function createUUID() {
+  const uuidv4 = () => {
+    return 'xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx'.replace(/[xy]/g, (c: string): string => {
+      const r = (Math.random() * 16) | 0
+      return c === 'x' ? r.toString() : ((r & 0x3) | 0x8).toString()
+    })
+  }
+  return uuidv4()
 }

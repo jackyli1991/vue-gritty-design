@@ -22,9 +22,16 @@
 
     <!-- Modal 组件 -->
     <AddLayoutModal />
-    <DeleteConfirmModal />
+    <DeleteLayoutModal />
     <!-- 布局右键菜单 -->
     <LayoutContextMenu />
+    <!-- 确认弹窗 -->
+    <component
+      v-for="modal in commonModals"
+      :key="modal.id"
+      :is="modal.component"
+      v-bind="modal.attrs"
+    />
   </div>
 </template>
 
@@ -35,6 +42,7 @@ import type { ThemeColors } from '@/types'
 import { BaseLayouts } from '@/types'
 import { useDesignContext } from '@/composables/useDesignContext'
 import { useThemeColors } from '@/composables/useThemeColors'
+import { useConfirmModal } from '@/composables/useConfirmModal'
 import { useDesignStore } from '@/stores'
 import TableResource from './components/TableResource.vue'
 import TableDesigner from './components/TableDesigner.vue'
@@ -42,7 +50,7 @@ import TableToolbar from './components/TableToolbar.vue'
 import TableAttributes from './components/TableAttributes.vue'
 import TableLayer from './components/TableLayer.vue'
 import AddLayoutModal from './components/modal/AddLayoutModal.vue'
-import DeleteConfirmModal from './components/modal/DeleteConfirmModal.vue'
+import DeleteLayoutModal from './components/modal/DeleteLayoutModal.vue'
 import LayoutContextMenu from './components/designer/LayoutContextMenu.vue'
 
 const props = defineProps<{
@@ -53,6 +61,7 @@ const store = useDesignStore()
 const { attributesPanelCollapsed } = storeToRefs(store)
 
 const { layerPanelVisible, closeContextMenu } = useDesignContext()
+const { commonModals } = useConfirmModal()
 
 const containerRef = useTemplateRef('containerRef')
 

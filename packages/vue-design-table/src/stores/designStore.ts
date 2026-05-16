@@ -1,10 +1,14 @@
 import { computed, ref } from 'vue'
 import { defineStore } from 'pinia'
+import { message } from 'ant-design-vue'
 import type { CanvasElement, CanvasData, CanvasLayout } from '@/types'
-import { Direction, Position, BaseLayouts } from '@/types'
+import { Direction, Position, BaseLayouts, ColumnType } from '@/types'
 import { excludeOption } from '@/utils'
 import { createLayout } from '@/core/components/designer'
 import { LayoutOperateOptions } from '@/datas/directory'
+import { useConfirmModal } from '@/composables/useConfirmModal'
+
+const { openModal } = useConfirmModal()
 
 // 初始画布数据
 const initialCanvasData: CanvasData = {
@@ -54,8 +58,24 @@ export const useDesignStore = defineStore('tableDesign', () => {
 
   const layoutIds = computed(() => Object.keys(canvasData.value.layouts)) // 所有布局ID列表
 
-  function selectCanvasElement(index: number) {
-    console.log('选择元素', index)
+  /**
+   * 获取元素
+   * @description 获取指定画布元素对象
+   * @param id 元素ID
+   * @returns 元素对象
+   */
+  function getElement(id: string): CanvasElement | undefined {
+    return canvasData.value.elements[id]
+  }
+
+  /**
+   * 选择元素
+   * @description 选择当前画布元素
+   * @param id 元素ID
+   */
+  function selectCanvasElement(id: string) {
+    activeCanvasElement.value = getElement(id)
+    activeCanvasLayout.value = undefined
   }
 
   /**
@@ -63,11 +83,17 @@ export const useDesignStore = defineStore('tableDesign', () => {
    * @param component 元素数据对象
    */
   function addCanvasElement(component: CanvasElement) {
+    if (!checkRowSelectionAvailable(component)) return
     canvasData.value.elements[component.id] = component
+    selectCanvasElement(component.id)
   }
 
-  function deleteCanvasElement(index: number) {
-    console.log('删除元素', index)
+  /**
+   * 删除元素
+   * @description 删除当前画布元素
+   */
+  function deleteCanvasElement(id: string) {
+    console.log('删除元素', id)
   }
 
   /**
@@ -79,6 +105,40 @@ export const useDesignStore = defineStore('tableDesign', () => {
     return Object.values(canvasData.value.elements).filter(
       (element) => element.layoutId === BaseLayouts.TableMain,
     )
+  }
+
+  /**
+   * 检查表格选择控件是否可以添加
+   * @param component 元素数据对象
+   * @returns Boolean 是否可以添加
+   */
+  function checkRowSelectionAvailable(component: CanvasElement): boolean {
+    const curColumnType = component.props.columnType as ColumnType
+    const types = [ColumnType.Radio, ColumnType.Checkbox]
+    const hasTypes = getTableElements().find((element) =>
+      types.includes(element.props.columnType as ColumnType),
+    )
+    if (hasTypes && types.includes(curColumnType)) {
+      if (hasTypes.props.columnType === curColumnType) {
+        message.error('已存在单选、多选控件')
+      } else {
+        const contents: Record<string, string> = {
+          [ColumnType.Radio]: '是否确认替换已有的多选控件？',
+          [ColumnType.Checkbox]: '是否确认替换已有的单选控件？',
+        }
+        openModal(
+          {
+            title: '替换',
+            content: contents[curColumnType as string],
+          },
+          () => {
+            console.log('确认替换其他类型控件')
+          },
+        )
+      }
+      return false
+    }
+    return true // 其他类型可以添加
   }
 
   /**
@@ -107,6 +167,7 @@ export const useDesignStore = defineStore('tableDesign', () => {
    */
   function selectLayout(layoutId: string) {
     activeCanvasLayout.value = getLayout(layoutId)
+    activeCanvasElement.value = undefined
   }
 
   /**

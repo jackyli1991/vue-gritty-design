@@ -1,3 +1,5 @@
+import type { VNode } from 'vue'
+
 export enum Direction {
   Vertical = 'vertical',
   Horizontal = 'horizontal',
@@ -16,6 +18,14 @@ export enum BaseLayouts {
   TableMain = 'tableMain', // 表格主体布局
   TableForm = 'tableForm', // 表格表单布局
   Common = 'common', // 通用布局
+}
+
+export enum ColumnType {
+  Normal = 'normal', // 普通列
+  Radio = 'radio', // 单选列
+  Checkbox = 'checkbox', // 多选列
+  Index = 'index', // 索引列
+  Action = 'action', // 操作列
 }
 
 export interface Option {
@@ -98,4 +108,22 @@ export interface DesignTableConfig {
   showProperties?: boolean
   canvasBackground?: string
   themeColors?: ThemeColors
+}
+
+// 表格列属性类型定义
+export interface ColumnProps {
+  columnType: ColumnType // 列类型
+  title: string // 列标题
+  width: number // 列宽度
+  maxWidth?: number // 列最大宽度
+  minWidth?: number // 列最小宽度
+  align: string // 列对齐方式
+  dataIndex: string | string[] // 列数据索引名 支持通过数组查询嵌套路径
+  fixed?: 'left' | 'right' | boolean // 列固定位置 false true(等效于left) left right
+  resizable?: boolean // 是否可调整宽度
+  filterable?: boolean // 是否可筛选
+  filterMultiple?: boolean // 是否可多选筛选
+  filterMode?: 'menu' | 'tree' // 指定筛选菜单的用户界面
+  filters?: Option[] // 列筛选选项
+  filterIcon?: VNode // 列筛选图标
 }

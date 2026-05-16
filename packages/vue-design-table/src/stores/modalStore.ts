@@ -69,19 +69,23 @@ export const useModalStore = defineStore('modal', () => {
   }
 
   return {
+    // 创建布局弹窗相关
     addLayoutModalVisible,
     addLayoutModalData,
-    deleteLayoutModalVisible,
-    deleteLayoutModalId,
-    layerPanelVisible,
-    activeContextMenuId,
-    contextMenuPosition,
     openAddLayoutModal,
     closeAddLayoutModal,
+    // 删除布局弹窗相关
+    deleteLayoutModalVisible,
+    deleteLayoutModalId,
     openDeleteLayoutModal,
     closeDeleteLayoutModal,
+    // 图层弹窗相关
+    layerPanelVisible,
     openLayerPanel,
     closeLayerPanel,
+    // 右键菜单相关
+    activeContextMenuId,
+    contextMenuPosition,
     openContextMenu,
     closeContextMenu,
   }
