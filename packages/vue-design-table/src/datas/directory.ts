@@ -22,6 +22,12 @@ export const heightTypeOptions: Option[] = [
   { label: '弹性布局', value: 'flex' },
 ]
 
+export const alignOptions: Option[] = [
+  { label: '左对齐', value: 'left' },
+  { label: '居中对齐', value: 'center' },
+  { label: '右对齐', value: 'right' },
+]
+
 // 布局操作选项
 export const LayoutOperateOptions: Option[] = [
   {

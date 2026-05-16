@@ -20,12 +20,12 @@ export function excludeOption(
  * 创建UUID
  * @returns UUID字符串
  */
-export function createUUID() {
+export function createUUID(len = 36) {
   const uuidv4 = () => {
     return 'xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx'.replace(/[xy]/g, (c: string): string => {
       const r = (Math.random() * 16) | 0
       return c === 'x' ? r.toString() : ((r & 0x3) | 0x8).toString()
     })
   }
-  return uuidv4()
+  return uuidv4().substring(0, len)
 }

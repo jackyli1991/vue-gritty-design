@@ -80,7 +80,7 @@ export interface CanvasElement {
   layoutId: string // 布局ID
   type: string // 元素类型
   name: string // 元素名称
-  props: Record<string, unknown> // 元素属性
+  props: ColumnProps // 元素属性
 }
 
 // 画布数据类型定义
@@ -117,7 +117,7 @@ export interface ColumnProps {
   maxWidth?: number // 列最大宽度
   minWidth?: number // 列最小宽度
   align: string // 列对齐方式
-  dataIndex: string | string[] // 列数据索引名 支持通过数组查询嵌套路径
+  dataIndex: string // 列数据索引名 支持通过数组查询嵌套路径
   fixed?: 'left' | 'right' | boolean // 列固定位置 false true(等效于left) left right
   resizable?: boolean // 是否可调整宽度
   filterable?: boolean // 是否可筛选

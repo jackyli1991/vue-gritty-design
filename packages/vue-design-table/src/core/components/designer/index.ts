@@ -1,5 +1,6 @@
 import type { CanvasLayout, CanvasElement } from '@/types'
 import { BaseLayouts } from '@/types'
+import { createUUID } from '@/utils'
 
 export interface CreateLayoutConfig extends Omit<CanvasLayout, 'id' | 'props'> {
   widthType?: string
@@ -57,7 +58,7 @@ export function createLayout(
  */
 export function createElement(layoutId: string, config: Omit<CanvasElement, 'id'>): CanvasElement {
   return {
-    id: `element_${Date.now()}_${Math.random().toString(36)}`,
+    id: `element_${createUUID(24)}`,
     layoutId,
     name: config.name ?? '',
     type: config.type ?? 'div',
