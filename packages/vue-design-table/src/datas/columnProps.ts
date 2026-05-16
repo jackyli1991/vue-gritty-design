@@ -18,6 +18,7 @@ export const columnFilterProps = {
   filterMultiple: false,
   filterMode: 'menu',
   filters: [],
+  filtersSource: 'static',
   filterIcon: undefined,
 }
 

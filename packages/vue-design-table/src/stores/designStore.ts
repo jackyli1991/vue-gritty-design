@@ -106,6 +106,7 @@ export const useDesignStore = defineStore('tableDesign', () => {
   function replaceCanvasElement(component: CanvasElement, oldComponent: CanvasElement) {
     canvasData.value.elements[component.id] = component
     deleteCanvasElement(oldComponent.id)
+    selectCanvasElement(component.id)
   }
 
   /**
@@ -121,15 +122,18 @@ export const useDesignStore = defineStore('tableDesign', () => {
 
   /**
    * 检查操作列是否可以添加
-   * 操作列只能添加一个
+   * 操作列只能添加一个；操作按钮要添加到操作列中
    * @param component 元素数据对象
    * @returns Boolean 是否可以添加
    */
   function checkActionColumnAvailable(component: CanvasElement): boolean {
     const curColumnType = component.type as ColumnType
-    if (curColumnType !== ColumnType.Action) return true
     const hasComponent = getTableElements().find((element) => element.type === ColumnType.Action)
-    if (hasComponent) {
+    if (curColumnType === ColumnType.ActionBtn && !hasComponent) {
+      message.error('请先添加操作列，再添加操作按钮')
+      return false
+    }
+    if (curColumnType === ColumnType.Action && hasComponent) {
       message.error('操作列已存在，不能重复添加')
       return false
     }
@@ -161,7 +165,8 @@ export const useDesignStore = defineStore('tableDesign', () => {
         openModal(
           {
             title: '替换',
-            content: `是否替换已有的${labels[curColumnType]}控件为${labels[hasComponentColumnType]}控件？`,
+            content: `是否替换已有的${labels[hasComponentColumnType]}控件为${labels[curColumnType]}控件？`,
+            subContent: ''
           },
           () => {
             console.log('确认替换其他类型控件')

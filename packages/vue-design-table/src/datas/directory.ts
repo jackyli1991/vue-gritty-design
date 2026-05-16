@@ -34,6 +34,18 @@ export const fixedOptions: Option[] = [
   { label: '右侧', value: 'right' },
 ]
 
+export const filterModeOptions: Option[] = [
+  { label: '下拉', value: 'menu' },
+  { label: '树形', value: 'tree' },
+  { label: '搜索', value: 'search' },
+]
+
+export const filtersSourceOptions: Option[] = [
+  { label: '字典', value: 'dict' },
+  { label: '静态数据', value: 'static' },
+  { label: '接口', value: 'api' },
+]
+
 // 布局操作选项
 export const LayoutOperateOptions: Option[] = [
   {

@@ -1,5 +1,3 @@
-import type { VNode } from 'vue'
-
 export enum Direction {
   Vertical = 'vertical',
   Horizontal = 'horizontal',
@@ -26,6 +24,7 @@ export enum ColumnType {
   Checkbox = 'checkbox', // 多选列
   Index = 'index', // 索引列
   Action = 'action', // 操作列
+  ActionBtn = 'action_btn', // 操作按钮
 }
 
 export interface Option {
@@ -122,7 +121,8 @@ export interface ColumnProps {
   resizable?: boolean // 是否可调整宽度
   filterable?: boolean // 是否可筛选
   filterMultiple?: boolean // 是否可多选筛选
-  filterMode?: 'menu' | 'tree' // 指定筛选菜单的用户界面
+  filterMode?: 'menu' | 'tree' | 'search' // 指定筛选菜单的用户界面
+  filtersSource?: 'dict' | 'static' | 'api' // 列筛选选项来源  dict-字典 static-静态数据 api-接口
   filters?: Option[] // 列筛选选项
-  filterIcon?: VNode // 列筛选图标
+  filterIcon?: string // 列筛选图标
 }

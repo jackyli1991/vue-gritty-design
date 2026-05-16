@@ -27,9 +27,10 @@ const { activeCanvasElement, activeCanvasLayout } = useDesignContext()
   overflow: hidden;
   width: 300px;
   flex-shrink: 0;
+  background: transparent !important;
   .attributes-content {
     flex: 1;
-    padding: 8px;
+    // padding: 8px;
     overflow-y: auto;
   }
   .attributes-empty {

@@ -64,7 +64,7 @@ export const columnsComponentsList: ResourceItem[] = [
     props: createColumnProps(),
   },
   {
-    type: 'action_btn',
+    type: ColumnType.ActionBtn,
     name: '操作按钮',
     icon: 'material-symbols:edit-square-outline',
     props: {},

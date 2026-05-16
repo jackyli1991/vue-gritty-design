@@ -1,17 +1,19 @@
 <template>
   <div class="layout-attrs">
-    <LayoutForm
-      v-if="activeCanvasLayout"
-      :formData="activeCanvasLayout"
-      hideRequiredMark
-      :cols="1"
-      :disabledFields="['id']"
-    />
+    <AttrWrapper title="布局属性" v-if="activeCanvasLayout">
+      <LayoutForm
+        :formData="activeCanvasLayout"
+        hideRequiredMark
+        :cols="1"
+        :disabledFields="['id']"
+      />
+    </AttrWrapper>
   </div>
 </template>
 
 <script setup lang="ts">
 import { useDesignContext } from '@/composables/useDesignContext'
+import AttrWrapper from '@/components/AttrWrapper.vue'
 import LayoutForm from '../form/LayoutForm.vue'
 
 defineOptions({
