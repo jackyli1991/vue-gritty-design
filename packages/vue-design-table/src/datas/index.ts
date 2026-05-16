@@ -1,5 +1,5 @@
 import type { ResourceItem, ResourceGroup } from '@/types'
-import { BaseLayouts } from '@/types'
+import { BaseLayouts, ColumnType } from '@/types'
 import { createColumnProps } from './columnProps'
 export * from './directory'
 
@@ -34,42 +34,34 @@ export const baseComponentsList: ResourceItem[] = [
 // 表格相关组件列表
 export const columnsComponentsList: ResourceItem[] = [
   {
-    type: 'column',
+    type: ColumnType.Column,
     name: '表格列',
     icon: 'material-symbols:view-column-2-outline',
     props: createColumnProps({}, true),
   },
   {
-    type: 'checkbox',
+    type: ColumnType.Checkbox,
     name: '多选列',
     icon: 'material-symbols:check-box-outline-rounded',
-    props: createColumnProps({
-      columnType: 'checkbox',
-    }),
+    props: createColumnProps(),
   },
   {
-    type: 'radio',
+    type: ColumnType.Radio,
     name: '单选列',
     icon: 'material-symbols:radio-button-checked',
-    props: createColumnProps({
-      columnType: 'radio',
-    }),
+    props: createColumnProps(),
   },
   {
-    type: 'index',
+    type: ColumnType.Index,
     name: '序号列',
     icon: 'material-symbols:format-list-numbered-rounded',
-    props: createColumnProps({
-      columnType: 'index',
-    }),
+    props: createColumnProps(),
   },
   {
-    type: 'action',
+    type: ColumnType.Action,
     name: '操作列',
     icon: 'material-symbols:edit-note-outline-rounded',
-    props: createColumnProps({
-      columnType: 'action',
-    }),
+    props: createColumnProps(),
   },
   {
     type: 'action_btn',

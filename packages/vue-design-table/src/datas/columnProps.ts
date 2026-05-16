@@ -2,7 +2,6 @@ import type { ColumnProps } from '@/types'
 
 // 列通用属性
 export const columnCommonProps: ColumnProps = {
-  columnType: 'normal',
   title: '列标题',
   width: 150,
   maxWidth: 200,

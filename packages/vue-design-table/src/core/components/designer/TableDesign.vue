@@ -7,6 +7,7 @@
 <script setup lang="ts">
 import type { TableColumnType } from 'ant-design-vue'
 import { computed } from 'vue'
+import { ColumnType } from '@/types'
 import { Table as aTable } from 'ant-design-vue'
 import { useDesignContext } from '@/composables/useDesignContext'
 
@@ -17,13 +18,13 @@ defineOptions({
 })
 
 // 排除的列类型
-const excludeColumns = ['checkbox', 'radio']
+const excludeColumns = [ColumnType.Checkbox, ColumnType.Radio]
 
 // 表格列配置
 const tableColumns = computed<TableColumnType[]>((): TableColumnType[] => {
   const list = getTableElements()
   return list
-    .filter((item) => !excludeColumns.includes(item.props.columnType as string))
+    .filter((item) => !excludeColumns.includes(item.type as ColumnType))
     .map((item) => {
       const { title, dataIndex, width } = item.props as TableColumnType
       const column: TableColumnType = {
@@ -45,12 +46,12 @@ const tableMockData = computed(() => {
 // 表格行选择配置
 const rowSelection = computed(() => {
   const hasSelection = getTableElements().find((item) =>
-    excludeColumns.includes(item.props.columnType as string),
+    excludeColumns.includes(item.type as ColumnType),
   )
   if (!hasSelection) {
     return undefined
   }
-  const type = hasSelection.props.columnType
+  const type = hasSelection.type
   return {
     type,
   }

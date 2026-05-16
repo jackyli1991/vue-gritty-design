@@ -84,16 +84,28 @@ export const useDesignStore = defineStore('tableDesign', () => {
    */
   function addCanvasElement(component: CanvasElement) {
     if (!checkRowSelectionAvailable(component)) return
+    if (!checkActionColumnAvailable(component)) return
     canvasData.value.elements[component.id] = component
     selectCanvasElement(component.id)
   }
 
   /**
    * 删除元素
+   * @param id 元素ID
    * @description 删除当前画布元素
    */
   function deleteCanvasElement(id: string) {
-    console.log('删除元素', id)
+    delete canvasData.value.elements[id]
+  }
+
+  /**
+   * 替换元素
+   * @param component 元素数据对象
+   * @param oldComponent 旧元素数据对象
+   */
+  function replaceCanvasElement(component: CanvasElement, oldComponent: CanvasElement) {
+    canvasData.value.elements[component.id] = component
+    deleteCanvasElement(oldComponent.id)
   }
 
   /**
@@ -108,31 +120,52 @@ export const useDesignStore = defineStore('tableDesign', () => {
   }
 
   /**
+   * 检查操作列是否可以添加
+   * 操作列只能添加一个
+   * @param component 元素数据对象
+   * @returns Boolean 是否可以添加
+   */
+  function checkActionColumnAvailable(component: CanvasElement): boolean {
+    const curColumnType = component.type as ColumnType
+    if (curColumnType !== ColumnType.Action) return true
+    const hasComponent = getTableElements().find((element) => element.type === ColumnType.Action)
+    if (hasComponent) {
+      message.error('操作列已存在，不能重复添加')
+      return false
+    }
+    return true
+  }
+
+  /**
    * 检查表格选择控件是否可以添加
+   * 单选、多选、索引列只能添加一个
    * @param component 元素数据对象
    * @returns Boolean 是否可以添加
    */
   function checkRowSelectionAvailable(component: CanvasElement): boolean {
-    const curColumnType = component.props.columnType as ColumnType
-    const types = [ColumnType.Radio, ColumnType.Checkbox]
-    const hasTypes = getTableElements().find((element) =>
-      types.includes(element.props.columnType as ColumnType),
+    const curColumnType = component.type as ColumnType
+    const types = [ColumnType.Radio, ColumnType.Checkbox, ColumnType.Index]
+    const hasComponent = getTableElements().find((element) =>
+      types.includes(element.type as ColumnType),
     )
-    if (hasTypes && types.includes(curColumnType)) {
-      if (hasTypes.props.columnType === curColumnType) {
-        message.error('已存在单选、多选控件')
+    const hasComponentColumnType = hasComponent?.type as ColumnType
+    const labels: Record<string, string> = {
+      [ColumnType.Radio]: '单选',
+      [ColumnType.Checkbox]: '多选',
+      [ColumnType.Index]: '索引',
+    }
+    if (hasComponent && types.includes(curColumnType)) {
+      if (hasComponentColumnType === curColumnType) {
+        message.error(`${labels[curColumnType]}列已存在，不能重复添加`)
       } else {
-        const contents: Record<string, string> = {
-          [ColumnType.Radio]: '是否确认替换已有的多选控件？',
-          [ColumnType.Checkbox]: '是否确认替换已有的单选控件？',
-        }
         openModal(
           {
             title: '替换',
-            content: contents[curColumnType as string],
+            content: `是否替换已有的${labels[curColumnType]}控件为${labels[hasComponentColumnType]}控件？`,
           },
           () => {
             console.log('确认替换其他类型控件')
+            replaceCanvasElement(component, hasComponent)
           },
         )
       }

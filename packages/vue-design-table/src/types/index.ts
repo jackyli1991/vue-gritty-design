@@ -21,7 +21,7 @@ export enum BaseLayouts {
 }
 
 export enum ColumnType {
-  Normal = 'normal', // 普通列
+  Column = 'column', // 表格列
   Radio = 'radio', // 单选列
   Checkbox = 'checkbox', // 多选列
   Index = 'index', // 索引列
@@ -38,7 +38,7 @@ export interface Option {
 
 // 组件类型定义
 export interface ResourceItem {
-  type: string
+  type: ColumnType | string
   name: string
   icon: string
   props: Record<string, unknown>
@@ -112,7 +112,6 @@ export interface DesignTableConfig {
 
 // 表格列属性类型定义
 export interface ColumnProps {
-  columnType: ColumnType // 列类型
   title: string // 列标题
   width: number // 列宽度
   maxWidth?: number // 列最大宽度
