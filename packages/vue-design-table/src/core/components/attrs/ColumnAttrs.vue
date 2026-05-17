@@ -1,6 +1,6 @@
 <template>
   <aForm v-if="formData" ref="aFormRef" :model="formData" layout="vertical" :disabled="disabled">
-    <AttrWrapper title="列属性" :componentName="formData?.name">
+    <AttrWrapper title="基础" :componentName="formData?.name">
       <aRow :gutter="12">
         <!-- <aCol :span="colSpan">
           <aFormItem label="ID" name="id" :rules="rules.id">
@@ -101,7 +101,7 @@
         </aCol>
       </aRow>
     </AttrWrapper>
-    <AttrWrapper title="列筛选">
+    <AttrWrapper title="列筛选" v-if="formData.props.filterable !== undefined">
       <aRow :gutter="12">
         <aCol :span="12">
           <aFormItem label="启用筛选" name="['props', 'filterable']">
@@ -144,6 +144,7 @@
         </template>
       </aRow>
     </AttrWrapper>
+    <AttrWrapper title="排序"></AttrWrapper>
   </aForm>
 </template>
 

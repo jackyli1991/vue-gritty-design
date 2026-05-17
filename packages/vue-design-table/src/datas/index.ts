@@ -55,22 +55,29 @@ export const columnsComponentsList: ResourceItem[] = [
     type: ColumnType.Index,
     name: '序号列',
     icon: 'material-symbols:format-list-numbered-rounded',
-    props: createColumnProps(),
+    props: createColumnProps({
+      title: '序号',
+      width: 30,
+    }),
   },
   {
     type: ColumnType.Action,
     name: '操作列',
     icon: 'material-symbols:edit-note-outline-rounded',
-    props: createColumnProps(),
+    props: createColumnProps({
+      title: '操作'
+    }),
   },
   {
     type: ColumnType.ActionBtn,
     name: '操作按钮',
     icon: 'material-symbols:edit-square-outline',
-    props: {},
+    props: {
+      title: '操作',
+    },
   },
   {
-    type: 'pagination',
+    type: ColumnType.Pagination,
     name: '分页',
     icon: 'material-symbols:fit-page-width-outline',
     props: {},
@@ -104,3 +111,8 @@ export const resourceGroupsList: ResourceGroup[] = [
     components: formComponentsList,
   },
 ]
+
+export const columnsComponentNames = columnsComponentsList.reduce((prev, cur) => {
+  prev[cur.type as ColumnType] = cur.name
+  return prev
+}, {} as Record<ColumnType, string>)

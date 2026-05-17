@@ -25,6 +25,7 @@ export enum ColumnType {
   Index = 'index', // 索引列
   Action = 'action', // 操作列
   ActionBtn = 'action_btn', // 操作按钮
+  Pagination = 'pagination', // 分页列
 }
 
 export interface Option {

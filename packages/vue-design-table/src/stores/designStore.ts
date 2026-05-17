@@ -5,7 +5,7 @@ import type { CanvasElement, CanvasData, CanvasLayout } from '@/types'
 import { Direction, Position, BaseLayouts, ColumnType } from '@/types'
 import { excludeOption } from '@/utils'
 import { createLayout } from '@/core/components/designer'
-import { LayoutOperateOptions } from '@/datas/directory'
+import { LayoutOperateOptions, columnsComponentNames } from '@/datas'
 import { useConfirmModal } from '@/composables/useConfirmModal'
 
 const { openModal } = useConfirmModal()
@@ -85,6 +85,7 @@ export const useDesignStore = defineStore('tableDesign', () => {
   function addCanvasElement(component: CanvasElement) {
     if (!checkRowSelectionAvailable(component)) return
     if (!checkActionColumnAvailable(component)) return
+    if (!checkPaginationAvailable(component)) return
     canvasData.value.elements[component.id] = component
     selectCanvasElement(component.id)
   }
@@ -96,6 +97,9 @@ export const useDesignStore = defineStore('tableDesign', () => {
    */
   function deleteCanvasElement(id: string) {
     delete canvasData.value.elements[id]
+    if (activeCanvasElement.value?.id === id) {
+      activeCanvasElement.value = undefined
+    }
   }
 
   /**
@@ -121,6 +125,22 @@ export const useDesignStore = defineStore('tableDesign', () => {
   }
 
   /**
+   * 检查分页是否可以添加
+   * 分页只能添加一个
+   * @param component 元素数据对象
+   * @returns Boolean 是否可以添加
+   */
+  function checkPaginationAvailable(component: CanvasElement): boolean {
+    const curColumnType = component.type as ColumnType
+    const hasComponent = getTableElements().find((element) => element.type === ColumnType.Pagination)
+    if (curColumnType === ColumnType.Pagination && hasComponent) {
+      message.error(`${columnsComponentNames[ColumnType.Pagination]}已存在，不能重复添加`)
+      return false
+    }
+    return true
+  }
+
+  /**
    * 检查操作列是否可以添加
    * 操作列只能添加一个；操作按钮要添加到操作列中
    * @param component 元素数据对象
@@ -130,11 +150,11 @@ export const useDesignStore = defineStore('tableDesign', () => {
     const curColumnType = component.type as ColumnType
     const hasComponent = getTableElements().find((element) => element.type === ColumnType.Action)
     if (curColumnType === ColumnType.ActionBtn && !hasComponent) {
-      message.error('请先添加操作列，再添加操作按钮')
+      message.error(`请先添加${columnsComponentNames[ColumnType.Action]}，再添加操作按钮`)
       return false
     }
     if (curColumnType === ColumnType.Action && hasComponent) {
-      message.error('操作列已存在，不能重复添加')
+      message.error(`${columnsComponentNames[ColumnType.Action]}已存在，不能重复添加`)
       return false
     }
     return true
@@ -153,19 +173,14 @@ export const useDesignStore = defineStore('tableDesign', () => {
       types.includes(element.type as ColumnType),
     )
     const hasComponentColumnType = hasComponent?.type as ColumnType
-    const labels: Record<string, string> = {
-      [ColumnType.Radio]: '单选',
-      [ColumnType.Checkbox]: '多选',
-      [ColumnType.Index]: '索引',
-    }
     if (hasComponent && types.includes(curColumnType)) {
       if (hasComponentColumnType === curColumnType) {
-        message.error(`${labels[curColumnType]}列已存在，不能重复添加`)
+        message.error(`${columnsComponentNames[curColumnType]}已存在，不能重复添加`)
       } else {
         openModal(
           {
             title: '替换',
-            content: `是否替换已有的${labels[hasComponentColumnType]}控件为${labels[curColumnType]}控件？`,
+            content: `是否替换已有的${columnsComponentNames[hasComponentColumnType]}为${columnsComponentNames[curColumnType]}？`,
             subContent: ''
           },
           () => {
