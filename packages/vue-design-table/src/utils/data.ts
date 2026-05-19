@@ -29,3 +29,21 @@ export function createUUID(len = 36) {
   }
   return uuidv4().substring(0, len)
 }
+
+/**
+ * 判断是不是对象
+ * @param data 数据
+ * @return boolean
+ */
+export function isObject(data: unknown) {
+  return typeof data === 'object'
+}
+
+/**
+ * 判断是不是字符串
+ * @param data 数据
+ * @return boolean
+ */
+export function isString(data: unknown) {
+  return typeof data === 'string'
+}

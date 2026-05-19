@@ -46,8 +46,22 @@ export const filtersSourceOptions: Option[] = [
   { label: '接口', value: 'api' },
 ]
 
+export const buttonTypeOptions: Option[] = [
+  { label: '默认', value: 'default' },
+  { label: '主要', value: 'primary' },
+  { label: '虚线', value: 'dashed' },
+  { label: '链接', value: 'link' },
+  { label: '文本', value: 'text' },
+]
+
+export const buttonSizeOptions: Option[] = [
+  { label: '大', value: 'large' },
+  { label: '中', value: 'default' },
+  { label: '小', value: 'small' },
+]
+
 // 布局操作选项
-export const LayoutOperateOptions: Option[] = [
+export const layoutOperateOptions: Option[] = [
   {
     label: '在上方添加',
     value: Position.Top,
@@ -75,4 +89,15 @@ export const LayoutOperateOptions: Option[] = [
     danger: true,
     color: '#ff4d4f',
   },
+]
+
+// 元素操作选项
+export const elementOperateOptions: Option[] = [
+  {
+    label: '删除元素',
+    value: 'delete',
+    icon: 'material-symbols:delete',
+    danger: true,
+    color: '#ff4d4f',
+  }
 ]

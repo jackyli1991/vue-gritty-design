@@ -1,6 +1,7 @@
-import type { CanvasLayout, CanvasElement } from '@/types'
+import type { CanvasLayout, CanvasElement, ActionBtnGroup } from '@/types'
 import { BaseLayouts } from '@/types'
 import { createUUID } from '@/utils'
+import { buttonProps } from '@/datas/buttonProps'
 
 export interface CreateLayoutConfig extends Omit<CanvasLayout, 'id' | 'props'> {
   widthType?: string
@@ -63,5 +64,17 @@ export function createElement(layoutId: string, config: Omit<CanvasElement, 'id'
     name: config.name ?? '',
     type: config.type ?? 'div',
     props: config.props ?? {},
+  }
+}
+
+/**
+ * 创建按钮分组
+ * @returns 按钮分组对象
+ */
+export function createActionBtnGroup(): ActionBtnGroup {
+  return {
+    id: `element_${createUUID(24)}`,
+    button: { ...buttonProps },
+    children: [],
   }
 }

@@ -1,6 +1,7 @@
 import type { ResourceItem, ResourceGroup } from '@/types'
 import { BaseLayouts, ColumnType } from '@/types'
 import { createColumnProps } from './columnProps'
+import { createButtonProps } from './buttonProps'
 export * from './directory'
 
 // 基础组件列表
@@ -21,7 +22,7 @@ export const baseComponentsList: ResourceItem[] = [
     type: 'button',
     name: '按钮',
     icon: 'material-symbols:buttons-alt-outline',
-    props: {},
+    props: createButtonProps(),
   },
   {
     type: 'icon',
@@ -37,7 +38,13 @@ export const columnsComponentsList: ResourceItem[] = [
     type: ColumnType.Column,
     name: '表格列',
     icon: 'material-symbols:view-column-2-outline',
-    props: createColumnProps({}, true),
+    props: createColumnProps(
+      {},
+      {
+        enableFilter: true,
+        enableSorter: true,
+      },
+    ),
   },
   {
     type: ColumnType.Checkbox,
@@ -65,16 +72,14 @@ export const columnsComponentsList: ResourceItem[] = [
     name: '操作列',
     icon: 'material-symbols:edit-note-outline-rounded',
     props: createColumnProps({
-      title: '操作'
+      title: '操作',
     }),
   },
   {
     type: ColumnType.ActionBtn,
     name: '操作按钮',
     icon: 'material-symbols:edit-square-outline',
-    props: {
-      title: '操作',
-    },
+    props: createButtonProps(),
   },
   {
     type: ColumnType.Pagination,
@@ -112,7 +117,10 @@ export const resourceGroupsList: ResourceGroup[] = [
   },
 ]
 
-export const columnsComponentNames = columnsComponentsList.reduce((prev, cur) => {
-  prev[cur.type as ColumnType] = cur.name
-  return prev
-}, {} as Record<ColumnType, string>)
+export const columnsComponentNames = columnsComponentsList.reduce(
+  (prev, cur) => {
+    prev[cur.type as ColumnType] = cur.name
+    return prev
+  },
+  {} as Record<ColumnType, string>,
+)

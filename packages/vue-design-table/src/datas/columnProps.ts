@@ -12,7 +12,7 @@ export const columnCommonProps: ColumnProps = {
   fixed: false,
 }
 
-// 表格过滤相关属性
+// 表格筛选相关属性
 export const columnFilterProps = {
   filterable: false,
   filterMultiple: false,
@@ -22,25 +22,42 @@ export const columnFilterProps = {
   filterIcon: undefined,
 }
 
+// 表格排序相关
+export const columnSorterProps = {
+  sortable: false,
+}
+
 /**
  * 创建表格列属性
- * @param props 列属性
- * @param enableFilter 是否启用过滤
+ * @param props 列额外属性
+ * @param config 列属性添加控制
  * @returns 表格列属性
  */
 export function createColumnProps(
   props: Record<string, unknown> = {},
-  enableFilter: boolean = false,
+  config: {
+    enableFilter: boolean // 是否启用列筛选
+    enableSorter: boolean // 是否启用列排序
+  } = {
+    enableFilter: false,
+    enableSorter: false,
+  },
 ) {
   let columnProps = {
     ...columnCommonProps,
     ...props,
   }
-  if (enableFilter) {
+  if (config.enableFilter) {
     columnProps = {
       ...columnProps,
       ...columnFilterProps,
-    } as ColumnProps
+    }
   }
-  return columnProps
+  if (config.enableSorter) {
+    columnProps = {
+      ...columnProps,
+      ...columnSorterProps,
+    }
+  }
+  return columnProps  as ColumnProps
 }

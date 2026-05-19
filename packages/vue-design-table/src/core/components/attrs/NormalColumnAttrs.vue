@@ -1,28 +1,28 @@
 <template>
-  <aForm v-if="formData" ref="aFormRef" :model="formData" layout="vertical" :disabled="disabled">
-    <AttrWrapper title="基础" :componentName="formData?.name">
+  <FormWrapper v-if="attrs" :form-data="attrs" :form-rules="rules" :disabled="disabled">
+    <AttrWrapper title="基础" :componentName="activeCanvasElement?.name">
       <aRow :gutter="12">
-        <!-- <aCol :span="colSpan">
+        <!-- <aCol :span="24">
           <aFormItem label="ID" name="id" :rules="rules.id">
             <aInput :value="formData.id" readonly />
           </aFormItem>
         </aCol> -->
-        <aCol :span="colSpan">
+        <aCol :span="24">
           <aFormItem label="名称" name="['props', 'title']" :rules="rules.title">
-            <aInput v-model:value="formData.props.title" />
+            <aInput v-model:value="attrs.title" />
           </aFormItem>
         </aCol>
-        <aCol :span="colSpan">
+        <aCol :span="24">
           <aFormItem
             label="字段"
             name="['props', 'dataIndex']"
             :rules="rules.dataIndex"
             :tooltip="'支持嵌套路径，例如: a.b.c'"
           >
-            <aInput v-model:value="formData.props.dataIndex" />
+            <aInput v-model:value="attrs.dataIndex" />
           </aFormItem>
         </aCol>
-        <aCol :span="colSpan">
+        <aCol :span="24">
           <aRow :gutter="12">
             <aCol :span="12">
               <aFormItem
@@ -32,10 +32,10 @@
                 :tooltip="'列宽度, 单位:px'"
               >
                 <aInputNumber
-                  v-model:value="formData.props.width"
+                  v-model:value="attrs.width"
                   style="width: 100%"
-                  :min="formData.props.minWidth"
-                  :max="formData.props.maxWidth"
+                  :min="attrs.minWidth"
+                  :max="attrs.maxWidth"
                   :step="1"
                   placeholder="列宽度, 单位:px"
                 />
@@ -43,20 +43,20 @@
             </aCol>
             <aCol :span="12">
               <aFormItem label="允许调整宽度" name="['props', 'resizable']">
-                <aSwitch v-model:checked="formData.props.resizable" />
+                <aSwitch v-model:checked="attrs.resizable" />
               </aFormItem>
             </aCol>
           </aRow>
         </aCol>
-        <aCol :span="colSpan">
+        <aCol :span="24">
           <aRow :gutter="2">
             <aCol :span="11">
               <aFormItem label="宽度范围" name="['props', 'minWidth']" :rules="rules.minWidth">
                 <aInputNumber
-                  v-model:value="formData.props.minWidth"
+                  v-model:value="attrs.minWidth"
                   style="width: 100%"
                   :min="0"
-                  :max="formData.props.maxWidth"
+                  :max="attrs.maxWidth"
                   :step="1"
                   placeholder="最小宽度(px)"
                 />
@@ -70,9 +70,9 @@
             <aCol :span="11">
               <aFormItem label=" " name="['props', 'maxWidth']" :rules="rules.maxWidth">
                 <aInputNumber
-                  v-model:value="formData.props.maxWidth"
+                  v-model:value="attrs.maxWidth"
                   style="width: 100%"
-                  :min="formData.props.minWidth"
+                  :min="attrs.minWidth"
                   :max="500"
                   :step="1"
                   placeholder="最大宽度(px)"
@@ -81,18 +81,18 @@
             </aCol>
           </aRow>
         </aCol>
-        <aCol :span="colSpan">
+        <aCol :span="24">
           <aFormItem label="对齐方式" name="['props', 'align']">
-            <aRadioGroup v-model:value="formData.props.align" button-style="solid">
+            <aRadioGroup v-model:value="attrs.align" button-style="solid">
               <aRadioButton v-for="(item, index) in alignOptions" :key="index" :value="item.value">
                 {{ item.label }}
               </aRadioButton>
             </aRadioGroup>
           </aFormItem>
         </aCol>
-        <aCol :span="colSpan">
+        <aCol :span="24">
           <aFormItem label="固定位置" name="['props', 'fixed']">
-            <aRadioGroup v-model:value="formData.props.fixed" button-style="solid">
+            <aRadioGroup v-model:value="attrs.fixed" button-style="solid">
               <aRadioButton v-for="(item, index) in fixedOptions" :key="index" :value="item.value">
                 {{ item.label }}
               </aRadioButton>
@@ -101,23 +101,27 @@
         </aCol>
       </aRow>
     </AttrWrapper>
-    <AttrWrapper title="列筛选" v-if="formData.props.filterable !== undefined">
+    <AttrWrapper title="列筛选" v-if="attrs.filterable !== undefined">
       <aRow :gutter="12">
         <aCol :span="12">
           <aFormItem label="启用筛选" name="['props', 'filterable']">
-            <aSwitch v-model:checked="formData.props.filterable" />
+            <aSwitch v-model:checked="attrs.filterable" />
           </aFormItem>
         </aCol>
-        <template v-if="formData.props.filterable">
+        <template v-if="attrs.filterable">
           <aCol :span="12">
             <aFormItem label="可多选" name="['props', 'filterMultiple']">
-              <aSwitch v-model:checked="formData.props.filterMultiple" />
+              <aSwitch v-model:checked="attrs.filterMultiple" />
             </aFormItem>
           </aCol>
           <aCol :span="24">
             <aFormItem label="筛选模式" name="['props', 'filterMode']">
-              <aRadioGroup v-model:value="formData.props.filterMode" button-style="solid">
-                <aRadioButton v-for="(item, index) in filterModeOptions" :key="index" :value="item.value">
+              <aRadioGroup v-model:value="attrs.filterMode" button-style="solid">
+                <aRadioButton
+                  v-for="(item, index) in filterModeOptions"
+                  :key="index"
+                  :value="item.value"
+                >
                   {{ item.label }}
                 </aRadioButton>
               </aRadioGroup>
@@ -125,8 +129,12 @@
           </aCol>
           <aCol :span="24">
             <aFormItem label="筛选选项来源" name="['props', 'filtersSource']">
-              <aRadioGroup v-model:value="formData.props.filtersSource" button-style="solid">
-                <aRadioButton v-for="(item, index) in filtersSourceOptions" :key="index" :value="item.value">
+              <aRadioGroup v-model:value="attrs.filtersSource" button-style="solid">
+                <aRadioButton
+                  v-for="(item, index) in filtersSourceOptions"
+                  :key="index"
+                  :value="item.value"
+                >
                   {{ item.label }}
                 </aRadioButton>
               </aRadioGroup>
@@ -134,9 +142,9 @@
           </aCol>
           <aCol :span="24">
             <aFormItem label="筛选图标" name="['props', 'filterIcon']">
-              <aInput v-model:value="formData.props.filterIcon" placeholder="iconfity图标名称">
+              <aInput v-model:value="attrs.filterIcon" placeholder="iconfity图标名称">
                 <template #suffix>
-                  <IconifyIcon :icon="formData.props.filterIcon" />
+                  <IconifyIcon :icon="attrs.filterIcon" />
                 </template>
               </aInput>
             </aFormItem>
@@ -144,14 +152,14 @@
         </template>
       </aRow>
     </AttrWrapper>
-    <AttrWrapper title="排序"></AttrWrapper>
-  </aForm>
+    <AttrWrapper title="排序" v-if="attrs.sortable !== undefined"></AttrWrapper>
+    <slot></slot>
+  </FormWrapper>
 </template>
 
 <script setup lang="ts">
-import { computed, useTemplateRef } from 'vue'
+import { computed } from 'vue'
 import {
-  Form as aForm,
   FormItem as aFormItem,
   Input as aInput,
   RadioGroup as aRadioGroup,
@@ -163,47 +171,31 @@ import {
   Switch as aSwitch,
 } from 'ant-design-vue'
 import type { RuleObject } from 'ant-design-vue/es/form'
-// import type { DefaultOptionType } from 'ant-design-vue/es/select'
+import type { ColumnProps } from '@/types'
 import IconifyIcon from '@/components/IconifyIcon.vue'
 import AttrWrapper from '@/components/AttrWrapper.vue'
+import FormWrapper from './FormWrapper.vue'
 import { alignOptions, fixedOptions, filterModeOptions, filtersSourceOptions } from '@/datas'
 import { useDesignContext } from '@/composables/useDesignContext'
 
 defineOptions({
-  name: 'ColumnAttrs',
+  name: 'NormalColumnAttrs',
 })
 
 interface Props {
   disabled?: boolean // 是否禁用
 }
-
-const { activeCanvasElement: formData } = useDesignContext()
-const aFormRef = useTemplateRef<typeof aForm>('aFormRef')
 defineProps<Props>()
+
+const { activeCanvasElement } = useDesignContext()
+
+const attrs = computed<ColumnProps>(() => {
+  return (activeCanvasElement.value?.props || {}) as ColumnProps
+})
 
 const rules = computed<Record<string, RuleObject[]>>(() => ({
   // name: [{ required: true, message: '请输入布局名称' }],
   // widthValue: [{ required: true, message: '请输入宽度值', type: 'number', min: 0 }],
   // heightValue: [{ required: true, message: '请输入高度值', type: 'number', min: 0 }],
 }))
-
-const colSpan = computed(() => 24)
-
-// 校验表单
-function validate() {
-  return aFormRef.value
-    ?.validate()
-    .then(() => formData.value)
-    .catch(() => false)
-}
-
-// 清除表单校验
-function clearValidate() {
-  aFormRef.value?.clearValidate()
-}
-
-defineExpose({
-  validate,
-  clearValidate,
-})
 </script>

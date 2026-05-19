@@ -41,7 +41,7 @@ export interface ResourceItem {
   type: ColumnType | string
   name: string
   icon: string
-  props: Record<string, unknown>
+  props: Record<string, unknown> | ColumnProps
 }
 
 // 组件分类类型定义
@@ -80,13 +80,26 @@ export interface CanvasElement {
   layoutId: string // 布局ID
   type: string // 元素类型
   name: string // 元素名称
-  props: ColumnProps // 元素属性
+  props: ColumnProps | ButtonProps // 元素属性
+}
+
+// 操作列分组
+export interface ActionBtnGroup {
+  id: string // 分组id
+  button: ButtonProps // 分组按钮配置
+  children: string[] // 分组按钮id
+}
+
+// 画布配置
+export interface CanvasConfig {
+  actionBtnsList: (string | ActionBtnGroup)[] // 操作列排序和分组
 }
 
 // 画布数据类型定义
 export interface CanvasData {
   layouts: Record<string, CanvasLayout> // 画布布局
   elements: Record<string, CanvasElement> // 画布元素
+  config: CanvasConfig // 画布配置
 }
 
 // 主题上下文类型定义
@@ -103,12 +116,12 @@ export interface ThemeColors {
   info?: string
 }
 
-export interface DesignTableConfig {
-  components?: ResourceItem[]
-  showProperties?: boolean
-  canvasBackground?: string
-  themeColors?: ThemeColors
-}
+// export interface DesignTableConfig {
+//   components?: ResourceItem[]
+//   showProperties?: boolean
+//   canvasBackground?: string
+//   themeColors?: ThemeColors
+// }
 
 // 表格列属性类型定义
 export interface ColumnProps {
@@ -126,4 +139,15 @@ export interface ColumnProps {
   filtersSource?: 'dict' | 'static' | 'api' // 列筛选选项来源  dict-字典 static-静态数据 api-接口
   filters?: Option[] // 列筛选选项
   filterIcon?: string // 列筛选图标
+  sortable?: string // 是否可排序
+}
+
+// 按钮属性类型定义
+export interface ButtonProps {
+  content: string // 按钮文本
+  type: string // 按钮类型
+  size: string // 按钮大小
+  icon?: string // 按钮图标
+  danger: boolean // 是否为危险按钮
+  ghost: boolean // 是否为幽灵按钮
 }

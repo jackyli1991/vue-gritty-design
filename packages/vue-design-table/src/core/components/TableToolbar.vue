@@ -1,17 +1,10 @@
 <template>
   <div class="table-toolbar table-design-wrapper">
     <div class="table-toolbar-content">
-      <!-- 工具条内容 -->
-      <div
-        v-for="item in operateOptions"
-        :key="item.value as string"
-        class="toolbar-item"
-        @click.stop="handleLayoutToolbarAction(item.value as Position)"
-      >
-        <aTooltip :title="item.label" placement="top">
-          <IconifyIcon :icon="item.icon" :size="20" :danger="item.danger" />
-        </aTooltip>
-      </div>
+      <!-- 布局工具条 -->
+      <ToolBar :list="layoutOperateOptions" @handle="handleLayoutToolbarAction"></ToolBar>
+      <!-- 元素工具条 -->
+      <ToolBar :list="elementOperateOptions" @handle="handleElementToolbarAction"></ToolBar>
       <aTooltip :title="layerPanelVisible ? '关闭图层' : '图层'" placement="top">
         <div class="toolbar-item" :class="{ active: layerPanelVisible }" @click="handleLayerPanel">
           <IconifyIcon icon="material-symbols:layers-outline-rounded" :size="20" />
@@ -38,17 +31,19 @@
 
 <script setup lang="ts">
 import { computed } from 'vue'
-import { Position } from '@/types'
 import { Tooltip as aTooltip, Button as aButton } from 'ant-design-vue'
 import IconifyIcon from '@/components/IconifyIcon.vue'
+import ToolBar from '@/components/ToolBar.vue'
 import { useDesignContext } from '@/composables/useDesignContext'
 import { useToolbarAction } from '@/composables/useToolbarAction'
 
-const { handleLayoutToolbarAction } = useToolbarAction()
+const { handleLayoutToolbarAction, handleElementToolbarAction } = useToolbarAction()
 
 const {
   getLayoutToolbar,
+  getElementToolbar,
   activeCanvasLayout,
+  activeCanvasElement,
   attributesPanelCollapsed,
   toggleAttributesPanel,
   layerPanelVisible,
@@ -56,12 +51,20 @@ const {
   closeLayerPanel,
 } = useDesignContext()
 
-// 工具条操作项
-const operateOptions = computed(() => {
-  if (!activeCanvasLayout.value) {
-    return []
+// 布局工具条操作项
+const layoutOperateOptions = computed(() => {
+  if (activeCanvasLayout.value) {
+    return getLayoutToolbar(activeCanvasLayout.value?.id)
   }
-  return getLayoutToolbar(activeCanvasLayout.value?.id)
+  return []
+})
+
+// 元素工具条操作项
+const elementOperateOptions = computed(() => {
+  if (activeCanvasElement.value) {
+    return getElementToolbar()
+  }
+  return []
 })
 
 // 处理图层弹窗

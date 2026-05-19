@@ -1,16 +1,10 @@
 <template>
-  <div>
-    <AttrWrapper title="操作按钮" :componentName="formData?.name">
-      操作按钮
-    </AttrWrapper>
-  </div>
+  <ButtonAttrs></ButtonAttrs>
 </template>
 
 <script setup lang="ts">
-import { useDesignContext } from '@/composables/useDesignContext'
-import AttrWrapper from '@/components/AttrWrapper.vue'
-
-const { activeCanvasElement: formData } = useDesignContext()
+// import { useDesignContext } from '@/composables/useDesignContext'
+import ButtonAttrs from './ButtonAttrs.vue'
 
 defineOptions({
   name: 'ActionBtnAttrs',

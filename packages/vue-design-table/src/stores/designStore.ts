@@ -1,11 +1,11 @@
 import { computed, ref } from 'vue'
 import { defineStore } from 'pinia'
 import { message } from 'ant-design-vue'
-import type { CanvasElement, CanvasData, CanvasLayout } from '@/types'
+import type { CanvasElement, CanvasData, CanvasLayout, ActionBtnGroup } from '@/types'
 import { Direction, Position, BaseLayouts, ColumnType } from '@/types'
-import { excludeOption } from '@/utils'
+import { excludeOption, isObject } from '@/utils'
 import { createLayout } from '@/core/components/designer'
-import { LayoutOperateOptions, columnsComponentNames } from '@/datas'
+import { layoutOperateOptions, elementOperateOptions, columnsComponentNames } from '@/datas'
 import { useConfirmModal } from '@/composables/useConfirmModal'
 
 const { openModal } = useConfirmModal()
@@ -47,6 +47,9 @@ const initialCanvasData: CanvasData = {
     }),
   },
   elements: {},
+  config: {
+    actionBtnsList: [], // 按钮分组
+  },
 }
 
 export const useDesignStore = defineStore('tableDesign', () => {
@@ -57,6 +60,7 @@ export const useDesignStore = defineStore('tableDesign', () => {
   const attributesPanelCollapsed = ref(false) // 属性面板是否折叠
 
   const layoutIds = computed(() => Object.keys(canvasData.value.layouts)) // 所有布局ID列表
+  const actionBtnGroups = computed(() => canvasData.value.config.actionBtnsList) // 按钮分组
 
   /**
    * 获取元素
@@ -73,7 +77,7 @@ export const useDesignStore = defineStore('tableDesign', () => {
    * @description 选择当前画布元素
    * @param id 元素ID
    */
-  function selectCanvasElement(id: string) {
+  function selectElement(id: string) {
     activeCanvasElement.value = getElement(id)
     activeCanvasLayout.value = undefined
   }
@@ -82,12 +86,16 @@ export const useDesignStore = defineStore('tableDesign', () => {
    * 添加元素
    * @param component 元素数据对象
    */
-  function addCanvasElement(component: CanvasElement) {
+  function addElement(component: CanvasElement) {
     if (!checkRowSelectionAvailable(component)) return
     if (!checkActionColumnAvailable(component)) return
     if (!checkPaginationAvailable(component)) return
     canvasData.value.elements[component.id] = component
-    selectCanvasElement(component.id)
+    selectElement(component.id)
+    // 操作列按钮添加到按钮分组
+    if (component.type === ColumnType.ActionBtn) {
+      addActionBtnIntoList(component.id)
+    }
   }
 
   /**
@@ -95,11 +103,12 @@ export const useDesignStore = defineStore('tableDesign', () => {
    * @param id 元素ID
    * @description 删除当前画布元素
    */
-  function deleteCanvasElement(id: string) {
+  function deleteElement(id: string) {
     delete canvasData.value.elements[id]
     if (activeCanvasElement.value?.id === id) {
       activeCanvasElement.value = undefined
     }
+    removeActionBtnFromList(id)
   }
 
   /**
@@ -107,10 +116,10 @@ export const useDesignStore = defineStore('tableDesign', () => {
    * @param component 元素数据对象
    * @param oldComponent 旧元素数据对象
    */
-  function replaceCanvasElement(component: CanvasElement, oldComponent: CanvasElement) {
+  function replaceElement(component: CanvasElement, oldComponent: CanvasElement) {
     canvasData.value.elements[component.id] = component
-    deleteCanvasElement(oldComponent.id)
-    selectCanvasElement(component.id)
+    deleteElement(oldComponent.id)
+    selectElement(component.id)
   }
 
   /**
@@ -125,6 +134,77 @@ export const useDesignStore = defineStore('tableDesign', () => {
   }
 
   /**
+   * 添加到按钮分组配置中
+   * @param id 按钮id
+   */
+  function addActionBtnIntoList(id: string) {
+    canvasData.value.config.actionBtnsList.push(id)
+  }
+
+  /**
+   * 从按钮分组配置中移除按钮
+   * @param id 按钮id
+   */
+  function removeActionBtnFromList(id: string) {
+    const idx = canvasData.value.config.actionBtnsList.findIndex((item) => item === id)
+    if (idx !== -1) {
+      canvasData.value.config.actionBtnsList.splice(idx, 1)
+      return
+    }
+    const groupIdx = canvasData.value.config.actionBtnsList.findIndex(
+      (item) => isObject(item) && (item as ActionBtnGroup).children.includes(id),
+    )
+    if (groupIdx !== -1) {
+      const children = (canvasData.value.config.actionBtnsList[groupIdx] as ActionBtnGroup).children
+      const idx = children.indexOf(id)
+      children.splice(idx, 1)
+      // 如果分组下已没有按钮，分组也删除
+      if (!children.length) {
+        canvasData.value.config.actionBtnsList.splice(groupIdx, 1)
+      }
+    }
+  }
+
+  /**
+   * 新增按钮分组
+   * 从actionBtnsList中移除btnList中的数据，并在 btnList[0]所在的位置添加按钮分组
+   * @param group 按钮分组配置
+   * @param btnList 分组下的按钮
+   */
+  function addActionBtnGroup(group: ActionBtnGroup, btnList: string[]) {
+    const list: string[] = []
+    // 按照 actionBtnsList 中的顺序重新排列btnList
+    canvasData.value.config.actionBtnsList.forEach((item) => {
+      if (btnList.includes(item as string)) {
+        list.push(item as string)
+      }
+    })
+    // 第一个所在的索引
+    const firstIdx = canvasData.value.config.actionBtnsList.indexOf(list[0])
+    // 从actionBtnsList中删除 list 中的所有元素
+    list.forEach((item) => {
+      const index = canvasData.value.config.actionBtnsList.indexOf(item)
+      canvasData.value.config.actionBtnsList.splice(index, 1)
+    })
+    group.children = list
+    canvasData.value.config.actionBtnsList.splice(firstIdx, 0, group)
+  }
+
+  /**
+   * 删除按钮分组
+   * @param groupId 分组id
+   */
+  function deleteActionBtnGroup(groupId: string) {
+    const idx = canvasData.value.config.actionBtnsList.findIndex(
+      (item) => isObject(item) && (item as ActionBtnGroup).id === groupId,
+    )
+    if (idx === -1) return
+    const group = canvasData.value.config.actionBtnsList[idx] as ActionBtnGroup
+    const groupIds = group.children
+    canvasData.value.config.actionBtnsList.splice(idx, 1, ...groupIds) // 只删除分组，分组下的按钮留在原分组的位置
+  }
+
+  /**
    * 检查分页是否可以添加
    * 分页只能添加一个
    * @param component 元素数据对象
@@ -132,7 +212,9 @@ export const useDesignStore = defineStore('tableDesign', () => {
    */
   function checkPaginationAvailable(component: CanvasElement): boolean {
     const curColumnType = component.type as ColumnType
-    const hasComponent = getTableElements().find((element) => element.type === ColumnType.Pagination)
+    const hasComponent = getTableElements().find(
+      (element) => element.type === ColumnType.Pagination,
+    )
     if (curColumnType === ColumnType.Pagination && hasComponent) {
       message.error(`${columnsComponentNames[ColumnType.Pagination]}已存在，不能重复添加`)
       return false
@@ -181,11 +263,11 @@ export const useDesignStore = defineStore('tableDesign', () => {
           {
             title: '替换',
             content: `是否替换已有的${columnsComponentNames[hasComponentColumnType]}为${columnsComponentNames[curColumnType]}？`,
-            subContent: ''
+            subContent: '',
           },
           () => {
             console.log('确认替换其他类型控件')
-            replaceCanvasElement(component, hasComponent)
+            replaceElement(component, hasComponent)
           },
         )
       }
@@ -296,8 +378,12 @@ export const useDesignStore = defineStore('tableDesign', () => {
     const layout = getLayout(layoutId)
     if (!layout) return []
     const canDelete = layout?.deleteAllowed === true
-    if (canDelete) return LayoutOperateOptions
-    else return excludeOption(LayoutOperateOptions, 'delete')
+    if (canDelete) return layoutOperateOptions
+    else return excludeOption(layoutOperateOptions, 'delete')
+  }
+
+  function getElementToolbar() {
+    return elementOperateOptions
   }
 
   /**
@@ -322,6 +408,7 @@ export const useDesignStore = defineStore('tableDesign', () => {
   return {
     canvasData,
     layoutIds,
+    actionBtnGroups,
     activeCanvasElement,
     activeCanvasLayout,
     hoveredLayoutId,
@@ -332,10 +419,13 @@ export const useDesignStore = defineStore('tableDesign', () => {
     addLayout,
     hoverLayout,
     getLayoutToolbar,
-    selectCanvasElement,
-    addCanvasElement,
-    deleteCanvasElement,
+    getElementToolbar,
+    selectElement,
+    addElement,
+    deleteElement,
     getTableElements,
+    addActionBtnGroup,
+    deleteActionBtnGroup,
     resetCanvas,
     toggleAttributesPanel,
   }

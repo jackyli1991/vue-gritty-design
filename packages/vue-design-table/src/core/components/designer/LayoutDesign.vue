@@ -51,7 +51,7 @@ const {
   activeCanvasLayout,
   closeContextMenu,
   openContextMenu,
-  addCanvasElement,
+  addElement,
 } = useDesignContext()
 
 const isDragOver = ref(false)
@@ -203,7 +203,7 @@ const handleDrop = (e: DragEvent) => {
     props: reactive(resource.props),
   })
   console.log('新的元素', newElement)
-  addCanvasElement(newElement)
+  addElement(newElement)
 }
 </script>
 

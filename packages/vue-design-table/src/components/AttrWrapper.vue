@@ -1,8 +1,13 @@
 <template>
   <div class="attr-wrapper">
     <div class="attr-title" v-if="title">
-      <span class="title-text">{{ title }}</span>
-      <aTag color="blue" v-if="componentName">{{ componentName }}</aTag>
+      <span class="content">
+        <span class="title-text">{{ title }}</span>
+        <aTag color="blue" v-if="componentName">{{ componentName }}</aTag>
+      </span>
+      <span class="more">
+        <slot name="more"></slot>
+      </span>
     </div>
     <slot></slot>
   </div>
@@ -34,8 +39,14 @@ defineProps<{
     margin-bottom: 12px;
     padding-bottom: 8px;
     border-bottom: 1px solid #f0f0f0;
-    .title-text {
-      margin-right: 4px;
+    display: flex;
+    justify-content: flex-start;
+    align-items: center;
+    .content {
+      flex: 1;
+      display: flex;
+      align-items: center;
+      gap: 4px;
     }
   }
 }

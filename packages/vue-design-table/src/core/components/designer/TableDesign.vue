@@ -6,18 +6,29 @@
       }"
       :row-selection="rowSelection"
       :columns="tableColumns"
-      :dataSource="tableMockData">
+      :dataSource="tableMockData"
+    >
       <!-- 表头 -->
       <template #headerCell="{ title, column }">
         <span>{{ title }}</span>
         <span
           class="table-header-edit-icons"
           :class="{
-            active: activeCanvasElement?.id === column.key
+            active: activeCanvasElement?.id === column.key,
           }"
-          @click.stop>
-          <IconifyIcon icon="material-symbols:select-check-box-rounded" :size="20" @click="handleHeaderCellClick('select', title, column)"/>
-          <IconifyIcon icon="material-symbols:delete" :size="20" danger @click="handleHeaderCellClick('delete', title, column)"/>
+          @click.stop
+        >
+          <IconifyIcon
+            icon="material-symbols:select-check-box-rounded"
+            :size="20"
+            @click="handleHeaderCellClick('select', title, column)"
+          />
+          <IconifyIcon
+            icon="material-symbols:delete"
+            :size="20"
+            danger
+            @click="handleHeaderCellClick('delete', title, column)"
+          />
         </span>
       </template>
       <!-- 表格内容 -->
@@ -29,10 +40,11 @@
           <aButton
             v-for="item in actionBtns"
             :key="item.id"
-            size="small"
+            v-bind="item.props"
             class="table-action-btn"
-            @click.stop="handleActionBtnClick(item)">
-            {{ item.props.title }}
+            @click.stop="handleActionBtnClick(item)"
+          >
+            {{ item.props.content }}
             <!-- <IconifyIcon :icon="item.icon" :size="20" /> -->
           </aButton>
         </template>
@@ -53,7 +65,7 @@ import { useConfirmModal } from '@/composables/useConfirmModal'
 
 const { openModal } = useConfirmModal()
 
-const { getTableElements, activeCanvasElement, selectCanvasElement, deleteCanvasElement } = useDesignContext()
+const { getTableElements, activeCanvasElement, selectElement, deleteElement } = useDesignContext()
 
 defineOptions({
   name: 'TableDesign',
@@ -65,7 +77,11 @@ const excludeColumns = [ColumnType.ActionBtn, ColumnType.Pagination] // 排除�
 // 表格列配置
 const tableColumns = computed<TableColumnType[]>((): TableColumnType[] => {
   // 1、过滤出需要显示的列
-  let list = getTableElements().filter((item) => !selectionColumns.includes(item.type as ColumnType) && !excludeColumns.includes(item.type as ColumnType))
+  let list = getTableElements().filter(
+    (item) =>
+      !selectionColumns.includes(item.type as ColumnType) &&
+      !excludeColumns.includes(item.type as ColumnType),
+  )
   // 2、排序，序号列固定在最前面，操作列固定在最后面，其他普通列按sort字段排序
   list.sort((a, b) => {
     if (a.type === ColumnType.Index) {
@@ -84,26 +100,26 @@ const tableColumns = computed<TableColumnType[]>((): TableColumnType[] => {
   })
   // 3、处理字段
   list = list.map((item) => {
-      const { filterable, filterMultiple, filterMode, filters, filterIcon, ...rest } = item.props
-      let column = {
-        ...rest,
-        key: item.id,
-        columnType: item.type
+    const { filterable, filterMultiple, filterMode, filters, filterIcon, ...rest } = item.props
+    let column = {
+      ...rest,
+      key: item.id,
+      columnType: item.type,
+    }
+    if (filterable) {
+      column = {
+        ...column,
+        filterMultiple,
+        filterMode,
+        filters,
       }
-      if (filterable) {
-        column = {
-          ...column,
-          filterMultiple,
-          filterMode,
-          filters
-        }
-        if (filterIcon) {
-          column.filterIcon = h(IconifyIcon, { icon: filterIcon })
-        }
+      if (filterIcon) {
+        column.filterIcon = h(IconifyIcon, { icon: filterIcon })
       }
-      console.log(column)
-      return column
-    })
+    }
+    console.log(column)
+    return column
+  })
   return list as TableColumnType[]
 })
 
@@ -112,7 +128,7 @@ const tableMockData = computed(() => {
   return getTableElements().map((item) => ({
     [item.id]: item.name,
     name: 'xxx',
-    age: 23
+    age: 23,
   }))
 })
 
@@ -142,14 +158,17 @@ const handleHeaderCellClick = (type: string, title: string, column: TableColumnT
   console.log('表头', column)
   const id = column.key as string
   if (type === 'select') {
-    selectCanvasElement(id)
+    selectElement(id)
   } else if (type === 'delete') {
-    openModal({
-      title: '删除',
-      content: `确认删除列【${title}】吗？`
-    }, () => {
-      deleteCanvasElement(id)
-    })
+    openModal(
+      {
+        title: '删除',
+        content: `确认删除列【${title}】吗？`,
+      },
+      () => {
+        deleteElement(id)
+      },
+    )
   }
 }
 
@@ -157,7 +176,7 @@ const handleHeaderCellClick = (type: string, title: string, column: TableColumnT
 const handleActionBtnClick = (column: CanvasElement) => {
   console.log('操作按钮', column)
   const id = column.id as string
-  selectCanvasElement(id)
+  selectElement(id)
 }
 </script>
 
@@ -185,10 +204,10 @@ const handleActionBtnClick = (column: CanvasElement) => {
     opacity: 0;
     transition: all 0.2s;
     &:hover {
-      opacity: .8;
+      opacity: 0.8;
     }
     &.active {
-      opacity: .8;
+      opacity: 0.8;
     }
   }
 }
