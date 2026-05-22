@@ -2,7 +2,7 @@
   <div class="btn-row">
     <span class="tools">
       <aCheckbox v-if="showCheckBox" :checked="checked" @click="handleCheck"></aCheckbox>
-      <aButton v-bind="btn.props">{{ btn.props.content }}</aButton>
+      <aButton v-bind="btn.props" @click="handleClick">{{ btn.props.content }}</aButton>
     </span>
     <span class="tools">
       <IconifyIcon></IconifyIcon>
@@ -28,7 +28,7 @@ interface Props {
 const props = withDefaults(defineProps<Props>(), {
   showCheckBox: true,
 })
-const emit = defineEmits(['check', 'delete'])
+const emit = defineEmits(['check', 'delete', 'click'])
 
 // 选中/取消选中
 function handleCheck() {
@@ -38,6 +38,11 @@ function handleCheck() {
 // 删除
 function handleDelete() {
   emit('delete', props.btn.id)
+}
+
+// 点击按钮
+function handleClick() {
+  emit('click')
 }
 </script>
 

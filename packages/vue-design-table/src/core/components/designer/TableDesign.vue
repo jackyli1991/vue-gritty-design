@@ -33,39 +33,44 @@
       </template>
       <!-- 表格内容 -->
       <template #bodyCell="{ column, index }">
-        <template v-if="column.columnType === ColumnType.Index">
+        <template v-if="(column as NewTableColumnType).columnType === ColumnType.Index">
           {{ index + 1 }}
         </template>
         <!-- 操作按钮 -->
-        <template v-if="column.columnType === ColumnType.Action">
+        <template v-if="(column as NewTableColumnType).columnType === ColumnType.Action">
           <template v-for="btn in actionBtnGroups" :key="btn.id">
             <!-- 单个按钮 -->
             <aButton
               v-if="(btn as CanvasElement).type === ColumnType.ActionBtn"
-              v-bind="btn.props"
+              v-bind="(btn as CanvasElement).props"
               :style="{
-                'margin-right': column.btnGap + 'px',
+                'margin-right': (column as NewTableColumnType).btnGap + 'px',
               }"
-              @click.stop="handleActionBtnClick(btn)"
+              @click.stop="handleActionBtnClick(btn as CanvasElement)"
             >
-              {{ btn.props.content }}
+              {{ (btn as CanvasElement).props.content }}
               <!-- <IconifyIcon :icon="btn.icon" :size="20" /> -->
             </aButton>
             <!-- 按钮组 -->
             <template v-else>
               <aDropdown>
-                <aButton v-bind="btn.button">
-                  {{ btn.button.content }}
+                <aButton
+                  v-bind="(btn as unknown as ActionBtnGroup).button"
+                  :style="{
+                    'margin-right': (column as NewTableColumnType).btnGap + 'px',
+                  }"
+                >
+                  {{ (btn as unknown as ActionBtnGroup).button.content }}
                 </aButton>
                 <template #overlay>
-                  <ul class="action-column_btns_group">
+                  <ul v-if="'children' in btn" class="action-column_btns_group">
                     <li v-for="item in btn.children" :key="item.id">
                       <aButton
                         v-bind="item.props"
                         :style="{
-                          'margin-bottom': column.btnGap + 'px',
+                          'margin-bottom': (column as NewTableColumnType).btnGap + 'px',
                         }"
-                        @click.stop="handleActionBtnClick(item)"
+                        @click.stop="handleActionBtnClick(item as CanvasElement)"
                       >
                         {{ item.props.content }}
                       </aButton>
@@ -85,11 +90,16 @@
 import type { TableColumnType } from 'ant-design-vue'
 import { computed, h } from 'vue'
 import { ColumnType } from '@/types'
-import type { CanvasElement } from '@/types'
+import type { CanvasElement, ColumnProps, ActionBtnGroup } from '@/types'
 import { Table as aTable, Button as aButton, Dropdown as aDropdown } from 'ant-design-vue'
 import IconifyIcon from '@/components/IconifyIcon.vue'
 import { useDesignContext } from '@/composables/useDesignContext'
 import { useConfirmModal } from '@/composables/useConfirmModal'
+
+interface NewTableColumnType extends TableColumnType {
+  columnType: ColumnType
+  btnGap?: number
+}
 
 const { openModal } = useConfirmModal()
 
@@ -104,9 +114,9 @@ const selectionColumns = [ColumnType.Checkbox, ColumnType.Radio] // 选择列类
 const excludeColumns = [ColumnType.ActionBtn, ColumnType.Pagination] // 排除的其他类型
 
 // 表格列配置
-const tableColumns = computed<TableColumnType[]>((): TableColumnType[] => {
+const tableColumns = computed<NewTableColumnType[]>((): NewTableColumnType[] => {
   // 1、过滤出需要显示的列
-  let list = getTableElements().filter(
+  const list = getTableElements().filter(
     (item) =>
       !selectionColumns.includes(item.type as ColumnType) &&
       !excludeColumns.includes(item.type as ColumnType),
@@ -128,13 +138,14 @@ const tableColumns = computed<TableColumnType[]>((): TableColumnType[] => {
     return 0
   })
   // 3、处理字段
-  list = list.map((item) => {
-    const { filterable, filterMultiple, filterMode, filters, filterIcon, ...rest } = item.props
-    let column = {
+  return list.map((item) => {
+    const { filterable, filterMultiple, filterMode, filters, filterIcon, ...rest } =
+      item.props as ColumnProps
+    let column: NewTableColumnType = {
       ...rest,
       key: item.id,
-      columnType: item.type,
-    }
+      columnType: item.type as ColumnType,
+    } as unknown as NewTableColumnType
     if (filterable) {
       column = {
         ...column,
@@ -149,7 +160,6 @@ const tableColumns = computed<TableColumnType[]>((): TableColumnType[] => {
     console.log(column)
     return column
   })
-  return list as TableColumnType[]
 })
 
 // 表格模拟数据

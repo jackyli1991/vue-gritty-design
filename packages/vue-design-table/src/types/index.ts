@@ -34,6 +34,7 @@ export interface Option {
   icon?: string
   danger?: boolean
   color?: string
+  text: string
 }
 
 // 组件类型定义
@@ -78,7 +79,7 @@ export interface CanvasLayout {
 export interface CanvasElement {
   id: string // 元素ID
   layoutId: string // 布局ID
-  type: string // 元素类型
+  type: ColumnType | string // 元素类型
   name: string // 元素名称
   props: ColumnProps | ButtonProps // 元素属性
 }
@@ -141,7 +142,7 @@ export interface ColumnProps {
   resizable?: boolean // 是否可调整宽度
   filterable?: boolean // 是否可筛选
   filterMultiple?: boolean // 是否可多选筛选
-  filterMode?: 'menu' | 'tree' | 'search' // 指定筛选菜单的用户界面
+  filterMode?: 'menu' | 'tree' // 指定筛选菜单的用户界面
   filtersSource?: 'dict' | 'static' | 'api' // 列筛选选项来源  dict-字典 static-静态数据 api-接口
   filters?: Option[] // 列筛选选项
   filterIcon?: string // 列筛选图标

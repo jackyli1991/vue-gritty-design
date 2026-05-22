@@ -23,19 +23,22 @@
     </FormWrapper>
     <ul class="action-column_btns">
       <li v-for="btn in actionBtnGroups" :key="btn.id">
-        <template v-if="(btn as CanvasElement).type === ColumnType.ActionBtn">
+        <template v-if="'type' in btn && btn.type === ColumnType.ActionBtn">
           <ActionBtn
             :checked="checkIds.includes(btn.id)"
             :btn="btn"
             @check="handleCheck"
             @delete="handleDelete"
+            @click="handleShowModal(btn.props as ButtonProps)"
           ></ActionBtn>
         </template>
         <!-- 分组 -->
         <template v-else>
           <div class="action-column_group">
             <div v-if="'button' in btn" class="title">
-              <aButton v-bind="btn.button">{{ btn.button.content }}</aButton>
+              <aButton v-bind="btn.button" @click="handleShowModal(btn.button)">{{
+                btn.button.content
+              }}</aButton>
               <IconifyIcon
                 icon="material-symbols:delete"
                 @click="handleDeleteGroup(btn.id)"
@@ -43,7 +46,13 @@
             </div>
             <ul v-if="'children' in btn" class="action-column_btns">
               <li v-for="item in btn.children" :key="item.id">
-                <ActionBtn :showCheckBox="false" :btn="item" @delete="handleDelete"></ActionBtn>
+                <ActionBtn
+                  :showCheckBox="false"
+                  :btn="item"
+                  @check="handleCheck"
+                  @delete="handleDelete"
+                  @click="handleShowModal(item.props as ButtonProps)"
+                ></ActionBtn>
               </li>
             </ul>
           </div>
@@ -54,6 +63,7 @@
       </li>
     </ul>
   </AttrWrapper>
+  <ButtonPropsModal :visible="modalVisible" :formData="formData"></ButtonPropsModal>
 </template>
 
 <script lang="ts" setup>
@@ -66,7 +76,7 @@ import {
   FormItem as aFormItem,
   InputNumber as aInputNumber,
 } from 'ant-design-vue'
-import type { CanvasElement, ColumnProps } from '@/types'
+import type { ColumnProps, ButtonProps } from '@/types'
 import { ColumnType } from '@/types'
 import AttrWrapper from '@/components/AttrWrapper.vue'
 import IconifyIcon from '@/components/IconifyIcon.vue'
@@ -74,6 +84,11 @@ import ActionBtn from './ActionBtn.vue'
 import FormWrapper from '../FormWrapper.vue'
 import { useDesignContext } from '@/composables/useDesignContext'
 import { createActionBtnGroup } from '@/core/components/designer'
+import ButtonPropsModal from '@/core/components/modal/ButtonPropsModal.vue'
+
+defineOptions({
+  name: 'ActionBtnGroups',
+})
 
 const {
   actionBtnGroups,
@@ -85,6 +100,8 @@ const {
 } = useDesignContext()
 
 const checkIds = ref<string[]>([])
+const modalVisible = ref(false)
+const formData = ref<ButtonProps>()
 
 const attrs = computed<ColumnProps>(() => {
   return (activeCanvasElement.value?.props || {}) as ColumnProps
@@ -97,6 +114,12 @@ function handleCheck(id: string) {
   } else {
     checkIds.value.push(id)
   }
+}
+
+// 点击按钮，显示按钮属性编辑弹窗
+function handleShowModal(btnProps: ButtonProps) {
+  formData.value = btnProps
+  modalVisible.value = true
 }
 
 // 删除元素

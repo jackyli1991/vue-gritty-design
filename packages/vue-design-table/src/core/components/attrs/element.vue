@@ -19,7 +19,7 @@ import { ColumnType } from '@/types'
 import NormalColumnAttrs from './NormalColumnAttrs.vue'
 import SelectColumnAttrs from './SelectColumnAttrs.vue'
 import ActionBtnAttrs from './ActionBtnAttrs.vue'
-import ActionColumnBtns from './ActionBtns/ActionColumnBtns.vue'
+import ActionColumnBtns from './ActionBtnGroups/index.vue'
 
 const { activeCanvasElement } = useDesignContext()
 
