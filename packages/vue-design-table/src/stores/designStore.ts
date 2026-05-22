@@ -6,7 +6,7 @@ import type {
   CanvasData,
   CanvasLayout,
   ActionBtnGroup,
-  ActionBtnGroups,
+  ActionBtnGroupItem,
 } from '@/types'
 import { Direction, Position, BaseLayouts, ColumnType } from '@/types'
 import { excludeOption, isObject, isString } from '@/utils'
@@ -67,7 +67,7 @@ export const useDesignStore = defineStore('tableDesign', () => {
 
   const layoutIds = computed(() => Object.keys(canvasData.value.layouts)) // 所有布局ID列表
   // 所有表格操作按钮，按actionBtnsList 分组进行重组
-  const actionBtnGroups = computed<ActionBtnGroups>((): ActionBtnGroups => {
+  const actionBtnGroups = computed<ActionBtnGroupItem[]>((): ActionBtnGroupItem[] => {
     // 所有按钮
     const btns = getTableElements().filter(
       (item: CanvasElement) => item.type === ColumnType.ActionBtn,
@@ -85,7 +85,7 @@ export const useDesignStore = defineStore('tableDesign', () => {
           }),
         }
       }
-    }) as ActionBtnGroups
+    }) as ActionBtnGroupItem[]
   })
 
   /**
@@ -135,6 +135,18 @@ export const useDesignStore = defineStore('tableDesign', () => {
       activeCanvasElement.value = undefined
     }
     removeActionBtnFromList(id)
+  }
+
+  /**
+   * 更新元素
+   * @param id 元素ID
+   * @param props 元素属性更新对象
+   */
+  function updateElement(id: string, props: Partial<CanvasElement>) {
+    const element = getElement(id)
+    if (element) {
+      Object.assign(element, props)
+    }
   }
 
   /**
@@ -228,6 +240,19 @@ export const useDesignStore = defineStore('tableDesign', () => {
     const group = canvasData.value.config.actionBtnsList[idx] as ActionBtnGroup
     const groupIds = group.children
     canvasData.value.config.actionBtnsList.splice(idx, 1, ...groupIds) // 只删除分组，分组下的按钮留在原分组的位置
+  }
+
+  /**
+   * 更新按钮分组
+   * @param id 分组id
+   * @param props 分组属性更新对象
+   */
+  function updateActionBtnGroup(id: string, props: Partial<ActionBtnGroup>) {
+    const group = canvasData.value.config.actionBtnsList.find(
+      (item) => isObject(item) && (item as ActionBtnGroup).id === id,
+    )
+    if (!group) return
+    Object.assign(group, props)
   }
 
   /**
@@ -449,9 +474,11 @@ export const useDesignStore = defineStore('tableDesign', () => {
     selectElement,
     addElement,
     deleteElement,
+    updateElement,
     getTableElements,
     addActionBtnGroup,
     deleteActionBtnGroup,
+    updateActionBtnGroup,
     resetCanvas,
     toggleAttributesPanel,
   }

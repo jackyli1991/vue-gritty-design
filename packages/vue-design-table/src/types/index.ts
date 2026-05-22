@@ -87,15 +87,15 @@ export interface CanvasElement {
 // 操作列分组
 export interface ActionBtnGroup {
   id: string // 分组id
+  type: 'actionBtnsGroup' // 分组类型
   button: ButtonProps // 分组按钮配置
   children: string[] // 分组按钮id
 }
 
 // 操作列按钮分组，按ActionBtnGroup 进行重组
-export type ActionBtnGroups = (
+export type ActionBtnGroupItem =
   | CanvasElement
   | (Omit<ActionBtnGroup, 'children'> & { children: CanvasElement[] })
-)[]
 
 // 画布配置
 export interface CanvasConfig {

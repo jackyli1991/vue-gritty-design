@@ -29,14 +29,14 @@
             :btn="btn"
             @check="handleCheck"
             @delete="handleDelete"
-            @click="handleShowModal(btn.props as ButtonProps)"
+            @click="handleShowModal(btn)"
           ></ActionBtn>
         </template>
         <!-- 分组 -->
         <template v-else>
           <div class="action-column_group">
             <div v-if="'button' in btn" class="title">
-              <aButton v-bind="btn.button" @click="handleShowModal(btn.button)">{{
+              <aButton v-bind="btn.button" @click="handleShowModal(btn)">{{
                 btn.button.content
               }}</aButton>
               <IconifyIcon
@@ -51,7 +51,7 @@
                   :btn="item"
                   @check="handleCheck"
                   @delete="handleDelete"
-                  @click="handleShowModal(item.props as ButtonProps)"
+                  @click="handleShowModal(item)"
                 ></ActionBtn>
               </li>
             </ul>
@@ -63,7 +63,11 @@
       </li>
     </ul>
   </AttrWrapper>
-  <ButtonPropsModal :visible="modalVisible" :formData="formData"></ButtonPropsModal>
+  <ButtonPropsModal
+    v-model:visible="modalVisible"
+    :formData="editBtnProps"
+    @confirm="handleConfirm"
+  ></ButtonPropsModal>
 </template>
 
 <script lang="ts" setup>
@@ -76,7 +80,13 @@ import {
   FormItem as aFormItem,
   InputNumber as aInputNumber,
 } from 'ant-design-vue'
-import type { ColumnProps, ButtonProps } from '@/types'
+import type {
+  ColumnProps,
+  ButtonProps,
+  ActionBtnGroupItem,
+  CanvasElement,
+  ActionBtnGroup,
+} from '@/types'
 import { ColumnType } from '@/types'
 import AttrWrapper from '@/components/AttrWrapper.vue'
 import IconifyIcon from '@/components/IconifyIcon.vue'
@@ -95,17 +105,42 @@ const {
   // getTableElements,
   activeCanvasElement,
   deleteElement,
+  updateElement,
   addActionBtnGroup,
   deleteActionBtnGroup,
+  updateActionBtnGroup,
 } = useDesignContext()
 
-const checkIds = ref<string[]>([])
-const modalVisible = ref(false)
-const formData = ref<ButtonProps>()
+const checkIds = ref<string[]>([]) // 选中的按钮id
+const modalVisible = ref(false) // 弹窗是否可见
+const editBtnData = ref<ActionBtnGroupItem>() // 编辑的按钮数据
 
 const attrs = computed<ColumnProps>(() => {
   return (activeCanvasElement.value?.props || {}) as ColumnProps
 })
+
+// 当前编辑的按钮属性数据
+const editBtnProps = computed<ButtonProps>((): ButtonProps => {
+  if (!editBtnData.value) {
+    return {} as ButtonProps
+  }
+  if (isActionBtn(editBtnData.value)) {
+    return { ...(editBtnData.value as CanvasElement).props } as ButtonProps
+  } else if (isGroupBtn(editBtnData.value)) {
+    return { ...(editBtnData.value as unknown as ActionBtnGroup).button } as ButtonProps
+  }
+  return {} as ButtonProps
+})
+
+// 是否是操作按钮
+function isActionBtn(btn: ActionBtnGroupItem): boolean {
+  return btn.type === ColumnType.ActionBtn
+}
+
+// 是否是按钮分组
+function isGroupBtn(btn: ActionBtnGroupItem): boolean {
+  return 'children' in btn
+}
 
 // 选中按钮
 function handleCheck(id: string) {
@@ -117,12 +152,24 @@ function handleCheck(id: string) {
 }
 
 // 点击按钮，显示按钮属性编辑弹窗
-function handleShowModal(btnProps: ButtonProps) {
-  formData.value = btnProps
+function handleShowModal(btn: ActionBtnGroupItem) {
+  editBtnData.value = btn
   modalVisible.value = true
 }
 
-// 删除元素
+// 确认按钮属性
+function handleConfirm(btnProps: ButtonProps) {
+  if (!editBtnData.value) {
+    return
+  }
+  if (isActionBtn(editBtnData.value!)) {
+    updateElement(editBtnData.value.id, { props: btnProps })
+  } else if (isGroupBtn(editBtnData.value!)) {
+    updateActionBtnGroup(editBtnData.value.id, { button: btnProps })
+  }
+}
+
+//// 删除元素
 function handleDelete(id: string) {
   deleteElement(id)
 }

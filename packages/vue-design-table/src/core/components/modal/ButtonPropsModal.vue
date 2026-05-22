@@ -3,11 +3,13 @@
     title="按钮属性"
     :visible="visible"
     width="50vw"
-    :footer="null"
+    okText="确定"
+    cancelText="取消"
     @ok="handleOk"
     @cancel="handleCancel"
   >
-    <ButtonForm :formData="formData" :cols="1"></ButtonForm>
+    {{ formData }}
+    <ButtonForm :formData="formData" :cols="2"></ButtonForm>
   </aModal>
 </template>
 
@@ -25,15 +27,16 @@ interface ButtonPropsModalProps {
   formData?: ButtonProps
 }
 
-defineProps<ButtonPropsModalProps>()
+const props = defineProps<ButtonPropsModalProps>()
 
-const emit = defineEmits(['ok', 'cancel'])
+const emit = defineEmits(['confirm', 'update:visible'])
 
 function handleOk() {
-  // emit('ok', formData.value)
+  emit('confirm', props.formData)
+  handleCancel()
 }
 
 function handleCancel() {
-  emit('cancel')
+  emit('update:visible', false)
 }
 </script>

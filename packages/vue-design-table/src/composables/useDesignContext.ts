@@ -66,8 +66,10 @@ export function useDesignContext() {
     selectElement: designStore.selectElement,
     addElement: designStore.addElement,
     deleteElement: designStore.deleteElement,
+    updateElement: designStore.updateElement,
     addActionBtnGroup: designStore.addActionBtnGroup,
     deleteActionBtnGroup: designStore.deleteActionBtnGroup,
+    updateActionBtnGroup: designStore.updateActionBtnGroup,
     getTableElements: designStore.getTableElements,
     resetCanvas: designStore.resetCanvas,
   }

@@ -74,6 +74,7 @@ export function createElement(layoutId: string, config: Omit<CanvasElement, 'id'
 export function createActionBtnGroup(): ActionBtnGroup {
   return {
     id: `actionBtnGroup_${createUUID()}`,
+    type: 'actionBtnsGroup',
     button: { ...buttonProps },
     children: [],
   }
