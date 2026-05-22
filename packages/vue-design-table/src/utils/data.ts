@@ -17,17 +17,23 @@ export function excludeOption(
 }
 
 /**
- * 创建UUID
+ * 创建标准十六进制 UUID
  * @returns UUID字符串
  */
-export function createUUID(len = 36) {
-  const uuidv4 = () => {
-    return 'xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx'.replace(/[xy]/g, (c: string): string => {
-      const r = (Math.random() * 16) | 0
-      return c === 'x' ? r.toString() : ((r & 0x3) | 0x8).toString()
-    })
-  }
-  return uuidv4().substring(0, len)
+export function createUUID(): string {
+  return 'xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx'.replace(/[xy]/g, (c: string): string => {
+    const r = (Math.random() * 16) | 0
+    return c === 'x' ? r.toString(16) : ((r & 0x3) | 0x8).toString(16) // 使用十六进制
+  })
+}
+
+/**
+ * 获取数据类型
+ * @param data 数据
+ * @returns 数据类型字符串
+ */
+export function getType(data: unknown) {
+  return Object.prototype.toString.call(data).slice(8, -1)
 }
 
 /**
@@ -36,7 +42,7 @@ export function createUUID(len = 36) {
  * @return boolean
  */
 export function isObject(data: unknown) {
-  return typeof data === 'object'
+  return typeof data === 'object' && getType(data) === 'Object'
 }
 
 /**
@@ -45,5 +51,5 @@ export function isObject(data: unknown) {
  * @return boolean
  */
 export function isString(data: unknown) {
-  return typeof data === 'string'
+  return getType(data) === 'String'
 }

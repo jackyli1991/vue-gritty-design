@@ -73,6 +73,7 @@ export const columnsComponentsList: ResourceItem[] = [
     icon: 'material-symbols:edit-note-outline-rounded',
     props: createColumnProps({
       title: '操作',
+      btnGap: 5, // 按钮间距
     }),
   },
   {

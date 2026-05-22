@@ -1,13 +1,28 @@
 <template>
   <AttrWrapper title="操作按钮">
-    {{ checkIds }} {{ actionBtnGroups }}
     <template #more>
-      <aButton v-if="checkIds.length >= 2" size="small" @click="handleMergeGroup"
+      <aButton v-if="checkIds.length >= 2" @click="handleMergeGroup" size="small"
         >合并按钮组</aButton
       >
     </template>
+    <FormWrapper :form-data="attrs">
+      <aRow>
+        <aCol :span="12">
+          <aFormItem label="按钮间距" name="btnGap">
+            <aInputNumber
+              v-model:value="attrs.btnGap"
+              style="width: 100%"
+              :min="0"
+              :max="20"
+              :step="1"
+              placeholder="单位:px"
+            />
+          </aFormItem>
+        </aCol>
+      </aRow>
+    </FormWrapper>
     <ul class="action-column_btns">
-      <li v-for="btn in actionBtns" :key="btn.id">
+      <li v-for="btn in actionBtnGroups" :key="btn.id">
         <template v-if="(btn as CanvasElement).type === ColumnType.ActionBtn">
           <ActionBtn
             :checked="checkIds.includes(btn.id)"
@@ -19,14 +34,14 @@
         <!-- 分组 -->
         <template v-else>
           <div class="action-column_group">
-            <div class="title">
+            <div v-if="'button' in btn" class="title">
               <aButton v-bind="btn.button">{{ btn.button.content }}</aButton>
               <IconifyIcon
                 icon="material-symbols:delete"
                 @click="handleDeleteGroup(btn.id)"
               ></IconifyIcon>
             </div>
-            <ul class="action-column_btns">
+            <ul v-if="'children' in btn" class="action-column_btns">
               <li v-for="item in btn.children" :key="item.id">
                 <ActionBtn :showCheckBox="false" :btn="item" @delete="handleDelete"></ActionBtn>
               </li>
@@ -34,7 +49,7 @@
           </div>
         </template>
       </li>
-      <li v-if="!actionBtns.length">
+      <li v-if="!actionBtnGroups.length">
         <aEmpty description="请添加【操作按钮】到表格。"></aEmpty>
       </li>
     </ul>
@@ -43,19 +58,27 @@
 
 <script lang="ts" setup>
 import { computed, ref } from 'vue'
-import { Button as aButton, Empty as aEmpty } from 'ant-design-vue'
-import type { CanvasElement, ActionBtnGroup } from '@/types'
+import {
+  Button as aButton,
+  Empty as aEmpty,
+  Row as aRow,
+  Col as aCol,
+  FormItem as aFormItem,
+  InputNumber as aInputNumber,
+} from 'ant-design-vue'
+import type { CanvasElement, ColumnProps } from '@/types'
 import { ColumnType } from '@/types'
 import AttrWrapper from '@/components/AttrWrapper.vue'
 import IconifyIcon from '@/components/IconifyIcon.vue'
 import ActionBtn from './ActionBtn.vue'
+import FormWrapper from '../FormWrapper.vue'
 import { useDesignContext } from '@/composables/useDesignContext'
-import { isObject, isString } from '@/utils'
 import { createActionBtnGroup } from '@/core/components/designer'
 
 const {
   actionBtnGroups,
-  getTableElements,
+  // getTableElements,
+  activeCanvasElement,
   deleteElement,
   addActionBtnGroup,
   deleteActionBtnGroup,
@@ -63,23 +86,8 @@ const {
 
 const checkIds = ref<string[]>([])
 
-// 所有表格操作按钮，按照分组顺序和嵌套重新排列
-const actionBtns = computed(() => {
-  const btns = getTableElements().filter(
-    (item: CanvasElement) => item.type === ColumnType.ActionBtn,
-  )
-  return actionBtnGroups.value.map((item) => {
-    if (isString(item)) {
-      return btns.find((btn) => btn.id === item)
-    } else if (isObject(item) && (item as ActionBtnGroup).children) {
-      return {
-        ...(item as ActionBtnGroup),
-        children: (item as ActionBtnGroup).children.map((btnId) => {
-          return btns.find((btn) => btn.id === btnId)
-        }),
-      }
-    }
-  })
+const attrs = computed<ColumnProps>(() => {
+  return (activeCanvasElement.value?.props || {}) as ColumnProps
 })
 
 // 选中按钮

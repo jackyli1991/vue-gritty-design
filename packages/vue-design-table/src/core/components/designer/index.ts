@@ -59,7 +59,7 @@ export function createLayout(
  */
 export function createElement(layoutId: string, config: Omit<CanvasElement, 'id'>): CanvasElement {
   return {
-    id: `element_${createUUID(24)}`,
+    id: `element_${createUUID()}`,
     layoutId,
     name: config.name ?? '',
     type: config.type ?? 'div',
@@ -73,7 +73,7 @@ export function createElement(layoutId: string, config: Omit<CanvasElement, 'id'
  */
 export function createActionBtnGroup(): ActionBtnGroup {
   return {
-    id: `element_${createUUID(24)}`,
+    id: `actionBtnGroup_${createUUID()}`,
     button: { ...buttonProps },
     children: [],
   }

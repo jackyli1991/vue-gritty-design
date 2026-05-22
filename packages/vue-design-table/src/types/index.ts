@@ -90,6 +90,12 @@ export interface ActionBtnGroup {
   children: string[] // 分组按钮id
 }
 
+// 操作列按钮分组，按ActionBtnGroup 进行重组
+export type ActionBtnGroups = (
+  | CanvasElement
+  | (Omit<ActionBtnGroup, 'children'> & { children: CanvasElement[] })
+)[]
+
 // 画布配置
 export interface CanvasConfig {
   actionBtnsList: (string | ActionBtnGroup)[] // 操作列排序和分组
@@ -140,6 +146,8 @@ export interface ColumnProps {
   filters?: Option[] // 列筛选选项
   filterIcon?: string // 列筛选图标
   sortable?: string // 是否可排序
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  [key: string]: any // 其他列属性
 }
 
 // 按钮属性类型定义

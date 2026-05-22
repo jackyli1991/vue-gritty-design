@@ -36,17 +36,45 @@
         <template v-if="column.columnType === ColumnType.Index">
           {{ index + 1 }}
         </template>
+        <!-- 操作按钮 -->
         <template v-if="column.columnType === ColumnType.Action">
-          <aButton
-            v-for="item in actionBtns"
-            :key="item.id"
-            v-bind="item.props"
-            class="table-action-btn"
-            @click.stop="handleActionBtnClick(item)"
-          >
-            {{ item.props.content }}
-            <!-- <IconifyIcon :icon="item.icon" :size="20" /> -->
-          </aButton>
+          <template v-for="btn in actionBtnGroups" :key="btn.id">
+            <!-- 单个按钮 -->
+            <aButton
+              v-if="(btn as CanvasElement).type === ColumnType.ActionBtn"
+              v-bind="btn.props"
+              :style="{
+                'margin-right': column.btnGap + 'px',
+              }"
+              @click.stop="handleActionBtnClick(btn)"
+            >
+              {{ btn.props.content }}
+              <!-- <IconifyIcon :icon="btn.icon" :size="20" /> -->
+            </aButton>
+            <!-- 按钮组 -->
+            <template v-else>
+              <aDropdown>
+                <aButton v-bind="btn.button">
+                  {{ btn.button.content }}
+                </aButton>
+                <template #overlay>
+                  <ul class="action-column_btns_group">
+                    <li v-for="item in btn.children" :key="item.id">
+                      <aButton
+                        v-bind="item.props"
+                        :style="{
+                          'margin-bottom': column.btnGap + 'px',
+                        }"
+                        @click.stop="handleActionBtnClick(item)"
+                      >
+                        {{ item.props.content }}
+                      </aButton>
+                    </li>
+                  </ul>
+                </template>
+              </aDropdown>
+            </template>
+          </template>
         </template>
       </template>
     </aTable>
@@ -58,14 +86,15 @@ import type { TableColumnType } from 'ant-design-vue'
 import { computed, h } from 'vue'
 import { ColumnType } from '@/types'
 import type { CanvasElement } from '@/types'
-import { Table as aTable, Button as aButton } from 'ant-design-vue'
+import { Table as aTable, Button as aButton, Dropdown as aDropdown } from 'ant-design-vue'
 import IconifyIcon from '@/components/IconifyIcon.vue'
 import { useDesignContext } from '@/composables/useDesignContext'
 import { useConfirmModal } from '@/composables/useConfirmModal'
 
 const { openModal } = useConfirmModal()
 
-const { getTableElements, activeCanvasElement, selectElement, deleteElement } = useDesignContext()
+const { activeCanvasElement, actionBtnGroups, getTableElements, selectElement, deleteElement } =
+  useDesignContext()
 
 defineOptions({
   name: 'TableDesign',
@@ -148,11 +177,6 @@ const rowSelection = computed(() => {
   }
 })
 
-// 表格操作按钮
-const actionBtns = computed(() => {
-  return getTableElements().filter((item) => item.type === ColumnType.ActionBtn)
-})
-
 // 处理表头单元格点击事件
 const handleHeaderCellClick = (type: string, title: string, column: TableColumnType) => {
   console.log('表头', column)
@@ -209,6 +233,12 @@ const handleActionBtnClick = (column: CanvasElement) => {
     &.active {
       opacity: 0.8;
     }
+  }
+  .action-column_btns_group {
+    background-color: #fff;
+    padding: 4px;
+    border-radius: 4px;
+    gap: 4px;
   }
 }
 </style>
