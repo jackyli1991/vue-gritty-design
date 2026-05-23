@@ -8,7 +8,7 @@
 import { computed } from 'vue'
 import type { ButtonProps } from '@/types'
 import { useDesignContext } from '@/composables/useDesignContext'
-import ButtonForm from '../form/ButtonForm.vue'
+import ButtonForm from '@/core/components/form/ButtonForm.vue'
 import AttrWrapper from '@/components/AttrWrapper.vue'
 
 defineOptions({
