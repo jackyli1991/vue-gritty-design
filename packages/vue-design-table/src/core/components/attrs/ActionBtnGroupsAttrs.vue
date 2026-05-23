@@ -1,26 +1,9 @@
 <template>
   <AttrWrapper title="操作按钮">
-    <template #more>
-      <aButton v-if="checkIds.length >= 2" @click="handleMergeGroup" size="small"
-        >合并按钮组</aButton
-      >
+    <template v-if="checkIds.length >= 2" #more>
+      <aButton @click="handleMergeGroup" size="small">合并按钮组</aButton>
     </template>
-    <FormWrapper :form-data="attrs">
-      <aRow>
-        <aCol :span="12">
-          <aFormItem label="按钮间距" name="btnGap">
-            <aInputNumber
-              v-model:value="attrs.btnGap"
-              style="width: 100%"
-              :min="0"
-              :max="20"
-              :step="1"
-              placeholder="单位:px"
-            />
-          </aFormItem>
-        </aCol>
-      </aRow>
-    </FormWrapper>
+    <ActionBtnGroupForm :formData="formData"></ActionBtnGroupForm>
     <ul class="action-column_btns">
       <li v-for="btn in actionBtnGroups" :key="btn.id">
         <template v-if="'type' in btn && btn.type === ColumnType.ActionBtn">
@@ -72,14 +55,7 @@
 
 <script lang="ts" setup>
 import { computed, ref } from 'vue'
-import {
-  Button as aButton,
-  Empty as aEmpty,
-  Row as aRow,
-  Col as aCol,
-  FormItem as aFormItem,
-  InputNumber as aInputNumber,
-} from 'ant-design-vue'
+import { Button as aButton, Empty as aEmpty } from 'ant-design-vue'
 import type {
   ColumnProps,
   ButtonProps,
@@ -91,7 +67,7 @@ import { ColumnType } from '@/types'
 import AttrWrapper from '@/components/AttrWrapper.vue'
 import IconifyIcon from '@/components/IconifyIcon.vue'
 import ActionBtn from './components/ActionBtn.vue'
-import FormWrapper from './components/FormWrapper.vue'
+import ActionBtnGroupForm from '@/core/components/form/ActionBtnGroupForm.vue'
 import { useDesignContext } from '@/composables/useDesignContext'
 import { createActionBtnGroup } from '@/core/components/designer'
 import ButtonPropsModal from '@/core/components/modal/ButtonPropsModal.vue'
@@ -102,7 +78,6 @@ defineOptions({
 
 const {
   actionBtnGroups,
-  // getTableElements,
   activeCanvasElement,
   deleteElement,
   updateElement,
@@ -115,7 +90,7 @@ const checkIds = ref<string[]>([]) // 选中的按钮id
 const modalVisible = ref(false) // 弹窗是否可见
 const editBtnData = ref<ActionBtnGroupItem>() // 编辑的按钮数据
 
-const attrs = computed<ColumnProps>(() => {
+const formData = computed<ColumnProps>(() => {
   return (activeCanvasElement.value?.props || {}) as ColumnProps
 })
 
