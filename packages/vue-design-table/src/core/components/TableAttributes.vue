@@ -1,23 +1,36 @@
 <template>
   <div class="table-design-attributes table-design-wrapper">
     <div class="attributes-content">
-      <div v-if="!activeCanvasElement && !activeCanvasLayout" class="attributes-empty">
-        请选择一个元素进行编辑
-      </div>
+      <div v-if="!activeCompType" class="attributes-empty">请选择一个元素进行编辑</div>
       <!-- 布局属性编辑 -->
-      <LayoutAttrs />
-      <!-- 元素属性编辑 -->
-      <ElementAttrs />
+      <template v-else>
+        <component
+          v-for="component in attrComponentsMap[activeCompType]"
+          :key="component.name"
+          :is="component"
+        />
+      </template>
     </div>
   </div>
 </template>
 
 <script lang="ts" setup>
+import { ColumnType } from '@/types'
+import type { attrComponentsMapType } from './attrs/index.ts'
+import { computed } from 'vue'
 import { useDesignContext } from '@/composables/useDesignContext'
-import LayoutAttrs from './attrs/layout.vue'
-import ElementAttrs from './attrs/element.vue'
+import { attrComponentsMap } from './attrs/index.ts'
 
 const { activeCanvasElement, activeCanvasLayout } = useDesignContext()
+
+// 当前选中的layout或element类型
+const activeCompType = computed<attrComponentsMapType | undefined>(
+  (): attrComponentsMapType | undefined => {
+    if (activeCanvasLayout.value) return activeCanvasLayout.value?.type
+    if (activeCanvasElement.value) return activeCanvasElement.value?.type as ColumnType
+    return undefined
+  },
+)
 </script>
 
 <style scoped lang="scss">
@@ -28,6 +41,7 @@ const { activeCanvasElement, activeCanvasLayout } = useDesignContext()
   width: 300px;
   flex-shrink: 0;
   background: transparent !important;
+  box-shadow: none !important;
   .attributes-content {
     flex: 1;
     // padding: 8px;
@@ -38,49 +52,6 @@ const { activeCanvasElement, activeCanvasLayout } = useDesignContext()
     color: var(--vdt-font-color-light);
     padding: 40px 0;
     font-size: 12px;
-  }
-
-  .attributes-form {
-    .attributes-group {
-      margin-bottom: 24px;
-
-      &:last-child {
-        margin-bottom: 0;
-      }
-    }
-
-    .attributes-title {
-      font-weight: 600;
-      font-size: 14px;
-      color: var(--vdt-font-color);
-      margin-bottom: 12px;
-      padding-bottom: 8px;
-      border-bottom: 1px solid #f0f0f0;
-    }
-
-    .attributes-item {
-      margin-bottom: 16px;
-
-      &:last-child {
-        margin-bottom: 0;
-      }
-
-      label {
-        display: block;
-        font-size: 13px;
-        color: var(--vdt-font-color);
-        margin-bottom: 8px;
-      }
-    }
-
-    .attributes-value {
-      padding: 8px 12px;
-      background: #f5f5f5;
-      border-radius: 4px;
-      font-size: 13px;
-      color: var(--vdt-font-color);
-      word-break: break-all;
-    }
   }
 }
 </style>

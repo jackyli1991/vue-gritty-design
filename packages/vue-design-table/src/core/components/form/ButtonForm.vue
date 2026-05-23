@@ -14,24 +14,24 @@
           </aFormItem>
         </aCol> -->
       <aCol :span="colSpan">
-        <aFormItem label="文本" name="['props', 'content']" :rules="rules.content">
+        <aFormItem label="文本" name="content" :rules="rules.content">
           <aInput v-model:value="formData.content" />
         </aFormItem>
       </aCol>
       <aCol :span="colSpan">
-        <aFormItem label="类型" name="['props', 'type']" :rules="rules.type">
+        <aFormItem label="类型" name="type" :rules="rules.type">
           <aSelect v-model:value="formData.type" :options="buttonTypeOptions" />
         </aFormItem>
       </aCol>
       <aCol :span="colSpan">
-        <aFormItem label="尺寸" name="['props', 'size']" :rules="rules.size">
+        <aFormItem label="尺寸" name="size" :rules="rules.size">
           <aSelect v-model:value="formData.size" :options="buttonSizeOptions" />
         </aFormItem>
       </aCol>
       <aCol :span="colSpan">
         <aRow :gutter="12">
           <aCol :span="20">
-            <aFormItem label="图标" name="['props', 'icon']">
+            <aFormItem label="图标" name="icon">
               <aInput v-model:value="formData.icon" placeholder="iconfity图标名称"></aInput>
             </aFormItem>
           </aCol>
@@ -43,12 +43,12 @@
         </aRow>
       </aCol>
       <aCol :span="colSpan">
-        <aFormItem label="危险按钮" name="['props', 'danger']" :rules="rules.danger">
+        <aFormItem label="危险按钮" name="danger" :rules="rules.danger">
           <aSwitch v-model:checked="formData.danger" />
         </aFormItem>
       </aCol>
       <aCol :span="colSpan">
-        <aFormItem label="幽灵按钮" name="['props', 'ghost']" :rules="rules.ghost">
+        <aFormItem label="幽灵按钮" name="ghost" :rules="rules.ghost">
           <aSwitch v-model:checked="formData.ghost" />
         </aFormItem>
       </aCol>
@@ -94,7 +94,7 @@ const props = withDefaults(defineProps<Props>(), {
 const formData = computed(() => props.formData)
 const colSpan = computed(() => Math.floor(24 / props.cols))
 const rules = computed<Record<string, RuleObject[]>>(() => ({
-  // name: [{ required: true, message: '请输入布局名称' }],
+  content: [{ required: true, message: '请输入文本' }],
   // widthValue: [{ required: true, message: '请输入宽度值', type: 'number', min: 0 }],
   // heightValue: [{ required: true, message: '请输入高度值', type: 'number', min: 0 }],
 }))

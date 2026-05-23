@@ -90,14 +90,14 @@ import type {
 import { ColumnType } from '@/types'
 import AttrWrapper from '@/components/AttrWrapper.vue'
 import IconifyIcon from '@/components/IconifyIcon.vue'
-import ActionBtn from './ActionBtn.vue'
-import FormWrapper from '../FormWrapper.vue'
+import ActionBtn from './components/ActionBtn.vue'
+import FormWrapper from './components/FormWrapper.vue'
 import { useDesignContext } from '@/composables/useDesignContext'
 import { createActionBtnGroup } from '@/core/components/designer'
 import ButtonPropsModal from '@/core/components/modal/ButtonPropsModal.vue'
 
 defineOptions({
-  name: 'ActionBtnGroups',
+  name: 'ActionBtnGroupsAttrs',
 })
 
 const {
@@ -125,9 +125,9 @@ const editBtnProps = computed<ButtonProps>((): ButtonProps => {
     return {} as ButtonProps
   }
   if (isActionBtn(editBtnData.value)) {
-    return { ...(editBtnData.value as CanvasElement).props } as ButtonProps
+    return (editBtnData.value as CanvasElement).props as ButtonProps
   } else if (isGroupBtn(editBtnData.value)) {
-    return { ...(editBtnData.value as unknown as ActionBtnGroup).button } as ButtonProps
+    return (editBtnData.value as unknown as ActionBtnGroup).button
   }
   return {} as ButtonProps
 })

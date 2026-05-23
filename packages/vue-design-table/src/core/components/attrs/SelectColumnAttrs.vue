@@ -23,17 +23,17 @@ import { FormItem as aFormItem, Input as aInput, Row as aRow, Col as aCol } from
 import type { RuleObject } from 'ant-design-vue/es/form'
 import type { ColumnProps } from '@/types'
 import AttrWrapper from '@/components/AttrWrapper.vue'
-import FormWrapper from './FormWrapper.vue'
+import FormWrapper from './components/FormWrapper.vue'
 import { useDesignContext } from '@/composables/useDesignContext'
 
 defineOptions({
   name: 'SelectColumnAttrs',
 })
 
-interface Props {
+export interface SelectColumnAttrsProps {
   disabled?: boolean // 是否禁用
 }
-defineProps<Props>()
+defineProps<SelectColumnAttrsProps>()
 
 const { activeCanvasElement } = useDesignContext()
 

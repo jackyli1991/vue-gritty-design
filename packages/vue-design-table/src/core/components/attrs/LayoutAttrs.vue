@@ -1,14 +1,12 @@
 <template>
-  <div class="layout-attrs">
-    <AttrWrapper title="布局属性" v-if="activeCanvasLayout">
-      <LayoutForm
-        :formData="activeCanvasLayout"
-        hideRequiredMark
-        :cols="1"
-        :disabledFields="['id']"
-      />
-    </AttrWrapper>
-  </div>
+  <AttrWrapper title="布局属性" v-if="activeCanvasLayout">
+    <LayoutForm
+      :formData="activeCanvasLayout"
+      hideRequiredMark
+      :cols="1"
+      :disabledFields="['id']"
+    />
+  </AttrWrapper>
 </template>
 
 <script setup lang="ts">

@@ -174,7 +174,7 @@ import type { RuleObject } from 'ant-design-vue/es/form'
 import type { ColumnProps } from '@/types'
 import IconifyIcon from '@/components/IconifyIcon.vue'
 import AttrWrapper from '@/components/AttrWrapper.vue'
-import FormWrapper from './FormWrapper.vue'
+import FormWrapper from './components/FormWrapper.vue'
 import { alignOptions, fixedOptions, filterModeOptions, filtersSourceOptions } from '@/datas'
 import { useDesignContext } from '@/composables/useDesignContext'
 
@@ -182,10 +182,10 @@ defineOptions({
   name: 'NormalColumnAttrs',
 })
 
-interface Props {
+export interface NormalColumnAttrsProps {
   disabled?: boolean // 是否禁用
 }
-defineProps<Props>()
+defineProps<NormalColumnAttrsProps>()
 
 const { activeCanvasElement } = useDesignContext()
 
