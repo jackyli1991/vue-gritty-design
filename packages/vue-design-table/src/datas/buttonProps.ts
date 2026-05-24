@@ -7,6 +7,7 @@ export const buttonProps: ButtonProps = {
   size: 'small',
   danger: false,
   ghost: false,
+  backgroundColor: '',
 }
 
 /**

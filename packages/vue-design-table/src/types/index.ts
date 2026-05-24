@@ -159,4 +159,5 @@ export interface ButtonProps {
   icon?: string // 按钮图标
   danger: boolean // 是否为危险按钮
   ghost: boolean // 是否为幽灵按钮
+  backgroundColor?: string // 背景颜色
 }

@@ -28,7 +28,7 @@
 import { computed, useTemplateRef } from 'vue'
 import type { ColumnProps } from '@/types'
 import type { RuleObject } from 'ant-design-vue/es/form'
-import { Form as aForm, FormItem as aFormItem, Row as aRow, Col as aCol } from 'ant-design-vue'
+import { Form as aForm, FormItem as aFormItem, Row as aRow, Col as aCol, InputNumber as aInputNumber } from 'ant-design-vue'
 
 defineOptions({
   name: 'ActionBtnGroupForm',

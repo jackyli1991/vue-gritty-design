@@ -7,21 +7,21 @@
     <ul class="action-column_btns">
       <li v-for="btn in actionBtnGroups" :key="btn.id">
         <template v-if="'type' in btn && btn.type === ColumnType.ActionBtn">
-          <ActionBtn
+          <ActionBtnGroupLine
             :checked="checkIds.includes(btn.id)"
             :btn="btn"
             @check="handleCheck"
             @delete="handleDelete"
             @click="handleShowModal(btn)"
-          ></ActionBtn>
+          ></ActionBtnGroupLine>
         </template>
         <!-- 分组 -->
         <template v-else>
           <div class="action-column_group">
             <div v-if="'button' in btn" class="title">
-              <aButton v-bind="btn.button" @click="handleShowModal(btn)">{{
+              <ActionButton v-bind="btn.button" @click="handleShowModal(btn)">{{
                 btn.button.content
-              }}</aButton>
+              }}</ActionButton>
               <IconifyIcon
                 icon="material-symbols:delete"
                 @click="handleDeleteGroup(btn.id)"
@@ -29,13 +29,13 @@
             </div>
             <ul v-if="'children' in btn" class="action-column_btns">
               <li v-for="item in btn.children" :key="item.id">
-                <ActionBtn
+                <ActionBtnGroupLine
                   :showCheckBox="false"
                   :btn="item"
                   @check="handleCheck"
                   @delete="handleDelete"
                   @click="handleShowModal(item)"
-                ></ActionBtn>
+                ></ActionBtnGroupLine>
               </li>
             </ul>
           </div>
@@ -66,7 +66,8 @@ import type {
 import { ColumnType } from '@/types'
 import AttrWrapper from '@/components/AttrWrapper.vue'
 import IconifyIcon from '@/components/IconifyIcon.vue'
-import ActionBtn from './components/ActionBtn.vue'
+import ActionButton from '@/components/Button.vue'
+import ActionBtnGroupLine from './components/ActionBtnGroupLine.vue'
 import ActionBtnGroupForm from '@/core/components/form/ActionBtnGroupForm.vue'
 import { useDesignContext } from '@/composables/useDesignContext'
 import { createActionBtnGroup } from '@/core/components/designer'

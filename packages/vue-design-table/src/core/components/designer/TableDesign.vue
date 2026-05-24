@@ -38,48 +38,52 @@
         </template>
         <!-- 操作按钮 -->
         <template v-if="(column as NewTableColumnType).columnType === ColumnType.Action">
-          <template v-for="btn in actionBtnGroups" :key="btn.id">
-            <!-- 单个按钮 -->
-            <aButton
-              v-if="(btn as CanvasElement).type === ColumnType.ActionBtn"
-              v-bind="(btn as CanvasElement).props"
-              :style="{
-                'margin-right': (column as NewTableColumnType).btnGap + 'px',
-              }"
-              @click.stop="handleActionBtnClick(btn as CanvasElement)"
-            >
-              {{ (btn as CanvasElement).props.content }}
-              <!-- <IconifyIcon :icon="btn.icon" :size="20" /> -->
-            </aButton>
-            <!-- 按钮组 -->
-            <template v-else>
-              <aDropdown>
-                <aButton
-                  v-bind="(btn as unknown as ActionBtnGroup).button"
+          <span class="action-column_btns-wrapper">
+            <span class="action-column_btns">
+              <template v-for="btn in actionBtnGroups" :key="btn.id">
+                <!-- 单个按钮 -->
+                <ActionButton
+                  v-if="(btn as CanvasElement).type === ColumnType.ActionBtn"
+                  v-bind="(btn as CanvasElement).props"
                   :style="{
                     'margin-right': (column as NewTableColumnType).btnGap + 'px',
                   }"
+                  @click.stop="handleActionBtnClick(btn as CanvasElement)"
                 >
-                  {{ (btn as unknown as ActionBtnGroup).button.content }}
-                </aButton>
-                <template #overlay>
-                  <ul v-if="'children' in btn" class="action-column_btns_group">
-                    <li v-for="item in btn.children" :key="item.id">
-                      <aButton
-                        v-bind="item.props"
-                        :style="{
-                          'margin-bottom': (column as NewTableColumnType).btnGap + 'px',
-                        }"
-                        @click.stop="handleActionBtnClick(item as CanvasElement)"
-                      >
-                        {{ item.props.content }}
-                      </aButton>
-                    </li>
-                  </ul>
+                  {{ (btn as CanvasElement).props.content }}
+                  <!-- <IconifyIcon :icon="btn.icon" :size="20" /> -->
+                </ActionButton>
+                <!-- 按钮组 -->
+                <template v-else>
+                  <aDropdown>
+                    <ActionButton
+                      v-bind="(btn as unknown as ActionBtnGroup).button"
+                      :style="{
+                        'margin-right': (column as NewTableColumnType).btnGap + 'px',
+                      }"
+                    >
+                      {{ (btn as unknown as ActionBtnGroup).button.content }}
+                    </ActionButton>
+                    <template #overlay>
+                      <ul v-if="'children' in btn" :style="{ backgroundColor: '#fff' }">
+                        <li v-for="item in btn.children" :key="item.id">
+                          <ActionButton
+                            v-bind="item.props"
+                            :style="{
+                              'margin-bottom': (column as NewTableColumnType).btnGap + 'px',
+                            }"
+                            @click.stop="handleActionBtnClick(item as CanvasElement)"
+                          >
+                            {{ item.props.content }}
+                          </ActionButton>
+                        </li>
+                      </ul>
+                    </template>
+                  </aDropdown>
                 </template>
-              </aDropdown>
-            </template>
-          </template>
+              </template>
+            </span>
+          </span>
         </template>
       </template>
     </aTable>
@@ -91,8 +95,9 @@ import type { TableColumnType } from 'ant-design-vue'
 import { computed, h } from 'vue'
 import { ColumnType } from '@/types'
 import type { CanvasElement, ColumnProps, ActionBtnGroup } from '@/types'
-import { Table as aTable, Button as aButton, Dropdown as aDropdown } from 'ant-design-vue'
+import { Table as aTable, Dropdown as aDropdown } from 'ant-design-vue'
 import IconifyIcon from '@/components/IconifyIcon.vue'
+import ActionButton from '@/components/Button.vue'
 import { useDesignContext } from '@/composables/useDesignContext'
 import { useConfirmModal } from '@/composables/useConfirmModal'
 
@@ -244,11 +249,12 @@ const handleActionBtnClick = (column: CanvasElement) => {
       opacity: 0.8;
     }
   }
-  .action-column_btns_group {
-    background-color: #fff;
-    padding: 4px;
-    border-radius: 4px;
-    gap: 4px;
+  .action-column_btns-wrapper {
+    display: inline-block;
+    .action-column_btns {
+      display: flex;
+      align-items: center;
+    }
   }
 }
 </style>

@@ -52,6 +52,12 @@
           <aSwitch v-model:checked="formData.ghost" />
         </aFormItem>
       </aCol>
+      <aCol :span="colSpan">
+        <aFormItem label="背景色" name="backgroundColor" :rules="rules.backgroundColor">
+          {{ formData.backgroundColor }}
+          <ColorPicker v-model="formData.backgroundColor" />
+        </aFormItem>
+      </aCol>
     </aRow>
   </aForm>
 </template>
@@ -70,6 +76,7 @@ import {
   Switch as aSwitch,
 } from 'ant-design-vue'
 import IconifyIcon from '@/components/IconifyIcon.vue'
+import ColorPicker from '@/components/ColorPicker.vue'
 import { buttonTypeOptions, buttonSizeOptions } from '@/datas'
 
 defineOptions({

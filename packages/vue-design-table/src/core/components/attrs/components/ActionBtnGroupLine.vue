@@ -2,7 +2,7 @@
   <div class="btn-row">
     <span class="tools">
       <aCheckbox v-if="showCheckBox" :checked="checked" @click="handleCheck"></aCheckbox>
-      <aButton v-bind="btn.props" @click="handleClick">{{ btn.props.content }}</aButton>
+      <ActionButton v-bind="btn.props" @click="handleClick">{{ btn.props.content }}</ActionButton>
     </span>
     <span class="tools">
       <IconifyIcon></IconifyIcon>
@@ -13,8 +13,9 @@
 
 <script lang="ts" setup>
 import type { CanvasElement } from '@/types'
-import { Button as aButton, Checkbox as aCheckbox } from 'ant-design-vue'
+import { Checkbox as aCheckbox } from 'ant-design-vue'
 import IconifyIcon from '@/components/IconifyIcon.vue'
+import ActionButton from '@/components/Button.vue'
 
 defineOptions({
   name: 'ActionBtn',

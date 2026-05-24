@@ -1,6 +1,5 @@
 <template>
   <aModal
-    title="按钮属性"
     :open="visible"
     width="50vw"
     okText="确定"
@@ -8,6 +7,13 @@
     @ok="handleOk"
     @cancel="handleCancel"
   >
+    <template #title>
+      <span>按钮属性</span>
+      &nbsp;
+      <span>预览：</span>
+      &nbsp;
+      <AButton v-bind="_formData">{{ _formData?.content }}</AButton>
+    </template>
     <ButtonForm ref="formRef" :formData="_formData" :cols="2"></ButtonForm>
   </aModal>
 </template>
@@ -17,6 +23,7 @@ import { ref, watch, useTemplateRef } from 'vue'
 import { Modal as aModal } from 'ant-design-vue'
 import type { ButtonProps } from '@/types'
 import ButtonForm from '../form/ButtonForm.vue'
+import AButton from '@/components/Button.vue'
 
 defineOptions({
   name: 'ButtonPropsModal',
