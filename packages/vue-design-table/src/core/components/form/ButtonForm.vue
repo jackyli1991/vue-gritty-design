@@ -54,7 +54,6 @@
       </aCol>
       <aCol :span="colSpan">
         <aFormItem label="背景色" name="backgroundColor" :rules="rules.backgroundColor">
-          {{ formData.backgroundColor }}
           <ColorPicker v-model="formData.backgroundColor" />
         </aFormItem>
       </aCol>

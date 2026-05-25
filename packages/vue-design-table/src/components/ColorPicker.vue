@@ -4,8 +4,15 @@
       <span class="color-picker-placeholder" :style="{ backgroundColor: modelValue }"></span>
     </div>
     <template #content>
-      <div class="flex items-center justify-center">
-        <ChromePicker v-model="modelValue" />
+      <div
+        :style="{
+          display: 'flex',
+          flexDirection: 'column',
+          alignItems: 'flex-end',
+        }"
+      >
+        <a-button v-if="clearable" type="link" size="small" @click="clearColor">清除</a-button>
+        <ChromePicker :modelValue="modelValue" @update:modelValue="updateModelValue" />
       </div>
     </template>
   </aPopover>
@@ -15,8 +22,8 @@
 </template>
 
 <script setup lang="ts">
-import { Popover as aPopover } from 'ant-design-vue'
-import { ChromePicker } from 'vue-color'
+import { Popover as aPopover, Button as aButton } from 'ant-design-vue'
+import { ChromePicker, tinycolor } from 'vue-color'
 import 'vue-color/style.css'
 
 defineOptions({
@@ -28,9 +35,30 @@ defineProps({
     type: Boolean,
     default: false,
   },
+  // 是否可清除空值
+  clearable: {
+    type: Boolean,
+    default: true,
+  },
+  modelValue: {
+    type: String,
+    default: '',
+  },
 })
 
-const modelValue = defineModel<string>()
+const emit = defineEmits(['update:modelValue'])
+
+// 清除颜色
+function clearColor() {
+  emit('update:modelValue', '')
+}
+
+// 默认转换为RGBA表示
+const updateModelValue = (val: string) => {
+  const rgb = tinycolor(val).toRgb()
+  const color = `rgba(${rgb.r}, ${rgb.g}, ${rgb.b}, ${rgb.a})`
+  emit('update:modelValue', color)
+}
 </script>
 
 <style scoped lang="scss">

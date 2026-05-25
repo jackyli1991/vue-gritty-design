@@ -2,7 +2,6 @@
   <aButton v-bind="mergeProps" :style="{ backgroundColor: props.backgroundColor }">
     <span class="gritty-button-content">
       <Icon v-if="props.icon" :icon="props.icon" />
-      {{ props.backgroundColor }}
       <span>{{ props.content }}</span>
     </span>
   </aButton>
