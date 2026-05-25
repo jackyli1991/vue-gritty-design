@@ -22,22 +22,32 @@
               <ActionButton v-bind="btn.button" @click="handleShowModal(btn)">{{
                 btn.button.content
               }}</ActionButton>
-              <IconifyIcon
-                icon="material-symbols:delete"
-                @click="handleDeleteGroup(btn.id)"
-              ></IconifyIcon>
+              <span class="tools">
+                <IconifyIcon
+                  icon="material-symbols:delete"
+                  @click="handleDeleteGroup(btn.id)"
+                ></IconifyIcon>
+                <IconifyIcon icon="material-symbols:drag-indicator"></IconifyIcon>
+              </span>
             </div>
-            <ul v-if="'children' in btn" class="action-column_btns">
-              <li v-for="item in btn.children" :key="item.id">
-                <ActionBtnGroupLine
-                  :showCheckBox="false"
-                  :btn="item"
-                  @check="handleCheck"
-                  @delete="handleDelete"
-                  @click="handleShowModal(item)"
-                ></ActionBtnGroupLine>
-              </li>
-            </ul>
+              <template v-if="'children' in btn">
+                <VueDraggable
+                  class="action-column_btns"
+                  v-model="btn.children"
+                  :animation="150"
+                  handle=".draggable-handle">
+                  <div v-for="item in btn.children" :key="item.id">
+                    <ActionBtnGroupLine
+                      :showCheckBox="true"
+                      :btn="item"
+                      :checked="checkIds.includes(item.id)"
+                      @check="handleCheck"
+                      @delete="handleDelete"
+                      @click="handleShowModal(item)"
+                    ></ActionBtnGroupLine>
+                  </div>
+                </VueDraggable>
+              </template>
           </div>
         </template>
       </li>
@@ -72,6 +82,7 @@ import ActionBtnGroupForm from '@/core/components/form/ActionBtnGroupForm.vue'
 import { useDesignContext } from '@/composables/useDesignContext'
 import { createActionBtnGroup } from '@/core/components/designer'
 import ButtonPropsModal from '@/core/components/modal/ButtonPropsModal.vue'
+import { VueDraggable } from 'vue-draggable-plus'
 
 defineOptions({
   name: 'ActionBtnGroupsAttrs',
@@ -176,6 +187,11 @@ function handleDeleteGroup(id: string) {
       display: flex;
       justify-content: space-between;
       align-items: center;
+      .tools {
+        gap: 6px;
+        display: flex;
+        align-items: center;
+      }
     }
   }
 }

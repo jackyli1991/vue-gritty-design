@@ -5,8 +5,8 @@
       <ActionButton v-bind="btn.props" @click="handleClick">{{ btn.props.content }}</ActionButton>
     </span>
     <span class="tools">
-      <IconifyIcon></IconifyIcon>
       <IconifyIcon icon="material-symbols:delete" @click="handleDelete"></IconifyIcon>
+      <IconifyIcon class="draggable-handle cursor-move" icon="material-symbols:drag-indicator"></IconifyIcon>
     </span>
   </div>
 </template>
