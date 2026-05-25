@@ -28,8 +28,19 @@ export enum ColumnType {
   Pagination = 'pagination', // 分页列
 }
 
+export enum FilterMode {
+  Menu = 'menu', // 菜单筛选
+  Input = 'input', // 输入筛选
+}
+
+export enum FiltersSource {
+  Dict = 'dict', // 字典
+  Static = 'static', // 静态数据
+  Api = 'api', // 接口
+}
+
 export interface Option {
-  value: string | number | boolean
+  value: string | number | null | undefined
   label: string
   icon?: string
   danger?: boolean
@@ -63,16 +74,7 @@ export interface CanvasLayout {
   deleteAllowed?: boolean // 是否可删除
   addAllowed?: boolean // 是否可添加子布局
   dropAllowed?: boolean // 是否可拖拽元素到该布局
-  props: {
-    padding: number[] // 内边距
-    widthType: string // 宽度类型
-    widthValue: number // 宽度值
-    heightType: string // 高度类型
-    heightValue: number // 高度值
-    gap: number // 间距
-    backgroundColor: string // 背景颜色
-    isForm: boolean // 是否为表单布局
-  }
+  props: LayoutProps // 布局属性
 }
 
 // 画布元素类型定义
@@ -142,11 +144,11 @@ export interface ColumnProps {
   resizable?: boolean // 是否可调整宽度
   filterable?: boolean // 是否可筛选
   filterMultiple?: boolean // 是否可多选筛选
-  filterMode?: 'menu' | 'tree' // 指定筛选菜单的用户界面
-  filtersSource?: 'dict' | 'static' | 'api' // 列筛选选项来源  dict-字典 static-静态数据 api-接口
+  filterMode?: FilterMode // 指定筛选菜单的用户界面
+  filtersSource?: FiltersSource // 列筛选选项来源  dict-字典 static-静态数据 api-接口
   filters?: Option[] // 列筛选选项
   filterIcon?: string // 列筛选图标
-  sortable?: string // 是否可排序
+  sortable?: boolean // 是否可排序
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   [key: string]: any // 其他列属性
 }
@@ -160,4 +162,16 @@ export interface ButtonProps {
   danger: boolean // 是否为危险按钮
   ghost: boolean // 是否为幽灵按钮
   backgroundColor?: string // 背景颜色
+}
+
+// 布局属性类型定义
+export interface LayoutProps {
+  padding: number[] // 内边距
+  widthType: string // 宽度类型
+  widthValue: number // 宽度值
+  heightType: string // 高度类型
+  heightValue: number // 高度值
+  gap: number // 间距
+  backgroundColor: string // 背景颜色
+  isForm: boolean // 是否为表单布局
 }

@@ -1,18 +1,10 @@
-import type { CanvasLayout, CanvasElement, ActionBtnGroup } from '@/types'
+import type { CanvasLayout, CanvasElement, ActionBtnGroup, LayoutProps } from '@/types'
 import { BaseLayouts } from '@/types'
 import { createUUID } from '@/utils'
 import { buttonProps } from '@/datas/buttonProps'
+import { createLayoutProps } from '@/datas/layoutProps'
 
-export interface CreateLayoutConfig extends Omit<CanvasLayout, 'id' | 'props'> {
-  widthType?: string
-  heightType?: string
-  widthValue?: number
-  heightValue?: number
-  gap?: number
-  backgroundColor?: string
-  isForm?: boolean
-  padding?: number[]
-}
+export type CreateLayoutConfig = Omit<CanvasLayout, 'id' | 'props'> & Partial<LayoutProps>
 
 /**
  * 创建布局
@@ -37,16 +29,7 @@ export function createLayout(
     deleteAllowed: config.deleteAllowed ?? true,
     addAllowed: config.addAllowed ?? true,
     dropAllowed: config.dropAllowed ?? true,
-    props: {
-      padding: config.padding ?? [0, 0, 0, 0],
-      widthType: config.widthType ?? '%',
-      widthValue: config.widthValue ?? 100,
-      heightType: config.heightType ?? 'px',
-      heightValue: config.heightValue ?? 100,
-      gap: config.gap ?? 12,
-      backgroundColor: config.backgroundColor ?? '#fff',
-      isForm: config.isForm ?? false,
-    },
+    props: createLayoutProps(config),
   }
 }
 

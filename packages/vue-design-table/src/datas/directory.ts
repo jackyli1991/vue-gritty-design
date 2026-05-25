@@ -29,7 +29,7 @@ export const alignOptions: Option[] = [
   { label: '右对齐', text: '右对齐', value: 'right' },
 ]
 
-export const fixedOptions: Option[] = [
+export const fixedOptions: (Omit<Option, 'value'> & { value: string | boolean })[] = [
   { label: '不固定', text: '不固定', value: false },
   { label: '左侧', text: '左侧', value: 'left' },
   { label: '右侧', text: '右侧', value: 'right' },
@@ -62,7 +62,7 @@ export const buttonSizeOptions: Option[] = [
 ]
 
 // 布局操作选项
-export const layoutOperateOptions: Option[] = [
+export const layoutOperateOptions: (Omit<Option, 'value'> & { value: Position | 'delete' })[] = [
   {
     label: '在上方添加',
     text: '在上方添加',

@@ -5,7 +5,7 @@
     </div>
     <template #content>
       <div class="flex items-center justify-center">
-        <ChromePicker v-model="modelValue" disableAlpha />
+        <ChromePicker v-model="modelValue" />
       </div>
     </template>
   </aPopover>

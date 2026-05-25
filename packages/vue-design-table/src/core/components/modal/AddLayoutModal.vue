@@ -14,7 +14,7 @@
 
 <script setup lang="ts">
 import type { CanvasLayout } from '@/types'
-import { Position } from '@/types'
+import { Position, BaseLayouts } from '@/types'
 import { ref, useTemplateRef, watch } from 'vue'
 import { Modal as aModal } from 'ant-design-vue'
 import LayoutForm from '../form/LayoutForm.vue'
@@ -38,6 +38,7 @@ function init() {
   const { direction } = addLayoutModalData.value
   const layoutProps: CreateLayoutConfig = {
     name: '新布局',
+    type: BaseLayouts.Common,
   }
   if (direction === Position.Top || direction === Position.Bottom) {
     Object.assign(layoutProps, {

@@ -1,4 +1,5 @@
 import type { ColumnProps } from '@/types'
+import { FilterMode, FiltersSource } from '@/types'
 
 // 列通用属性
 export const columnCommonProps: ColumnProps = {
@@ -16,9 +17,9 @@ export const columnCommonProps: ColumnProps = {
 export const columnFilterProps = {
   filterable: false,
   filterMultiple: false,
-  filterMode: 'menu',
+  filterMode: FilterMode.Menu,
   filters: [],
-  filtersSource: 'static',
+  filtersSource: FiltersSource.Static,
   filterIcon: undefined,
 }
 
@@ -59,5 +60,5 @@ export function createColumnProps(
       ...columnSorterProps,
     }
   }
-  return columnProps  as ColumnProps
+  return columnProps as ColumnProps
 }
