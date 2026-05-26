@@ -14,4 +14,5 @@ export interface Message {
   type: 'text' | 'image' | 'code' | 'loading'
   timestamp: number
   language?: string
+  isError?: boolean
 }

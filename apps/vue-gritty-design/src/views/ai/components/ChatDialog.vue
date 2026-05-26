@@ -60,6 +60,8 @@
         :key="index"
         class="message-item flex gap-3"
         :class="{ 'flex-row-reverse': message.role === 'user' }"
+        @mouseenter="hoveredIndex = index"
+        @mouseleave="hoveredIndex = -1"
       >
         <!-- 头像 -->
         <a-avatar
@@ -79,9 +81,10 @@
         <div class="message-content max-w-[70%]">
           <div
             class="message-bubble p-3 rounded-lg"
-            :class="
-              message.role === 'user' ? 'bg-blue-500 text-white' : 'bg-gray-100 text-gray-800'
-            "
+            :class="[
+              message.role === 'user' ? 'bg-blue-500 text-white' : 'bg-gray-100 text-gray-800',
+              { 'border border-red-300': message.isError },
+            ]"
           >
             <!-- 文本内容 -->
             <div v-if="message.type === 'text'" class="whitespace-pre-wrap">
@@ -110,12 +113,40 @@
             </div>
           </div>
 
-          <!-- 时间戳 -->
+          <!-- 时间戳和操作按钮 -->
           <div
-            class="text-xs text-gray-400 mt-1"
-            :class="message.role === 'user' ? 'text-right' : 'text-left'"
+            class="flex items-center gap-2 mt-1"
+            :class="message.role === 'user' ? 'justify-end' : 'justify-start'"
           >
-            {{ formatTime(message.timestamp) }}
+            <span class="text-xs text-gray-400 p-1">{{ formatTime(message.timestamp) }}</span>
+            <!-- 操作按钮 -->
+            <div class="message-actions flex gap-1">
+              <!-- 删除按钮（鼠标悬停时显示，请求中不显示） -->
+              <a-tooltip
+                v-if="hoveredIndex === index && message.type !== 'loading'"
+                title="删除消息"
+              >
+                <a-button
+                  type="text"
+                  size="small"
+                  class="p-0.5 text-gray-400 hover:text-red-500"
+                  @click.stop="deleteMessage(index)"
+                >
+                  <DeleteOutlined />
+                </a-button>
+              </a-tooltip>
+              <!-- 重发按钮（仅错误消息显示） -->
+              <a-tooltip v-if="message.isError" title="重新发送">
+                <a-button
+                  type="text"
+                  size="small"
+                  class="p-0.5 text-gray-400 hover:text-blue-500"
+                  @click.stop="resendMessage(index)"
+                >
+                  <RefreshOutlined />
+                </a-button>
+              </a-tooltip>
+            </div>
           </div>
         </div>
       </div>
@@ -265,6 +296,8 @@ const LoadingOutlined = () =>
 const PictureOutlined = () => h(Icon, { icon: 'material-symbols:image-outline' })
 const FileOutlined = () => h(Icon, { icon: 'material-symbols:attach-file' })
 const AudioOutlined = () => h(Icon, { icon: 'material-symbols:mic-outline' })
+const DeleteOutlined = () => h(Icon, { icon: 'material-symbols:delete-outline' })
+const RefreshOutlined = () => h(Icon, { icon: 'material-symbols:refresh' })
 
 const props = defineProps<{
   currentModel?: Model
@@ -289,6 +322,9 @@ const isLoading = ref(false)
 // 消息容器引用
 const messageContainer = ref<HTMLElement>()
 
+// 当前悬停的消息索引
+const hoveredIndex = ref(-1)
+
 // 设置弹窗显示状态
 const showSettingsModal = ref(false)
 
@@ -303,6 +339,16 @@ const chatSettings = reactive({
 // 保存设置
 function saveSettings() {
   showSettingsModal.value = false
+}
+
+// 删除消息
+function deleteMessage(index: number) {
+  messages.value.splice(index, 1)
+}
+
+// 重新发送消息（针对错误消息）
+async function resendMessage(index: number) {
+  console.log('重发消息:', messages.value[index])
 }
 
 // 发送消息
@@ -386,12 +432,13 @@ async function sendMessage() {
         console.error('请求错误:', error)
         // 移除 loading 消息
         messages.value.pop()
-        // 添加错误消息
+        // 添加错误消息（标记为错误消息）
         messages.value.push({
           role: 'assistant',
           content: '抱歉，请求出现错误，请稍后重试。',
           type: 'text',
           timestamp: Date.now(),
+          isError: true,
         })
       },
     })
