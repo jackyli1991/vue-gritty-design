@@ -4,6 +4,7 @@ import { message } from 'ant-design-vue'
 import type {
   CanvasElement,
   CanvasData,
+  CanvasConfig,
   CanvasLayout,
   ActionBtnGroup,
   ActionBtnGroupItem,
@@ -177,6 +178,14 @@ export const useDesignStore = defineStore('tableDesign', () => {
    */
   function addActionBtnIntoList(id: string) {
     canvasData.value.config.actionBtnsList.push(id)
+  }
+
+  /**
+   * 更新按钮分组
+   * @param newList 新的按钮分组配置
+   */
+  function updateActionBtnList(newList: CanvasConfig['actionBtnsList']) {
+    canvasData.value.config.actionBtnsList = newList
   }
 
   /**
@@ -479,6 +488,7 @@ export const useDesignStore = defineStore('tableDesign', () => {
     addActionBtnGroup,
     deleteActionBtnGroup,
     updateActionBtnGroup,
+    updateActionBtnList,
     resetCanvas,
     toggleAttributesPanel,
   }

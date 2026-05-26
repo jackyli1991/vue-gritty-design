@@ -70,6 +70,7 @@ export function useDesignContext() {
     addActionBtnGroup: designStore.addActionBtnGroup,
     deleteActionBtnGroup: designStore.deleteActionBtnGroup,
     updateActionBtnGroup: designStore.updateActionBtnGroup,
+    updateActionBtnList: designStore.updateActionBtnList,
     getTableElements: designStore.getTableElements,
     resetCanvas: designStore.resetCanvas,
   }

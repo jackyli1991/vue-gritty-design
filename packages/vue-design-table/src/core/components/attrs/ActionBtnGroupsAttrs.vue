@@ -4,7 +4,14 @@
       <aButton @click="handleMergeGroup" size="small">合并按钮组</aButton>
     </template>
     <ActionBtnGroupForm :formData="formData"></ActionBtnGroupForm>
-    <ul class="action-column_btns">
+    <VueDraggable
+      tag="ul"
+      class="action-column_btns"
+      :animation="150"
+      :modelValue="actionBtnGroups"
+      handle=".draggable-handle"
+      @update:modelValue="handleSort"
+    >
       <li v-for="btn in actionBtnGroups" :key="btn.id">
         <template v-if="'type' in btn && btn.type === ColumnType.ActionBtn">
           <ActionBtnGroupLine
@@ -27,34 +34,39 @@
                   icon="material-symbols:delete"
                   @click="handleDeleteGroup(btn.id)"
                 ></IconifyIcon>
-                <IconifyIcon icon="material-symbols:drag-indicator"></IconifyIcon>
+                <IconifyIcon
+                  class="draggable-handle"
+                  icon="material-symbols:drag-indicator"
+                ></IconifyIcon>
               </span>
             </div>
-              <template v-if="'children' in btn">
-                <VueDraggable
-                  class="action-column_btns"
-                  v-model="btn.children"
-                  :animation="150"
-                  handle=".draggable-handle">
-                  <div v-for="item in btn.children" :key="item.id">
-                    <ActionBtnGroupLine
-                      :showCheckBox="true"
-                      :btn="item"
-                      :checked="checkIds.includes(item.id)"
-                      @check="handleCheck"
-                      @delete="handleDelete"
-                      @click="handleShowModal(item)"
-                    ></ActionBtnGroupLine>
-                  </div>
-                </VueDraggable>
-              </template>
+            <template v-if="'children' in btn">
+              <VueDraggable
+                class="action-column_btns"
+                :modelValue="btn.children"
+                :animation="150"
+                handle=".draggable-handle"
+                @update:modelValue="handleGroupSort(btn.id, $event)"
+              >
+                <div v-for="item in btn.children" :key="item.id">
+                  <ActionBtnGroupLine
+                    :showCheckBox="true"
+                    :btn="item"
+                    :checked="checkIds.includes(item.id)"
+                    @check="handleCheck"
+                    @delete="handleDelete"
+                    @click="handleShowModal(item)"
+                  ></ActionBtnGroupLine>
+                </div>
+              </VueDraggable>
+            </template>
           </div>
         </template>
       </li>
       <li v-if="!actionBtnGroups.length">
         <aEmpty description="请添加【操作按钮】到表格。"></aEmpty>
       </li>
-    </ul>
+    </VueDraggable>
   </AttrWrapper>
   <ButtonPropsModal
     v-model:visible="modalVisible"
@@ -70,6 +82,7 @@ import type {
   ColumnProps,
   ButtonProps,
   ActionBtnGroupItem,
+  CanvasConfig,
   CanvasElement,
   ActionBtnGroup,
 } from '@/types'
@@ -96,6 +109,7 @@ const {
   addActionBtnGroup,
   deleteActionBtnGroup,
   updateActionBtnGroup,
+  updateActionBtnList,
 } = useDesignContext()
 
 const checkIds = ref<string[]>([]) // 选中的按钮id
@@ -170,6 +184,29 @@ function handleMergeGroup() {
 // 删除按钮分组
 function handleDeleteGroup(id: string) {
   deleteActionBtnGroup(id)
+}
+
+// 按钮拖动排序
+function handleSort(list: ActionBtnGroupItem[]) {
+  const res: CanvasConfig['actionBtnsList'] = []
+  list.forEach((item) => {
+    if (isActionBtn(item)) {
+      res.push(item.id)
+    } else if (isGroupBtn(item)) {
+      res.push({
+        ...item,
+        children: (
+          item as unknown as Omit<ActionBtnGroup, 'children'> & { children: CanvasElement[] }
+        ).children.map((child) => child.id),
+      } as ActionBtnGroup)
+    }
+  })
+  updateActionBtnList(res)
+}
+
+// 按钮组内拖动排序
+function handleGroupSort(id: string, list: ActionBtnGroupItem[]) {
+  updateActionBtnGroup(id, { children: list.map((item) => item.id) })
 }
 </script>
 
