@@ -1,6 +1,6 @@
 <template>
   <div class="g-page h-full flex flex-col p-4 rounded-lg bg-white">
-    <div class="flex-1 page-container">
+    <div class="flex-1 h-full page-container">
       <slot></slot>
     </div>
   </div>

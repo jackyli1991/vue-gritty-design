@@ -19,3 +19,9 @@ export const userInfoApi: ApiConfig = {
   ignoreLoading: false,
   loadingText: '用户信息加载中...',
 }
+
+export const chatApi: ApiConfig = {
+  api: '/chat',
+  ignoreLoading: true,
+  loadingText: '聊天中...',
+}

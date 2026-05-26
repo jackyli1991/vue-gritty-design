@@ -22,5 +22,13 @@
     "title": "表格设计",
     "icon": "table",
     "requiresAuth": true
+  },
+  {
+    "id": 4,
+    "type": "page",
+    "name": "ai",
+    "title": "AI",
+    "icon": "ai",
+    "requiresAuth": true
   }
 ]

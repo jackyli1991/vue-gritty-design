@@ -25,4 +25,8 @@ export const CODES: Record<string, Code> = {
     code: '000401',
     msg: '未授权，请重新登录',
   },
+  aiChatError: {
+    code: '000501',
+    msg: 'AI 模型调用错误',
+  },
 }

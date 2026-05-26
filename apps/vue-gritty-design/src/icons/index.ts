@@ -13,6 +13,7 @@ export const ICONIFY_ICONS: Record<string, string> = {
   audio: 'solar:turntable-music-note-broken',
   video: 'solar:video-library-broken',
   text: 'solar:text-square-broken',
+  file: 'solar:file-linear',
   doubleArrowLeft: 'solar:double-alt-arrow-left-linear',
   doubleArrowRight: 'solar:double-alt-arrow-right-linear',
   doubleArrowUp: 'solar:double-alt-arrow-up-linear',
@@ -37,4 +38,7 @@ export const ICONIFY_ICONS: Record<string, string> = {
   page: 'solar:code-file-broken',
   loading: 'svg-spinners:6-dots-rotate',
   table: 'proicons:table',
+  ai: 'iconoir:brain',
+  send: 'material-symbols-light:send-outline-rounded',
+  robot: 'material-symbols-light:robot-2-outline-rounded',
 }
