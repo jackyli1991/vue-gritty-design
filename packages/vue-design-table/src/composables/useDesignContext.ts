@@ -13,7 +13,7 @@ export function useDesignContext() {
     activeCanvasLayout,
     hoveredLayoutId,
     layoutIds,
-    actionBtnGroups,
+    actionBtnsList,
     attributesPanelCollapsed,
   } = storeToRefs(designStore)
 
@@ -30,7 +30,7 @@ export function useDesignContext() {
   return {
     canvasData,
     layoutIds,
-    actionBtnGroups,
+    actionBtnsList,
     activeCanvasElement,
     activeCanvasLayout,
     hoveredLayoutId,
@@ -64,6 +64,7 @@ export function useDesignContext() {
     getLayoutToolbar: designStore.getLayoutToolbar,
     getElementToolbar: designStore.getElementToolbar,
     selectElement: designStore.selectElement,
+    getElement: designStore.getElement,
     addElement: designStore.addElement,
     deleteElement: designStore.deleteElement,
     updateElement: designStore.updateElement,

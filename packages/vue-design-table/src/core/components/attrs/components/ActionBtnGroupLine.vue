@@ -6,39 +6,51 @@
     </span>
     <span class="tools">
       <IconifyIcon icon="material-symbols:delete" @click="handleDelete"></IconifyIcon>
-      <IconifyIcon class="draggable-handle cursor-move" icon="material-symbols:drag-indicator"></IconifyIcon>
+      <IconifyIcon
+        class="draggable-handle cursor-move"
+        icon="material-symbols:drag-indicator"
+      ></IconifyIcon>
     </span>
   </div>
 </template>
 
 <script lang="ts" setup>
+import { computed } from 'vue'
 import type { CanvasElement } from '@/types'
 import { Checkbox as aCheckbox } from 'ant-design-vue'
 import IconifyIcon from '@/components/IconifyIcon.vue'
 import ActionButton from '@/components/Button.vue'
+import { useDesignContext } from '@/composables/useDesignContext'
 
 defineOptions({
   name: 'ActionBtn',
 })
 
+const { getElement } = useDesignContext()
+
 interface Props {
-  showCheckBox: boolean
-  checked: boolean
-  btn: CanvasElement
+  showCheckBox?: boolean
+  checked?: boolean
+  btnId: string
 }
 const props = withDefaults(defineProps<Props>(), {
   showCheckBox: true,
 })
 const emit = defineEmits(['check', 'delete', 'click'])
 
+// 当前按钮元素
+const btn = computed<CanvasElement>(
+  (): CanvasElement => getElement(props.btnId) || ({} as CanvasElement),
+)
+
 // 选中/取消选中
 function handleCheck() {
-  emit('check', props.btn.id)
+  emit('check', props.btnId)
 }
 
 // 删除
 function handleDelete() {
-  emit('delete', props.btn.id)
+  emit('delete', props.btnId)
 }
 
 // 点击按钮

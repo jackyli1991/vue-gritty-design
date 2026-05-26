@@ -1,16 +1,9 @@
 import { computed, ref } from 'vue'
 import { defineStore } from 'pinia'
 import { message } from 'ant-design-vue'
-import type {
-  CanvasElement,
-  CanvasData,
-  CanvasConfig,
-  CanvasLayout,
-  ActionBtnGroup,
-  ActionBtnGroupItem,
-} from '@/types'
+import type { CanvasElement, CanvasData, CanvasConfig, CanvasLayout, ActionBtnGroup } from '@/types'
 import { Direction, Position, BaseLayouts, ColumnType } from '@/types'
-import { excludeOption, isObject, isString } from '@/utils'
+import { excludeOption, isObject } from '@/utils'
 import { createLayout } from '@/core/components/designer'
 import { layoutOperateOptions, elementOperateOptions, columnsComponentNames } from '@/datas'
 import { useConfirmModal } from '@/composables/useConfirmModal'
@@ -67,27 +60,10 @@ export const useDesignStore = defineStore('tableDesign', () => {
   const attributesPanelCollapsed = ref(false) // 属性面板是否折叠
 
   const layoutIds = computed(() => Object.keys(canvasData.value.layouts)) // 所有布局ID列表
-  // 所有表格操作按钮，按actionBtnsList 分组进行重组
-  const actionBtnGroups = computed<ActionBtnGroupItem[]>((): ActionBtnGroupItem[] => {
-    // 所有按钮
-    const btns = getTableElements().filter(
-      (item: CanvasElement) => item.type === ColumnType.ActionBtn,
-    )
-    const groups = canvasData.value.config.actionBtnsList
-    // 按照分组顺序和嵌套重新组合按钮
-    return groups.map((item) => {
-      if (isString(item)) {
-        return btns.find((btn) => btn.id === item)
-      } else if (isObject(item) && (item as ActionBtnGroup).children) {
-        return {
-          ...(item as ActionBtnGroup),
-          children: (item as ActionBtnGroup).children.map((btnId) => {
-            return btns.find((btn) => btn.id === btnId)
-          }),
-        }
-      }
-    }) as ActionBtnGroupItem[]
-  })
+  // 表格操作按钮分组
+  const actionBtnsList = computed<CanvasConfig['actionBtnsList']>(
+    () => canvasData.value.config.actionBtnsList,
+  )
 
   /**
    * 获取元素
@@ -468,7 +444,7 @@ export const useDesignStore = defineStore('tableDesign', () => {
   return {
     canvasData,
     layoutIds,
-    actionBtnGroups,
+    actionBtnsList,
     activeCanvasElement,
     activeCanvasLayout,
     hoveredLayoutId,
@@ -481,6 +457,7 @@ export const useDesignStore = defineStore('tableDesign', () => {
     getLayoutToolbar,
     getElementToolbar,
     selectElement,
+    getElement,
     addElement,
     deleteElement,
     updateElement,

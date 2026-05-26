@@ -8,31 +8,31 @@
       tag="ul"
       class="action-column_btns"
       :animation="150"
-      :modelValue="actionBtnGroups"
+      :modelValue="actionBtnsList"
       handle=".draggable-handle"
       @update:modelValue="handleSort"
     >
-      <li v-for="btn in actionBtnGroups" :key="btn.id">
-        <template v-if="'type' in btn && btn.type === ColumnType.ActionBtn">
+      <li v-for="btn in actionBtnsList" :key="btn as string">
+        <template v-if="isString(btn)">
           <ActionBtnGroupLine
-            :checked="checkIds.includes(btn.id)"
-            :btn="btn"
+            :checked="checkIds.includes(btn as string)"
+            :btnId="btn as string"
             @check="handleCheck"
             @delete="handleDelete"
-            @click="handleShowModal(btn)"
+            @click="handleShowModal(btn as string)"
           ></ActionBtnGroupLine>
         </template>
         <!-- 分组 -->
         <template v-else>
           <div class="action-column_group">
-            <div v-if="'button' in btn" class="title">
-              <ActionButton v-bind="btn.button" @click="handleShowModal(btn)">{{
-                btn.button.content
+            <div v-if="'button' in (btn as ActionBtnGroup)" class="title">
+              <ActionButton v-bind="(btn as ActionBtnGroup).button" @click="handleShowModal(btn)">{{
+                (btn as ActionBtnGroup).button.content
               }}</ActionButton>
               <span class="tools">
                 <IconifyIcon
                   icon="material-symbols:delete"
-                  @click="handleDeleteGroup(btn.id)"
+                  @click="handleDeleteGroup((btn as ActionBtnGroup).id as string)"
                 ></IconifyIcon>
                 <IconifyIcon
                   class="draggable-handle"
@@ -40,22 +40,22 @@
                 ></IconifyIcon>
               </span>
             </div>
-            <template v-if="'children' in btn">
+            <template v-if="'children' in (btn as ActionBtnGroup)">
               <VueDraggable
                 class="action-column_btns"
-                :modelValue="btn.children"
+                :modelValue="(btn as ActionBtnGroup).children"
                 :animation="150"
                 handle=".draggable-handle"
-                @update:modelValue="handleGroupSort(btn.id, $event)"
+                @update:modelValue="handleGroupSort((btn as ActionBtnGroup).id, $event)"
               >
-                <div v-for="item in btn.children" :key="item.id">
+                <div v-for="childBtn in (btn as ActionBtnGroup).children" :key="childBtn">
                   <ActionBtnGroupLine
                     :showCheckBox="true"
-                    :btn="item"
-                    :checked="checkIds.includes(item.id)"
+                    :btnId="childBtn"
+                    :checked="checkIds.includes(childBtn)"
                     @check="handleCheck"
                     @delete="handleDelete"
-                    @click="handleShowModal(item)"
+                    @click="handleShowModal(childBtn)"
                   ></ActionBtnGroupLine>
                 </div>
               </VueDraggable>
@@ -63,7 +63,7 @@
           </div>
         </template>
       </li>
-      <li v-if="!actionBtnGroups.length">
+      <li v-if="!actionBtnsList.length">
         <aEmpty description="请添加【操作按钮】到表格。"></aEmpty>
       </li>
     </VueDraggable>
@@ -78,15 +78,8 @@
 <script lang="ts" setup>
 import { computed, ref } from 'vue'
 import { Button as aButton, Empty as aEmpty } from 'ant-design-vue'
-import type {
-  ColumnProps,
-  ButtonProps,
-  ActionBtnGroupItem,
-  CanvasConfig,
-  CanvasElement,
-  ActionBtnGroup,
-} from '@/types'
-import { ColumnType } from '@/types'
+import type { ColumnProps, ButtonProps, CanvasConfig, ActionBtnGroup } from '@/types'
+import { isString } from '@/utils'
 import AttrWrapper from '@/components/AttrWrapper.vue'
 import IconifyIcon from '@/components/IconifyIcon.vue'
 import ActionButton from '@/components/Button.vue'
@@ -102,9 +95,10 @@ defineOptions({
 })
 
 const {
-  actionBtnGroups,
+  actionBtnsList,
   activeCanvasElement,
   deleteElement,
+  getElement,
   updateElement,
   addActionBtnGroup,
   deleteActionBtnGroup,
@@ -114,34 +108,12 @@ const {
 
 const checkIds = ref<string[]>([]) // 选中的按钮id
 const modalVisible = ref(false) // 弹窗是否可见
-const editBtnData = ref<ActionBtnGroupItem>() // 编辑的按钮数据
+const editInfo = ref<string | ActionBtnGroup>() // 编辑信息
+const editBtnProps = ref<ButtonProps>() // 编辑的按钮props
 
 const formData = computed<ColumnProps>(() => {
   return (activeCanvasElement.value?.props || {}) as ColumnProps
 })
-
-// 当前编辑的按钮属性数据
-const editBtnProps = computed<ButtonProps>((): ButtonProps => {
-  if (!editBtnData.value) {
-    return {} as ButtonProps
-  }
-  if (isActionBtn(editBtnData.value)) {
-    return (editBtnData.value as CanvasElement).props as ButtonProps
-  } else if (isGroupBtn(editBtnData.value)) {
-    return (editBtnData.value as unknown as ActionBtnGroup).button
-  }
-  return {} as ButtonProps
-})
-
-// 是否是操作按钮
-function isActionBtn(btn: ActionBtnGroupItem): boolean {
-  return btn.type === ColumnType.ActionBtn
-}
-
-// 是否是按钮分组
-function isGroupBtn(btn: ActionBtnGroupItem): boolean {
-  return 'children' in btn
-}
 
 // 选中按钮
 function handleCheck(id: string) {
@@ -153,21 +125,28 @@ function handleCheck(id: string) {
 }
 
 // 点击按钮，显示按钮属性编辑弹窗
-function handleShowModal(btn: ActionBtnGroupItem) {
-  editBtnData.value = btn
+function handleShowModal(btnId: string | ActionBtnGroup) {
+  editInfo.value = btnId
+  if (isString(btnId)) {
+    editBtnProps.value = getElement(btnId as string)?.props as ButtonProps
+  } else {
+    editBtnProps.value = (btnId as ActionBtnGroup).button
+  }
   modalVisible.value = true
 }
 
 // 确认按钮属性
 function handleConfirm(btnProps: ButtonProps) {
-  if (!editBtnData.value) {
+  if (!editInfo.value) {
     return
   }
-  if (isActionBtn(editBtnData.value!)) {
-    updateElement(editBtnData.value.id, { props: btnProps })
-  } else if (isGroupBtn(editBtnData.value!)) {
-    updateActionBtnGroup(editBtnData.value.id, { button: btnProps })
+  if (isString(editInfo.value)) {
+    updateElement(editInfo.value as string, { props: btnProps })
+  } else {
+    updateActionBtnGroup((editInfo.value as ActionBtnGroup).id, { button: btnProps })
   }
+  editInfo.value = undefined
+  editBtnProps.value = undefined
 }
 
 //// 删除元素
@@ -187,26 +166,13 @@ function handleDeleteGroup(id: string) {
 }
 
 // 按钮拖动排序
-function handleSort(list: ActionBtnGroupItem[]) {
-  const res: CanvasConfig['actionBtnsList'] = []
-  list.forEach((item) => {
-    if (isActionBtn(item)) {
-      res.push(item.id)
-    } else if (isGroupBtn(item)) {
-      res.push({
-        ...item,
-        children: (
-          item as unknown as Omit<ActionBtnGroup, 'children'> & { children: CanvasElement[] }
-        ).children.map((child) => child.id),
-      } as ActionBtnGroup)
-    }
-  })
-  updateActionBtnList(res)
+function handleSort(list: CanvasConfig['actionBtnsList']) {
+  updateActionBtnList(list)
 }
 
 // 按钮组内拖动排序
-function handleGroupSort(id: string, list: ActionBtnGroupItem[]) {
-  updateActionBtnGroup(id, { children: list.map((item) => item.id) })
+function handleGroupSort(id: string, list: string[]) {
+  updateActionBtnGroup(id, { children: list })
 }
 </script>
 

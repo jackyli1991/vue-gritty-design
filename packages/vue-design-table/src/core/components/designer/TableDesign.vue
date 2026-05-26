@@ -95,6 +95,7 @@ import type { TableColumnType } from 'ant-design-vue'
 import { computed, h } from 'vue'
 import { ColumnType } from '@/types'
 import type { CanvasElement, ColumnProps, ActionBtnGroup } from '@/types'
+import { isObject } from '@/utils'
 import { Table as aTable, Dropdown as aDropdown } from 'ant-design-vue'
 import IconifyIcon from '@/components/IconifyIcon.vue'
 import ActionButton from '@/components/Button.vue'
@@ -108,8 +109,14 @@ interface NewTableColumnType extends TableColumnType {
 
 const { openModal } = useConfirmModal()
 
-const { activeCanvasElement, actionBtnGroups, getTableElements, selectElement, deleteElement } =
-  useDesignContext()
+const {
+  activeCanvasElement,
+  actionBtnsList,
+  getTableElements,
+  selectElement,
+  getElement,
+  deleteElement,
+} = useDesignContext()
 
 defineOptions({
   name: 'TableDesign',
@@ -117,6 +124,21 @@ defineOptions({
 
 const selectionColumns = [ColumnType.Checkbox, ColumnType.Radio] // 选择列类型
 const excludeColumns = [ColumnType.ActionBtn, ColumnType.Pagination] // 排除的其他类型
+
+// 操作按钮组，根据actionBtnsList生成带按钮信息的数据
+const actionBtnGroups = computed(() => {
+  return actionBtnsList.value.map((item) => {
+    if (isObject(item) && 'children' in (item as ActionBtnGroup)) {
+      return {
+        ...(item as ActionBtnGroup),
+        children: (item as ActionBtnGroup).children.map(
+          (child: string) => getElement(child as string) || ({} as CanvasElement),
+        ),
+      }
+    }
+    return getElement(item as string) || ({} as CanvasElement)
+  })
+})
 
 // 表格列配置
 const tableColumns = computed<NewTableColumnType[]>((): NewTableColumnType[] => {
