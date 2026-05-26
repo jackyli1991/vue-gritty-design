@@ -12,9 +12,10 @@ export interface StreamChunk {
 }
 
 export interface StreamParserOptions {
+  /** 请求方法 */
+  method?: 'POST' | 'GET'
   /** 请求头 */
   headers?: Record<string, string>
-  /** 数据块回调 */
   /** 数据块回调 */
   onChunk?: (content: string) => void
   /** 完成回调 */
@@ -92,7 +93,7 @@ export async function sendStreamRequest(
   options?: StreamParserOptions,
 ): Promise<string> {
   const response = await fetch(url, {
-    method: 'POST',
+    method: options?.method || 'POST',
     headers: {
       'Content-Type': 'application/json',
       ...options?.headers,
@@ -101,13 +102,73 @@ export async function sendStreamRequest(
   })
 
   if (!response.ok) {
+    options?.onError?.(new Error(`HTTP error! status: ${response.status}`))
     throw new Error(`HTTP error! status: ${response.status}`)
   }
 
   const reader = response.body?.getReader()
   if (!reader) {
+    options?.onError?.(new Error('无法获取响应流'))
     throw new Error('无法获取响应流')
   }
 
   return parseStream(reader, options)
+}
+
+/**
+ * 发送非流式请求
+ * @param url - 请求地址
+ * @param data - 请求体
+ * @param headers - 请求头
+ * @returns Promise<string> - 响应内容
+ */
+export async function sendNonStreamRequest(
+  url: string,
+  data: Record<string, unknown>,
+  options?: StreamParserOptions,
+): Promise<string> {
+  const response = await fetch(url, {
+    method: options?.method || 'POST',
+    headers: {
+      'Content-Type': 'application/json',
+      ...options?.headers,
+    },
+    body: JSON.stringify(data),
+  })
+
+  if (!response.ok) {
+    options?.onError?.(new Error(`HTTP error! status: ${response.status}`))
+    throw new Error(`HTTP error! status: ${response.status}`)
+  }
+
+  try {
+    const result = await response.json()
+    const content = result.choices?.[0]?.message?.content || ''
+    options?.onComplete?.(content)
+    return content
+  } catch (error) {
+    options?.onError?.(error instanceof Error ? error : new Error(String(error)))
+    throw error
+  }
+}
+
+/**
+ * 发送AI聊天请求（自动处理流式/非流式）
+ * @param url - 请求地址
+ * @param data - 请求体（包含 stream 字段）
+ * @param options - 回调选项
+ * @returns Promise<string> - 响应内容
+ */
+export async function sendChatRequest(
+  url: string,
+  data: Record<string, unknown>,
+  options?: StreamParserOptions & { headers?: Record<string, string> },
+): Promise<string> {
+  const isStream = data.stream === true
+
+  if (isStream) {
+    return sendStreamRequest(url, data, options)
+  } else {
+    return sendNonStreamRequest(url, data, options)
+  }
 }

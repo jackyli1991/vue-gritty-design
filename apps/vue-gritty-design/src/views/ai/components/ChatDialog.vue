@@ -29,7 +29,12 @@
           <ClearOutlined />
           清空对话
         </a-button>
-        <a-button class="flex! items-center gap-2" type="text" size="small">
+        <a-button
+          class="flex! items-center gap-2"
+          type="text"
+          size="small"
+          @click="showSettingsModal = true"
+        >
           <SettingOutlined />
           设置
         </a-button>
@@ -174,15 +179,81 @@
       </div>
     </div>
   </div>
+
+  <!-- 设置弹窗 -->
+  <a-modal v-model:open="showSettingsModal" title="模型设置" :footer="null" width="480px">
+    <div class="space-y-4">
+      <!-- 流式传输设置 -->
+      <div>
+        <a-form-item label="数据传输方式">
+          <a-radio-group v-model:value="chatSettings.stream" button-style="solid">
+            <a-radio :value="true">流式传输</a-radio>
+            <a-radio :value="false">非流式传输</a-radio>
+          </a-radio-group>
+        </a-form-item>
+      </div>
+
+      <!-- 温度参数 -->
+      <div>
+        <a-form-item label="温度参数 (Temperature)">
+          <a-slider
+            v-model:value="chatSettings.temperature"
+            :min="0"
+            :max="2"
+            :step="0.1"
+            :marks="{ 0: '0', 0.5: '0.5', 1: '1', 1.5: '1.5', 2: '2' }"
+          />
+          <span class="text-sm text-gray-500 mt-2 block">
+            当前值: {{ chatSettings.temperature.toFixed(1) }}
+          </span>
+        </a-form-item>
+      </div>
+
+      <!-- Top P 参数 -->
+      <div>
+        <a-form-item label="Top P">
+          <a-slider
+            v-model:value="chatSettings.topP"
+            :min="0"
+            :max="1"
+            :step="0.05"
+            :marks="{ 0: '0', 0.25: '0.25', 0.5: '0.5', 0.75: '0.75', 1: '1' }"
+          />
+          <span class="text-sm text-gray-500 mt-2 block">
+            当前值: {{ chatSettings.topP.toFixed(2) }}
+          </span>
+        </a-form-item>
+      </div>
+
+      <!-- 最大Token数 -->
+      <div>
+        <a-form-item label="最大Token数">
+          <a-select v-model:value="chatSettings.maxTokens">
+            <a-select-option :value="512">512</a-select-option>
+            <a-select-option :value="1024">1024</a-select-option>
+            <a-select-option :value="2048">2048</a-select-option>
+            <a-select-option :value="4096">4096</a-select-option>
+            <a-select-option :value="8192">8192</a-select-option>
+          </a-select>
+        </a-form-item>
+      </div>
+
+      <!-- 按钮 -->
+      <div class="flex gap-2 justify-end pt-4">
+        <a-button @click="showSettingsModal = false">取消</a-button>
+        <a-button type="primary" @click="saveSettings">保存设置</a-button>
+      </div>
+    </div>
+  </a-modal>
 </template>
 
 <script setup lang="ts">
-import { ref, watch, nextTick, h } from 'vue'
+import { ref, watch, nextTick, h, reactive } from 'vue'
 import { Icon } from '@iconify/vue'
 import type { Model, Message } from '../types'
 // import http from '@/http'
 // import { chatApi } from '@/apis'
-import { sendStreamRequest } from '../utils/streamParser'
+import { sendChatRequest } from '../utils/streamParser'
 
 // 图标组件
 const SendOutlined = () => h(Icon, { icon: 'material-symbols:send' })
@@ -218,6 +289,22 @@ const isLoading = ref(false)
 // 消息容器引用
 const messageContainer = ref<HTMLElement>()
 
+// 设置弹窗显示状态
+const showSettingsModal = ref(false)
+
+// 聊天设置
+const chatSettings = reactive({
+  stream: true, // 是否使用流式传输
+  temperature: 0.6, // 温度参数
+  topP: 0.7, // Top P 参数
+  maxTokens: 4096, // 最大 Token 数
+})
+
+// 保存设置
+function saveSettings() {
+  showSettingsModal.value = false
+}
+
 // 发送消息
 async function sendMessage() {
   const content = inputMessage.value.trim()
@@ -243,8 +330,6 @@ async function sendMessage() {
     timestamp: Date.now(),
   })
 
-  const stream = true
-
   try {
     const requestBody = {
       messages: [
@@ -253,56 +338,65 @@ async function sendMessage() {
           .filter((m) => m.type === 'text')
           .map((m) => ({ role: m.role, content: m.content })),
       ],
-      stream,
+      stream: chatSettings.stream,
+      temperature: chatSettings.temperature,
+      top_p: chatSettings.topP,
+      max_tokens: chatSettings.maxTokens,
     }
 
     const token = localStorage.getItem(import.meta.env.VITE_TOKEN_KEY || 'token')
+    const headers: Record<string, string> = {
+      'Content-Type': 'application/json',
+    }
+    if (token) {
+      headers.Authorization = `Bearer ${token}`
+    }
 
     // 找到 loading 消息的索引
     const loadingIndex = messages.value.length - 1
-    let aiContent = ''
 
-    // 使用封装的流式请求工具函数
-    await sendStreamRequest('/api/chat', requestBody, {
-      headers: {
-        'Content-Type': 'application/json',
-        Authorization: `Bearer ${token}`,
-      },
-      onChunk: (chunk) => {
-        aiContent += chunk
-        // 更新消息内容，实现打字机效果
+    // 使用封装的聊天请求工具函数（自动处理流式/非流式）
+    await sendChatRequest('/api/chat', requestBody, {
+      method: 'POST',
+      headers,
+      // 流式传输时，处理每个 chunk
+      onChunk: chatSettings.stream
+        ? (chunk) => {
+            // 更新消息内容，实现打字机效果
+            messages.value[loadingIndex] = {
+              role: 'assistant',
+              content: (messages.value[loadingIndex]?.content || '') + chunk,
+              type: 'text',
+              timestamp: Date.now(),
+            }
+            scrollToBottom()
+          }
+        : undefined,
+      // 非流式传输时，处理完整响应
+      onComplete: (content) => {
         messages.value[loadingIndex] = {
           role: 'assistant',
-          content: aiContent,
+          content: content || '抱歉，我没有理解您的问题。',
           type: 'text',
           timestamp: Date.now(),
         }
-        scrollToBottom()
+      },
+      // 错误回调
+      onError: (error) => {
+        console.error('请求错误:', error)
+        // 移除 loading 消息
+        messages.value.pop()
+        // 添加错误消息
+        messages.value.push({
+          role: 'assistant',
+          content: '抱歉，请求出现错误，请稍后重试。',
+          type: 'text',
+          timestamp: Date.now(),
+        })
       },
     })
-
-    // 如果没有获取到内容，设置默认回复
-    if (!aiContent) {
-      messages.value[loadingIndex] = {
-        role: 'assistant',
-        content: '抱歉，我没有理解您的问题。',
-        type: 'text',
-        timestamp: Date.now(),
-      }
-    }
   } catch (error) {
-    console.error('流式请求错误:', error)
-
-    // 移除 loading 消息
-    messages.value.pop()
-
-    // 添加错误消息
-    messages.value.push({
-      role: 'assistant',
-      content: '抱歉，请求出现错误，请稍后重试。',
-      type: 'text',
-      timestamp: Date.now(),
-    })
+    console.error('sendChatRequest 错误:', error)
   } finally {
     isLoading.value = false
     scrollToBottom()

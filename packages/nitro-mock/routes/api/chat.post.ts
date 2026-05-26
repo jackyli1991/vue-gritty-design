@@ -1,6 +1,6 @@
 import { defineHandler } from 'nitro'
 import type { H3Event } from 'nitro'
-import { errorResponse, successResponse } from '../../utils'
+import { errorResponse } from '../../utils'
 
 interface ChatRequest {
   messages: {
@@ -8,6 +8,9 @@ interface ChatRequest {
     content: string
   }[]
   stream?: boolean
+  temperature?: number
+  top_p?: number
+  max_tokens?: number
 }
 
 // NVIDIA API Key
@@ -17,7 +20,7 @@ const NVIDIA_BASE_URL = 'https://integrate.api.nvidia.com/v1'
 export default defineHandler(async (event: H3Event) => {
   try {
     const body: ChatRequest = (await event.req.json()) as ChatRequest
-    const { messages, stream = false } = body
+    const { messages, stream = false, temperature = 0.6, top_p = 0.7, max_tokens = 4096 } = body
 
     // 调用 NVIDIA DeepSeek API
     const response = await fetch(`${NVIDIA_BASE_URL}/chat/completions`, {
@@ -30,15 +33,14 @@ export default defineHandler(async (event: H3Event) => {
         model: 'deepseek-ai/deepseek-v4-pro',
         messages,
         stream,
-        temperature: 0.6,
-        top_p: 0.7,
-        max_tokens: 4096,
+        temperature,
+        top_p,
+        max_tokens,
       }),
     })
 
     if (!response.ok) {
       const error = await response.text()
-      console.log('请求错误', error)
       return errorResponse('aiChatError', { error })
     }
 
@@ -47,13 +49,9 @@ export default defineHandler(async (event: H3Event) => {
       event.res.headers.set('Content-Type', 'text/event-stream')
       event.res.headers.set('Cache-Control', 'no-cache')
       event.res.headers.set('Connection', 'keep-alive')
-
-      return response.body // 流式响应直接返回，客户端去处理
     }
 
-    // 非流式响应
-    const data = await response.json()
-    return successResponse(data)
+    return response.body // 响应直接返回，客户端去处理
   } catch (error) {
     return errorResponse('aiChatError', { error })
   }
