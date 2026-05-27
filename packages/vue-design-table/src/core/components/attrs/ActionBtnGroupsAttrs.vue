@@ -10,6 +10,7 @@
       :animation="150"
       :modelValue="actionBtnsList"
       handle=".draggable-handle"
+      group="action-column_btns"
       @update:modelValue="handleSort"
     >
       <li v-for="btn in actionBtnsList" :key="btn as string">
@@ -45,6 +46,7 @@
                 class="action-column_btns"
                 :modelValue="(btn as ActionBtnGroup).children"
                 :animation="150"
+                group="action-column_btns"
                 handle=".draggable-handle"
                 @update:modelValue="handleGroupSort((btn as ActionBtnGroup).id, $event)"
               >
