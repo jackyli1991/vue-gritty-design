@@ -79,20 +79,20 @@
       </aCol>
       <aCol :span="colSpan">
         <aFormItem label="对齐方式" name="align">
-          <aRadioGroup v-model:value="formData.align" button-style="solid">
-            <aRadioButton v-for="(item, index) in alignOptions" :key="index" :value="item.value">
-              {{ item.label }}
-            </aRadioButton>
-          </aRadioGroup>
+          <aSelect
+            v-model:value="formData.align"
+            :options="alignOptions"
+            placeholder="请选择对齐方式"
+          />
         </aFormItem>
       </aCol>
       <aCol :span="colSpan">
         <aFormItem label="固定位置" name="fixed">
-          <aRadioGroup v-model:value="formData.fixed" button-style="solid">
-            <aRadioButton v-for="(item, index) in fixedOptions" :key="index" :value="item.value">
-              {{ item.label }}
-            </aRadioButton>
-          </aRadioGroup>
+          <aSelect
+            v-model:value="formData.fixed"
+            :options="fixedOptions"
+            placeholder="请选择固定位置"
+          />
         </aFormItem>
       </aCol>
     </aRow>
@@ -108,11 +108,9 @@ import {
   FormItem as aFormItem,
   Input as aInput,
   InputNumber as aInputNumber,
-  RadioGroup as aRadioGroup,
-  RadioButton as aRadioButton,
+  Select as aSelect,
   Row as aRow,
   Col as aCol,
-  // Select as aSelect,
   Switch as aSwitch,
 } from 'ant-design-vue'
 import { alignOptions, fixedOptions } from '@/datas'
