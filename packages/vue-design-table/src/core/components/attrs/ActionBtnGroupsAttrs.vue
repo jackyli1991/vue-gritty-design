@@ -78,10 +78,10 @@
 </template>
 
 <script lang="ts" setup>
-import { computed, ref } from 'vue'
+import { computed, ref, nextTick } from 'vue'
 import { Button as aButton, Empty as aEmpty } from 'ant-design-vue'
 import type { ColumnProps, ButtonProps, CanvasConfig, ActionBtnGroup } from '@/types'
-import { isString } from '@/utils'
+import { isString, isObject } from '@/utils'
 import AttrWrapper from '@/components/AttrWrapper.vue'
 import IconifyIcon from '@/components/IconifyIcon.vue'
 import ActionButton from '@/components/Button.vue'
@@ -168,8 +168,16 @@ function handleDeleteGroup(id: string) {
 }
 
 // 按钮拖动排序
-function handleSort(list: CanvasConfig['actionBtnsList']) {
-  updateActionBtnList(list)
+async function handleSort(list: CanvasConfig['actionBtnsList']) {
+  await nextTick()
+  // 如果分组内只有一个按钮，则去掉分组，直接显示按钮
+  const listFormat: (string | ActionBtnGroup)[] = list.map((item) => {
+    if (isObject(item) && (item as ActionBtnGroup).children.length <= 1) {
+      return (item as ActionBtnGroup).children[0]
+    }
+    return item
+  })
+  updateActionBtnList(listFormat)
 }
 
 // 按钮组内拖动排序
