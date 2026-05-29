@@ -10,26 +10,28 @@
     >
       <!-- 表头 -->
       <template #headerCell="{ title, column }">
-        <span>{{ title }}</span>
-        <span
-          class="table-header-edit-icons"
-          :class="{
-            active: activeCanvasElement?.id === column.key,
-          }"
-          @click.stop
-        >
-          <IconifyIcon
-            icon="material-symbols:select-check-box-rounded"
-            :size="20"
-            @click="handleHeaderCellClick('select', title, column)"
-          />
-          <IconifyIcon
-            icon="material-symbols:delete"
-            :size="20"
-            danger
-            @click="handleHeaderCellClick('delete', title, column)"
-          />
-        </span>
+        <div class="table-header-title-wrapper">
+          <span>{{ title }}</span>
+          <span
+            class="table-header-edit-icons"
+            :class="{
+              active: activeCanvasElement?.id === column.key,
+            }"
+            @click.stop
+          >
+            <IconifyIcon
+              icon="material-symbols:select-check-box-rounded"
+              :size="20"
+              @click="handleHeaderCellClick('select', title, column)"
+            />
+            <IconifyIcon
+              icon="material-symbols:delete"
+              :size="20"
+              danger
+              @click="handleHeaderCellClick('delete', title, column)"
+            />
+          </span>
+        </div>
       </template>
       <!-- 表格内容 -->
       <template #bodyCell="{ column, index }">
@@ -250,24 +252,21 @@ const handleActionBtnClick = (column: CanvasElement) => {
       position: relative;
     }
   }
-  .table-header-edit-icons {
-    background-color: rgba(0, 0, 0, 0.5);
-    padding: 4px 0;
-    border-radius: 4px;
-    position: absolute;
-    left: 10%;
-    bottom: 5px;
-    width: 80%;
-    max-width: 100px;
+  .table-header-title-wrapper {
     display: flex;
-    align-items: center;
-    justify-content: space-around;
-    opacity: 0;
-    transition: all 0.2s;
-    &:hover {
-      opacity: 0.8;
+    flex-wrap: wrap;
+    .table-header-edit-icons {
+      display: flex;
+      align-items: center;
+      opacity: 0;
+      transition: all 0.2s;
+      gap: 6px;
+      padding: 0 6px;
+      &.active {
+        opacity: 0.8;
+      }
     }
-    &.active {
+    &:hover .table-header-edit-icons {
       opacity: 0.8;
     }
   }
