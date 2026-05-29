@@ -1,20 +1,21 @@
 <template>
-  <div class="pagination-attrs">
-    <div class="attributes-form">
-      <div class="attributes-group">
-        <div class="attributes-label">分页大小</div>
-        <div class="attributes-input"></div>
-      </div>
-    </div>
-  </div>
+  <AttrWrapper title="分页" :componentName="activeCanvasElement?.name">
+    <PaginationForm :formData="formData" :cols="2" />
+  </AttrWrapper>
 </template>
 
 <script lang="ts" setup>
-// import { ref } from 'vue'
-</script>
+import { computed } from 'vue'
+import type { PaginationProps } from '@/types'
+import PaginationForm from '@/core/components/form/PaginationForm.vue'
+import { useDesignContext } from '@/composables/useDesignContext'
+import AttrWrapper from '@/components/AttrWrapper.vue'
 
-<style scoped lang="scss">
-.pagination-attrs {
-  padding: 12px;
-}
-</style>
+defineOptions({
+  name: 'PaginationAttrs',
+})
+
+const { activeCanvasElement } = useDesignContext()
+
+const formData = computed(() => (activeCanvasElement.value?.props || {}) as PaginationProps)
+</script>

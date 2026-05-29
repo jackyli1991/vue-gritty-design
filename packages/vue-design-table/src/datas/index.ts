@@ -2,6 +2,7 @@ import type { ResourceItem, ResourceGroup } from '@/types'
 import { BaseLayouts, ColumnType } from '@/types'
 import { createColumnProps } from './columnProps'
 import { createButtonProps } from './buttonProps'
+import { createPaginationProps } from './paginationProps'
 export * from './directory'
 
 // 基础组件列表
@@ -86,7 +87,7 @@ export const columnsComponentsList: ResourceItem[] = [
     type: ColumnType.Pagination,
     name: '分页',
     icon: 'material-symbols:fit-page-width-outline',
-    props: {},
+    props: createPaginationProps(),
   },
 ]
 

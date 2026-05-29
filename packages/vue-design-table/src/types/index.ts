@@ -1,3 +1,5 @@
+import type { TablePaginationConfig } from 'ant-design-vue/es/table/interface'
+
 export enum Direction {
   Vertical = 'vertical',
   Horizontal = 'horizontal',
@@ -83,7 +85,7 @@ export interface CanvasElement {
   layoutId: string // 布局ID
   type: ColumnType | string // 元素类型
   name: string // 元素名称
-  props: ColumnProps | ButtonProps // 元素属性
+  props: ColumnProps | ButtonProps | PaginationProps // 元素属性
 }
 
 // 操作列分组
@@ -169,4 +171,20 @@ export interface LayoutProps {
   gap: number // 间距
   backgroundColor: string // 背景颜色
   isForm: boolean // 是否为表单布局
+}
+
+// position: TablePaginationPosition[] // 分页位置 topLeft topCenter topRight bottomLeft bottomCenter bottomRight
+// defaultPageSize: number // 默认每页数量
+// hideOnSinglePage: boolean // 是否在单页时隐藏分页组件
+// pageSizeOptions: number[] // 每页数量选项
+// showQuickJumper: boolean // 是否显示快速跳转页码
+// showSizeChanger: boolean // 是否显示每页数量选择器
+// simple: boolean // 是否为简单分页
+// size: string // 分页大小
+export interface PaginationProps extends TablePaginationConfig {
+  enabled: boolean // 是否启用分页组件
+  showQuickJumper: boolean // 是否显示快速跳转页码
+  prePageText?: string // 上一页文本
+  nextPageText?: string // 下一页文本
+  totalText?: string // 总页数文本
 }

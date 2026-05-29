@@ -7,39 +7,38 @@
       :row-selection="rowSelection"
       :columns="tableColumns"
       :dataSource="tableMockData"
+      :pagination="paginationConfig"
     >
       <!-- 表头 -->
       <template #headerCell="{ title, column }">
-        <div class="table-header-title-wrapper">
+        <div
+          class="table-header-title-wrapper"
+          @click.stop="handleHeaderCellClick('select', title, column)"
+        >
           <span>{{ title }}</span>
           <span
             class="table-header-edit-icons"
             :class="{
               active: activeCanvasElement?.id === column.key,
             }"
-            @click.stop
           >
-            <IconifyIcon
-              icon="material-symbols:select-check-box-rounded"
-              :size="20"
-              @click="handleHeaderCellClick('select', title, column)"
-            />
+            <IconifyIcon icon="material-symbols:select-check-box-rounded" :size="20" />
             <IconifyIcon
               icon="material-symbols:delete"
               :size="20"
               danger
-              @click="handleHeaderCellClick('delete', title, column)"
+              @click.stop="handleHeaderCellClick('delete', title, column)"
             />
           </span>
         </div>
       </template>
       <!-- 表格内容 -->
       <template #bodyCell="{ column, index }">
-        <template v-if="(column as NewTableColumnType).columnType === ColumnType.Index">
+        <template v-if="(column as NewTableColumnType)?.columnType === ColumnType.Index">
           {{ index + 1 }}
         </template>
         <!-- 操作按钮 -->
-        <template v-if="(column as NewTableColumnType).columnType === ColumnType.Action">
+        <template v-if="(column as NewTableColumnType)?.columnType === ColumnType.Action">
           <span class="action-column_btns-wrapper">
             <span class="action-column_btns">
               <template v-for="btn in actionBtnGroups" :key="btn.id">
@@ -96,7 +95,7 @@
 import type { TableColumnType } from 'ant-design-vue'
 import { computed, h } from 'vue'
 import { ColumnType } from '@/types'
-import type { CanvasElement, ColumnProps, ActionBtnGroup } from '@/types'
+import type { CanvasElement, ColumnProps, ActionBtnGroup, PaginationProps } from '@/types'
 import { isObject } from '@/utils'
 import { Table as aTable, Dropdown as aDropdown } from 'ant-design-vue'
 import IconifyIcon from '@/components/IconifyIcon.vue'
@@ -214,6 +213,45 @@ const rowSelection = computed(() => {
     type,
     columnWidth: width,
   }
+})
+
+// 分页配置
+const paginationConfig = computed(() => {
+  const hasPagination = getTableElements().find((item) => item.type === ColumnType.Pagination)
+  if (!hasPagination) {
+    return false
+  }
+  const { enabled, prePageText, nextPageText, totalText, ...rest } =
+    hasPagination.props as PaginationProps
+  if (!enabled) {
+    return false
+  }
+  const pagination = {
+    ...rest,
+    total: 1000,
+    showQuickJumper: rest.showQuickJumper
+      ? {
+          goButton: '前往',
+        }
+      : false,
+  }
+  // 自定义总页数文本
+  if (totalText) {
+    pagination.showTotal = (total) => totalText.replace('${total}', total.toString())
+  }
+  // 自定义上一页、下一页文本
+  if (prePageText || nextPageText) {
+    pagination.itemRender = ({ type, originalElement }) => {
+      if (type === 'prev' && prePageText?.trim()) {
+        return h('span', { style: { cursor: 'pointer', padding: '0 4px' } }, prePageText)
+      }
+      if (type === 'next' && nextPageText?.trim()) {
+        return h('span', { style: { cursor: 'pointer', padding: '0 4px' } }, nextPageText)
+      }
+      return originalElement
+    }
+  }
+  return pagination
 })
 
 // 处理表头单元格点击事件

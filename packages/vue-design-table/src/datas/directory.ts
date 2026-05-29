@@ -61,6 +61,19 @@ export const buttonSizeOptions: Option[] = [
   { label: '小', text: '小', value: 'small' },
 ]
 
+export const pageSizeOptions: Option[] = [
+  { label: '10', text: '10', value: 10 },
+  { label: '20', text: '20', value: 20 },
+  { label: '30', text: '30', value: 30 },
+  { label: '40', text: '40', value: 40 },
+  { label: '50', text: '50', value: 50 },
+  { label: '100', text: '100', value: 100 },
+  { label: '200', text: '200', value: 200 },
+  { label: '300', text: '300', value: 300 },
+  { label: '400', text: '400', value: 400 },
+  { label: '500', text: '500', value: 500 },
+]
+
 // 布局操作选项
 export const layoutOperateOptions: (Omit<Option, 'value'> & { value: Position | 'delete' })[] = [
   {
