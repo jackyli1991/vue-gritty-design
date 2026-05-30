@@ -132,6 +132,7 @@ export interface ThemeColors {
 // 表格列属性类型定义
 export interface ColumnProps {
   title: string // 列标题
+  tip?: string // 列提示信息
   width: number // 列宽度
   maxWidth?: number // 列最大宽度
   minWidth?: number // 列最小宽度

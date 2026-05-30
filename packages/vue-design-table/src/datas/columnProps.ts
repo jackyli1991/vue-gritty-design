@@ -4,6 +4,7 @@ import { FilterMode, FiltersSource } from '@/types'
 // 列通用属性
 export const columnCommonProps: ColumnProps = {
   title: '列标题',
+  tip: '',
   width: 150,
   maxWidth: 200,
   minWidth: 50,

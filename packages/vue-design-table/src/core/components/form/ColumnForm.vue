@@ -14,6 +14,11 @@
         </aFormItem>
       </aCol>
       <aCol :span="colSpan">
+        <aFormItem label="提示" name="tip" :rules="rules.tip">
+          <aTextArea v-model:value="formData.tip" placeholder="列提示信息" />
+        </aFormItem>
+      </aCol>
+      <aCol :span="colSpan">
         <aFormItem
           label="字段"
           name="dataIndex"
@@ -107,6 +112,7 @@ import {
   Form as aForm,
   FormItem as aFormItem,
   Input as aInput,
+  Textarea as aTextArea,
   InputNumber as aInputNumber,
   Select as aSelect,
   Row as aRow,

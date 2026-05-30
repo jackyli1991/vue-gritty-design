@@ -17,6 +17,12 @@
           @click.stop="handleHeaderCellClick('select', title, column)"
         >
           <span>{{ title }}</span>
+          <aTooltip v-if="(column as ColumnProps).tip">
+            <IconifyIcon icon="material-symbols:info" :size="20" />
+            <template #title>
+              <div :style="{ whiteSpace: 'pre-line' }">{{ (column as ColumnProps)?.tip }}</div>
+            </template>
+          </aTooltip>
           <span
             class="table-header-edit-icons"
             :class="{
@@ -52,7 +58,7 @@
                   }"
                   @click.stop="handleActionBtnClick(btn as CanvasElement)"
                 >
-                  {{ (btn as CanvasElement).props.content }}
+                  {{ ((btn as CanvasElement).props as ButtonProps).content }}
                   <!-- <IconifyIcon :icon="btn.icon" :size="20" /> -->
                 </ActionButton>
                 <!-- 按钮组 -->
@@ -76,7 +82,7 @@
                             }"
                             @click.stop="handleActionBtnClick(item as CanvasElement)"
                           >
-                            {{ item.props.content }}
+                            {{ (item.props as ButtonProps).content || '' }}
                           </ActionButton>
                         </li>
                       </ul>
@@ -96,9 +102,15 @@
 import type { TableColumnType } from 'ant-design-vue'
 import { ref, computed, h } from 'vue'
 import { ColumnType } from '@/types'
-import type { CanvasElement, ColumnProps, ActionBtnGroup, PaginationProps } from '@/types'
+import type {
+  CanvasElement,
+  ColumnProps,
+  ActionBtnGroup,
+  PaginationProps,
+  ButtonProps,
+} from '@/types'
 import { isObject } from '@/utils'
-import { Table as aTable, Dropdown as aDropdown } from 'ant-design-vue'
+import { Table as aTable, Dropdown as aDropdown, Tooltip as aTooltip } from 'ant-design-vue'
 import IconifyIcon from '@/components/IconifyIcon.vue'
 import ActionButton from '@/components/Button.vue'
 import { useDesignContext } from '@/composables/useDesignContext'
