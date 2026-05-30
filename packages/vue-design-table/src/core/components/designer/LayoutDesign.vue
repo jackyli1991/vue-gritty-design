@@ -20,7 +20,7 @@
     @dragleave="handleDragLeave"
     @drop.prevent.stop="handleDrop"
   >
-    <TableDesign v-if="isTableLayout" />
+    <TableDesign v-if="isTableLayout" :layoutId="props.layoutId" />
     <template v-else v-for="child in layoutChildren" :key="child">
       <LayoutDesign :layoutId="child" />
     </template>

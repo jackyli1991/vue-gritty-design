@@ -1,5 +1,5 @@
 <template>
-  <div class="table-main-container">
+  <div class="table-main-container" @click.stop="handleSelectTableLayout">
     <aTable
       :scroll="{
         x: 'auto',
@@ -8,6 +8,7 @@
       :columns="tableColumns"
       :dataSource="tableMockData"
       :pagination="paginationConfig"
+      @change="handleTableChange"
     >
       <!-- 表头 -->
       <template #headerCell="{ title, column }">
@@ -93,7 +94,7 @@
 
 <script setup lang="ts">
 import type { TableColumnType } from 'ant-design-vue'
-import { computed, h } from 'vue'
+import { ref, computed, h } from 'vue'
 import { ColumnType } from '@/types'
 import type { CanvasElement, ColumnProps, ActionBtnGroup, PaginationProps } from '@/types'
 import { isObject } from '@/utils'
@@ -108,21 +109,27 @@ interface NewTableColumnType extends TableColumnType {
   btnGap?: number
 }
 
+defineOptions({
+  name: 'TableDesign',
+})
+
+const props = defineProps<{
+  layoutId: string
+}>()
+
 const { openModal } = useConfirmModal()
 
 const {
   activeCanvasElement,
   actionBtnsList,
+  selectLayout,
   getTableElements,
   selectElement,
   getElement,
   deleteElement,
 } = useDesignContext()
 
-defineOptions({
-  name: 'TableDesign',
-})
-
+const clickFlag = ref<string>('')
 const selectionColumns = [ColumnType.Checkbox, ColumnType.Radio] // 选择列类型
 const excludeColumns = [ColumnType.ActionBtn, ColumnType.Pagination] // 排除的其他类型
 
@@ -278,6 +285,29 @@ const handleActionBtnClick = (column: CanvasElement) => {
   console.log('操作按钮', column)
   const id = column.id as string
   selectElement(id)
+}
+
+// 处理表格点击事件
+const handleSelectTableLayout = () => {
+  if (clickFlag.value === 'paginate') {
+    clickFlag.value = ''
+    return
+  }
+  selectLayout(props.layoutId)
+}
+
+// 处理表格变化事件
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
+function handleTableChange(...args: any[]) {
+  // console.log('表格变化事件', args)
+  const { action } = args[3] as { action: string }
+  // 选中分页
+  if (action === 'paginate') {
+    const hasPagination = getTableElements().find((item) => item.type === ColumnType.Pagination)
+    if (!hasPagination) return
+    clickFlag.value = 'paginate'
+    selectElement(hasPagination.id)
+  }
 }
 </script>
 
