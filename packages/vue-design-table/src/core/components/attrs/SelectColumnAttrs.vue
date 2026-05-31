@@ -1,5 +1,5 @@
 <template>
-  <AttrWrapper title="基础" :componentName="activeCanvasElement?.name">
+  <AttrWrapper title="基础">
     <SelectColumnForm :form-data="formData" :cols="1" />
   </AttrWrapper>
 </template>

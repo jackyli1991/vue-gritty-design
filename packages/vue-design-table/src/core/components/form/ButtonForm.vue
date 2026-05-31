@@ -42,17 +42,17 @@
           </aCol>
         </aRow>
       </aCol>
-      <aCol :span="colSpan">
+      <aCol :span="colSpan / 2">
         <aFormItem label="危险按钮" name="danger" :rules="rules.danger">
           <aSwitch v-model:checked="formData.danger" />
         </aFormItem>
       </aCol>
-      <aCol :span="colSpan">
+      <aCol :span="colSpan / 2">
         <aFormItem label="幽灵按钮" name="ghost" :rules="rules.ghost">
           <aSwitch v-model:checked="formData.ghost" />
         </aFormItem>
       </aCol>
-      <aCol :span="colSpan">
+      <aCol :span="colSpan / 2">
         <aFormItem label="背景色" name="backgroundColor" :rules="rules.backgroundColor">
           <ColorPicker v-model="formData.backgroundColor" />
         </aFormItem>

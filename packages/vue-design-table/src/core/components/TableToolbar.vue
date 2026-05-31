@@ -1,5 +1,6 @@
 <template>
   <div class="table-toolbar table-design-wrapper">
+    <aTag color="blue">{{ activeName }}</aTag>
     <div class="table-toolbar-content">
       <!-- 布局工具条 -->
       <ToolBar :list="layoutOperateOptions" @handle="handleLayoutToolbarAction"></ToolBar>
@@ -31,7 +32,7 @@
 
 <script setup lang="ts">
 import { computed } from 'vue'
-import { Tooltip as aTooltip, Button as aButton } from 'ant-design-vue'
+import { Tooltip as aTooltip, Button as aButton, Tag as aTag } from 'ant-design-vue'
 import IconifyIcon from '@/components/IconifyIcon.vue'
 import ToolBar from '@/components/ToolBar.vue'
 import { useDesignContext } from '@/composables/useDesignContext'
@@ -50,6 +51,11 @@ const {
   openLayerPanel,
   closeLayerPanel,
 } = useDesignContext()
+
+// 活动组件名称
+const activeName = computed(() => {
+  return activeCanvasLayout.value?.name || activeCanvasElement.value?.name || '工具'
+})
 
 // 布局工具条操作项
 const layoutOperateOptions = computed(() => {
@@ -86,6 +92,7 @@ function handleLayerPanel() {
   padding: 8px;
   gap: 8px;
   display: flex;
+  align-items: center;
   &-content {
     flex: 1;
     display: flex;

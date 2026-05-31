@@ -2,7 +2,7 @@
   <aModal
     title="创建布局"
     :open="addLayoutModalVisible"
-    :width="'50vw'"
+    width="45vw"
     cancelText="取消"
     okText="确定"
     @ok="handleOk"

@@ -1,5 +1,5 @@
 <template>
-  <AttrWrapper title="基础" :componentName="activeCanvasElement?.name">
+  <AttrWrapper title="基础">
     <ColumnForm :formData="formData" :cols="1" />
   </AttrWrapper>
   <AttrWrapper title="列筛选" v-if="formData.filterable !== undefined">

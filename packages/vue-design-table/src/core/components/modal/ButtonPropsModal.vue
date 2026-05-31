@@ -1,7 +1,7 @@
 <template>
   <aModal
     :open="visible"
-    width="50vw"
+    width="40vw"
     okText="确定"
     cancelText="取消"
     @ok="handleOk"

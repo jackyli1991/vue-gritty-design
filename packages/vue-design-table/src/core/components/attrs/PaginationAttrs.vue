@@ -1,5 +1,5 @@
 <template>
-  <AttrWrapper title="分页" :componentName="activeCanvasElement?.name">
+  <AttrWrapper title="分页">
     <PaginationForm :formData="formData" :cols="2" />
   </AttrWrapper>
 </template>
