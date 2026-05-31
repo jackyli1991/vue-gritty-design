@@ -5,7 +5,7 @@ import type { CanvasElement, CanvasData, CanvasConfig, CanvasLayout, ActionBtnGr
 import { Direction, Position, BaseLayouts, ColumnType } from '@/types'
 import { excludeOption, isObject } from '@/utils'
 import { createLayout } from '@/core/components/designer'
-import { layoutOperateOptions, elementOperateOptions, columnsComponentNames } from '@/datas'
+import { layoutOperateOptions, columnsComponentNames } from '@/datas'
 import { useConfirmModal } from '@/composables/useConfirmModal'
 
 const { openModal } = useConfirmModal()
@@ -418,10 +418,6 @@ export const useDesignStore = defineStore('tableDesign', () => {
     else return excludeOption(layoutOperateOptions, 'delete')
   }
 
-  function getElementToolbar() {
-    return elementOperateOptions
-  }
-
   /**
    * 重置画布
    * @description 重置画布数据为初始状态
@@ -455,7 +451,6 @@ export const useDesignStore = defineStore('tableDesign', () => {
     addLayout,
     hoverLayout,
     getLayoutToolbar,
-    getElementToolbar,
     selectElement,
     getElement,
     addElement,

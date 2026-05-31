@@ -38,11 +38,10 @@ import ToolBar from '@/components/ToolBar.vue'
 import { useDesignContext } from '@/composables/useDesignContext'
 import { useToolbarAction } from '@/composables/useToolbarAction'
 
-const { handleLayoutToolbarAction, handleElementToolbarAction } = useToolbarAction()
+const { handleLayoutToolbarAction, handleElementToolbarAction, getElementToolbar } = useToolbarAction()
 
 const {
   getLayoutToolbar,
-  getElementToolbar,
   activeCanvasLayout,
   activeCanvasElement,
   attributesPanelCollapsed,

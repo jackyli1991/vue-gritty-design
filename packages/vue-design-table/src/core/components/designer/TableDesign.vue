@@ -12,30 +12,27 @@
     >
       <!-- 表头 -->
       <template #headerCell="{ title, column }">
-        <div
-          class="table-header-title-wrapper"
-          @click.stop="handleHeaderCellClick('select', title, column)"
-        >
+        <div class="table-header-title-wrapper" @click.stop="handleHeaderCellClick(column)">
           <span>{{ title }}</span>
+          <!-- 表头提示 -->
           <aTooltip v-if="(column as ColumnProps).tip">
             <IconifyIcon icon="material-symbols:info" :size="20" />
             <template #title>
               <div :style="{ whiteSpace: 'pre-line' }">{{ (column as ColumnProps)?.tip }}</div>
             </template>
           </aTooltip>
+          <!-- 元素工具条 -->
           <span
             class="table-header-edit-icons"
             :class="{
               active: activeCanvasElement?.id === column.key,
             }"
           >
-            <IconifyIcon icon="material-symbols:select-check-box-rounded" :size="20" />
             <IconifyIcon
-              icon="material-symbols:delete"
+              icon="material-symbols:select-check-box-rounded"
               :size="20"
-              danger
-              @click.stop="handleHeaderCellClick('delete', title, column)"
             />
+            <ToolBar :list="elementTools" @handle="handleElementToolbarAction"></ToolBar>
           </span>
         </div>
       </template>
@@ -113,8 +110,9 @@ import { isObject } from '@/utils'
 import { Table as aTable, Dropdown as aDropdown, Tooltip as aTooltip } from 'ant-design-vue'
 import IconifyIcon from '@/components/IconifyIcon.vue'
 import ActionButton from '@/components/Button.vue'
+import ToolBar from '@/components/ToolBar.vue'
 import { useDesignContext } from '@/composables/useDesignContext'
-import { useConfirmModal } from '@/composables/useConfirmModal'
+import { useToolbarAction } from '@/composables/useToolbarAction'
 
 interface NewTableColumnType extends TableColumnType {
   columnType: ColumnType
@@ -129,7 +127,7 @@ const props = defineProps<{
   layoutId: string
 }>()
 
-const { openModal } = useConfirmModal()
+const { getElementToolbar, handleElementToolbarAction } = useToolbarAction()
 
 const {
   activeCanvasElement,
@@ -138,12 +136,18 @@ const {
   getTableElements,
   selectElement,
   getElement,
-  deleteElement,
 } = useDesignContext()
 
 const clickFlag = ref<string>('')
 const selectionColumns = [ColumnType.Checkbox, ColumnType.Radio] // 选择列类型
 const excludeColumns = [ColumnType.ActionBtn, ColumnType.Pagination] // 排除的其他类型
+
+const elementTools = computed(() => {
+  if (activeCanvasElement.value) {
+    return getElementToolbar()
+  }
+  return []
+})
 
 // 操作按钮组，根据actionBtnsList生成带按钮信息的数据
 const actionBtnGroups = computed(() => {
@@ -274,22 +278,10 @@ const paginationConfig = computed(() => {
 })
 
 // 处理表头单元格点击事件
-const handleHeaderCellClick = (type: string, title: string, column: TableColumnType) => {
+const handleHeaderCellClick = (column: TableColumnType) => {
   console.log('表头', column)
   const id = column.key as string
-  if (type === 'select') {
-    selectElement(id)
-  } else if (type === 'delete') {
-    openModal(
-      {
-        title: '删除',
-        content: `确认删除列【${title}】吗？`,
-      },
-      () => {
-        deleteElement(id)
-      },
-    )
-  }
+  selectElement(id)
 }
 
 // 处理操作按钮单元格点击事件
