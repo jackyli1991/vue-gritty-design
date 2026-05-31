@@ -3,9 +3,9 @@ import { defineStore } from 'pinia'
 import { message } from 'ant-design-vue'
 import type { CanvasElement, CanvasData, CanvasConfig, CanvasLayout, ActionBtnGroup } from '@/types'
 import { Direction, Position, BaseLayouts, ColumnType } from '@/types'
-import { excludeOption, isObject } from '@/utils'
+import { isObject } from '@/utils'
 import { createLayout } from '@/core/components/designer'
-import { layoutOperateOptions, columnsComponentNames } from '@/datas'
+import { columnsComponentNames } from '@/datas'
 import { useConfirmModal } from '@/composables/useConfirmModal'
 
 const { openModal } = useConfirmModal()
@@ -405,20 +405,6 @@ export const useDesignStore = defineStore('tableDesign', () => {
   }
 
   /**
-   * 获取布局操作选项
-   * @description 获取指定画布布局的操作选项
-   * @param layoutId 布局ID
-   * @returns 布局操作选项列表
-   */
-  function getLayoutToolbar(layoutId: string) {
-    const layout = getLayout(layoutId)
-    if (!layout) return []
-    const canDelete = layout?.deleteAllowed === true
-    if (canDelete) return layoutOperateOptions
-    else return excludeOption(layoutOperateOptions, 'delete')
-  }
-
-  /**
    * 重置画布
    * @description 重置画布数据为初始状态
    */
@@ -450,7 +436,6 @@ export const useDesignStore = defineStore('tableDesign', () => {
     deleteLayout,
     addLayout,
     hoverLayout,
-    getLayoutToolbar,
     selectElement,
     getElement,
     addElement,

@@ -61,7 +61,6 @@ export function useDesignContext() {
     openContextMenu: modalStore.openContextMenu,
     closeContextMenu: modalStore.closeContextMenu,
     hoverLayout: designStore.hoverLayout,
-    getLayoutToolbar: designStore.getLayoutToolbar,
     selectElement: designStore.selectElement,
     getElement: designStore.getElement,
     addElement: designStore.addElement,

@@ -5,7 +5,7 @@
         v-for="item in operateOptions"
         :key="item.value as string"
         class="toolbar-item"
-        @click.stop="handleLayoutToolbarAction(item.value as Position)"
+        @click.stop="handleLayoutToolbarAction(item)"
       >
         <aTooltip :title="item.label" placement="top">
           <IconifyIcon :icon="item.icon" :size="20" :danger="item.danger" />
@@ -17,15 +17,13 @@
 
 <script setup lang="ts">
 import { computed } from 'vue'
-import { Position } from '@/types'
-
 import IconifyIcon from '@/components/IconifyIcon.vue'
 import { Tooltip as aTooltip } from 'ant-design-vue'
 import { useDesignContext } from '@/composables/useDesignContext'
 import { useToolbarAction } from '@/composables/useToolbarAction'
 
-const { getLayoutToolbar, hoveredLayoutId } = useDesignContext()
-const { handleLayoutToolbarAction } = useToolbarAction()
+const { hoveredLayoutId, getLayout } = useDesignContext()
+const { handleLayoutToolbarAction, getLayoutToolbar } = useToolbarAction()
 
 defineProps<{
   visible: boolean
@@ -35,7 +33,7 @@ defineProps<{
 //   action: [direction: Position]
 // }>()
 
-const operateOptions = computed(() => getLayoutToolbar(hoveredLayoutId.value))
+const operateOptions = computed(() => getLayoutToolbar(getLayout(hoveredLayoutId.value)!))
 </script>
 
 <style scoped lang="scss">

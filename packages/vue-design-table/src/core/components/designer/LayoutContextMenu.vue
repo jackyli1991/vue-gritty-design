@@ -7,7 +7,7 @@
           v-for="item in operateOptions"
           :key="item.value as string"
           class="context-menu-item"
-          @click="handleAction(item.value as Position)"
+          @click="handleAction(item)"
         >
           <IconifyIcon :icon="item.icon" :danger="item.danger" />
           <span>{{ item.label }}</span>
@@ -20,18 +20,17 @@
 <script setup lang="ts">
 import { computed } from 'vue'
 import IconifyIcon from '@/components/IconifyIcon.vue'
-import { Position } from '@/types'
+import type { CanvasLayout, Option } from '@/types'
 import { useDesignContext } from '@/composables/useDesignContext'
 import { useToolbarAction } from '@/composables/useToolbarAction'
 
 const {
-  getLayoutToolbar,
   activeCanvasLayout,
   activeContextMenuId,
   contextMenuPosition,
   closeContextMenu,
 } = useDesignContext()
-const { handleLayoutToolbarAction } = useToolbarAction()
+const { handleLayoutToolbarAction, getLayoutToolbar } = useToolbarAction()
 
 // 只要有菜单ID就显示
 const isVisible = computed(() => !!activeContextMenuId.value)
@@ -41,11 +40,11 @@ const menuStyle = computed(() => ({
   top: `${contextMenuPosition.value.y}px`,
 }))
 
-const operateOptions = computed(() => getLayoutToolbar(activeCanvasLayout.value?.id as string))
+const operateOptions = computed(() => getLayoutToolbar(activeCanvasLayout.value as CanvasLayout))
 
 // 处理操作
-function handleAction(direction: Position) {
-  handleLayoutToolbarAction(direction)
+function handleAction(item: Option) {
+  handleLayoutToolbarAction(item)
   closeContextMenu()
 }
 </script>

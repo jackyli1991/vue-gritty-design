@@ -38,10 +38,9 @@ import ToolBar from '@/components/ToolBar.vue'
 import { useDesignContext } from '@/composables/useDesignContext'
 import { useToolbarAction } from '@/composables/useToolbarAction'
 
-const { handleLayoutToolbarAction, handleElementToolbarAction, getElementToolbar } = useToolbarAction()
+const { handleLayoutToolbarAction, handleElementToolbarAction, getElementToolbar, getLayoutToolbar } = useToolbarAction()
 
 const {
-  getLayoutToolbar,
   activeCanvasLayout,
   activeCanvasElement,
   attributesPanelCollapsed,
@@ -59,7 +58,7 @@ const activeName = computed(() => {
 // 布局工具条操作项
 const layoutOperateOptions = computed(() => {
   if (activeCanvasLayout.value) {
-    return getLayoutToolbar(activeCanvasLayout.value?.id)
+    return getLayoutToolbar(activeCanvasLayout.value)
   }
   return []
 })
